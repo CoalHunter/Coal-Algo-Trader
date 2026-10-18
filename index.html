@@ -2,11 +2,10 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Coal Algo-Trader v1.0</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coal Algo-Trader v1.0 — Dashboard</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
         :root {
             --green: #00a651;
             --red: #ed1c24;
@@ -18,18 +17,15 @@
             --text: #333333;
             --muted: #787b86;
             --header: #1a1a1a;
-            --hover: #f0f2f5;
+            --yellow: #f59e0b;
         }
-
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
             background: var(--bg);
             color: var(--text);
             font-size: 13px;
             line-height: 1.4;
-            -webkit-font-smoothing: antialiased;
         }
-
         a { text-decoration: none; color: inherit; }
 
         /* TOP BAR */
@@ -40,6 +36,7 @@
             padding: 6px 12px;
             display: flex;
             justify-content: space-between;
+            align-items: center;
         }
 
         /* HEADER */
@@ -60,13 +57,12 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            flex-shrink: 0;
         }
 
         .logo-icon {
-            width: 30px;
-            height: 30px;
-            background: linear-gradient(135deg, var(--blue), var(--blue-dark));
+            width: 32px;
+            height: 32px;
+            background: var(--blue);
             border-radius: 4px;
             display: flex;
             align-items: center;
@@ -77,7 +73,7 @@
         }
 
         .logo-text h1 {
-            font-size: 14px;
+            font-size: 15px;
             font-weight: 700;
             line-height: 1.2;
         }
@@ -89,56 +85,64 @@
 
         .header-nav {
             display: flex;
-            gap: 4px;
+            gap: 6px;
             margin-left: auto;
         }
 
         .nav-link {
-            padding: 6px 10px;
-            font-size: 11px;
+            padding: 8px 14px;
+            font-size: 12px;
             font-weight: 600;
             border-radius: 4px;
-            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
         .nav-link.active { background: var(--blue); color: white; }
-        .nav-link:not(.active) { color: var(--text); }
 
-        /* TICKER TAPE */
-        .ticker-tape {
+        /* CONTAINER */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 12px;
+        }
+
+        .page-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .page-subtitle {
+            color: var(--muted);
+            font-size: 11px;
+            margin-bottom: 16px;
+        }
+
+        /* PANEL */
+        .panel {
             background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            margin-bottom: 12px;
+        }
+
+        .panel-header {
+            padding: 10px 12px;
             border-bottom: 1px solid var(--border);
-            padding: 8px 0;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .ticker-container {
-            display: flex;
-            gap: 8px;
-            padding: 0 12px;
-            min-width: max-content;
-        }
-
-        .ticker-item {
+            background: #fafbfc;
+            font-size: 13px;
+            font-weight: 700;
             display: flex;
             align-items: center;
             gap: 8px;
-            padding: 5px 10px;
-            background: var(--bg);
-            border-radius: 4px;
-            border: 1px solid var(--border);
-            flex-shrink: 0;
         }
 
-        .ticker-name { font-size: 11px; font-weight: 600; color: var(--muted); }
-        .ticker-value { font-size: 13px; font-weight: 700; }
-        .ticker-change { font-size: 11px; font-weight: 600; padding: 2px 5px; border-radius: 3px; }
-        .up-bg { background: #e6f7ef; color: var(--green); }
-        .down-bg { background: #fde8e9; color: var(--red); }
+        .panel-body { padding: 12px; }
 
         /* ALERTS */
-        .alert-container { padding: 10px 12px; }
+        .alert-container { margin-bottom: 12px; }
         .alert-banner {
             padding: 10px 12px;
             border-radius: 4px;
@@ -151,123 +155,86 @@
             gap: 8px;
         }
         .alert-banner.critical { background: #fde8e9; border-left-color: var(--red); color: #7a0f14; }
-        .alert-banner.high { background: #fff4e5; border-left-color: #ffb800; color: #7a5500; }
+        .alert-banner.high { background: #fff4e5; border-left-color: var(--yellow); color: #7a5500; }
         .alert-banner.medium { background: #e8f4fd; border-left-color: var(--blue); color: #0d3d7a; }
         .alert-content { flex: 1; }
         .alert-close { background: none; border: none; cursor: pointer; font-size: 16px; opacity: 0.6; }
-
-        /* MAIN LAYOUT */
-        .main-container {
-            padding: 12px;
-            display: grid;
-            grid-template-columns: 1fr 280px;
-            gap: 12px;
-        }
-
-        /* PANEL */
-        .panel {
-            background: var(--white);
-            border: 1px solid var(--border);
-            border-radius: 4px;
-            margin-bottom: 12px;
-        }
 
         /* TAB BAR */
         .tab-bar {
             display: flex;
             border-bottom: 1px solid var(--border);
-            overflow-x: auto;
+            background: var(--white);
         }
 
         .tab-btn {
-            padding: 10px 14px;
+            padding: 12px 20px;
             background: none;
             border: none;
             border-bottom: 3px solid transparent;
-            font-size: 12px;
+            font-size: 13px;
             font-weight: 600;
             color: var(--muted);
             cursor: pointer;
-            white-space: nowrap;
-            flex-shrink: 0;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
+        .tab-btn:hover { color: var(--blue); }
         .tab-btn.active { color: var(--blue); border-bottom-color: var(--blue); }
 
-        /* TABLE - DESKTOP */
-        .table-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-        .data-table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 600px; }
-        .data-table th {
-            background: #fafbfc;
-            padding: 10px 12px;
-            text-align: left;
-            font-size: 11px;
-            font-weight: 600;
-            color: var(--muted);
-            text-transform: uppercase;
-            border-bottom: 1px solid var(--border);
-            white-space: nowrap;
-        }
-        .data-table td { padding: 12px; border-bottom: 1px solid var(--border); vertical-align: middle; }
-        .data-table tr:hover { background: var(--hover); cursor: pointer; }
-
-        .ticker-cell { display: flex; align-items: center; gap: 8px; }
-        .ticker-logo {
-            width: 30px; height: 30px;
-            background: linear-gradient(135deg, var(--blue), var(--blue-dark));
-            border-radius: 4px;
-            display: flex; align-items: center; justify-content: center;
-            color: white; font-weight: 700; font-size: 10px;
-            flex-shrink: 0;
-        }
-        .ticker-name-main { font-weight: 700; font-size: 13px; }
-        .ticker-name-sub { font-size: 10px; color: var(--muted); }
-        .price-cell { font-weight: 700; font-variant-numeric: tabular-nums; }
-
-        .signal-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 3px;
-            padding: 3px 7px;
-            border-radius: 3px;
-            font-size: 10px;
-            font-weight: 700;
-            text-transform: uppercase;
-        }
-        .signal-strong-buy { background: var(--green); color: white; }
-        .signal-buy { background: #e6f7ef; color: var(--green); }
-        .signal-hold { background: #fff4e5; color: #b8860b; }
-        .signal-sell { background: var(--red); color: white; }
-        .signal-accumulate { background: #e8f4fd; color: var(--blue); }
-        .signal-no-data { background: #f0f2f5; color: var(--muted); }
-
-        .change-pos { color: var(--green); font-weight: 600; }
-        .change-neg { color: var(--red); font-weight: 600; }
-
-        /* MOBILE CARD VIEW (ganti tabel di HP) */
-        .stock-cards { display: none; }
+        /* STOCK CARDS */
         .stock-card {
             background: var(--white);
             border: 1px solid var(--border);
             border-radius: 4px;
-            padding: 12px;
-            margin-bottom: 8px;
+            padding: 14px;
+            margin-bottom: 10px;
             cursor: pointer;
             transition: box-shadow 0.2s;
         }
+
         .stock-card:active { box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
 
         .stock-card-header {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
         }
 
         .stock-card-ticker {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
+        }
+
+        .stock-card-logo {
+            width: 36px;
+            height: 36px;
+            background: var(--blue);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+
+        .stock-card-name {
+            font-weight: 700;
+            font-size: 16px;
+            line-height: 1.2;
+        }
+
+        .stock-card-company {
+            font-size: 11px;
+            color: var(--muted);
+            margin-top: 2px;
         }
 
         .stock-card-price {
@@ -275,35 +242,58 @@
         }
 
         .stock-card-price-value {
-            font-size: 16px;
+            font-size: 20px;
             font-weight: 700;
             font-variant-numeric: tabular-nums;
         }
 
+        .signal-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            border-radius: 3px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-top: 6px;
+        }
+
+        .signal-strong-buy { background: var(--green); color: white; }
+        .signal-buy { background: #e6f7ef; color: var(--green); }
+        .signal-hold { background: #fff4e5; color: #b8860b; }
+        .signal-sell { background: var(--red); color: white; }
+        .signal-accumulate { background: #e8f4fd; color: var(--blue); }
+        .signal-wait { background: #f0f2f5; color: var(--muted); }
+        .signal-no-data { background: #f0f2f5; color: var(--muted); }
+
         .stock-card-body {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 8px;
-            padding-top: 10px;
+            gap: 10px;
+            padding-top: 12px;
             border-top: 1px solid var(--border);
         }
 
-        .stock-card-item {
-            font-size: 11px;
-        }
+        .stock-card-item { font-size: 12px; }
+        .stock-card-label { color: var(--muted); font-size: 11px; margin-bottom: 3px; }
+        .stock-card-value { font-weight: 600; font-size: 13px; }
 
-        .stock-card-label {
-            color: var(--muted);
-            font-size: 10px;
-            margin-bottom: 2px;
-        }
-
-        .stock-card-value {
-            font-weight: 600;
-            font-size: 12px;
-        }
+        .change-pos { color: var(--green); font-weight: 600; }
+        .change-neg { color: var(--red); font-weight: 600; }
 
         /* SIDEBAR WIDGETS */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 280px;
+            gap: 12px;
+        }
+
+        @media (max-width: 768px) {
+            .main-grid { grid-template-columns: 1fr; }
+            .sidebar { order: -1; }
+        }
+
         .widget {
             background: var(--white);
             border: 1px solid var(--border);
@@ -348,6 +338,23 @@
         .ice-status-badge.ok { background: #e6f7ef; color: var(--green); }
         .ice-status-badge.bad { background: #fde8e9; color: var(--red); }
         .ice-status-badge.error { background: #fff4e5; color: #b8860b; }
+
+        /* CLEAR CACHE BUTTON */
+        .cache-btn {
+            padding: 8px 14px;
+            background: var(--yellow);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: background 0.2s;
+        }
+        .cache-btn:hover { background: #d97706; }
 
         /* MODAL */
         .modal-overlay {
@@ -500,36 +507,21 @@
         }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* ============================================ */
-        /* MOBILE RESPONSIVE (< 768px)                  */
-        /* ============================================ */
-        @media (max-width: 768px) {
-            .main-container {
-                grid-template-columns: 1fr;
-                padding: 10px;
-                gap: 10px;
-            }
-
-            /* Sidebar pindah ke atas di mobile */
-            .sidebar { order: -1; }
-
-            /* Sembunyikan tabel desktop, tampilkan card */
-            .table-wrapper { display: none; }
-            .stock-cards { display: block; }
-
-            /* Header lebih compact */
-            .main-header { padding: 8px 10px; }
-            .logo-text h1 { font-size: 13px; }
-            .logo-text p { display: none; }
-            .nav-link { padding: 5px 8px; font-size: 10px; }
-
-            /* Tab lebih kecil */
-            .tab-btn { padding: 10px 12px; font-size: 11px; }
+        /* TOAST */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--green);
+            color: white;
+            padding: 10px 16px;
+            border-radius: 4px;
+            display: none;
+            z-index: 2000;
+            font-size: 13px;
+            font-weight: 600;
         }
-
-        @media (min-width: 769px) {
-            .stock-cards { display: none !important; }
-        }
+        .toast.show { display: block; }
     </style>
 </head>
 <body>
@@ -537,7 +529,10 @@
     <!-- TOP BAR -->
     <div class="top-bar">
         <span>🔥 Coal Algo-Trader v1.0</span>
-        <span id="last-update">Update: —</span>
+        <div style="display: flex; gap: 8px; align-items: center;">
+            <button class="cache-btn" onclick="clearCache()">🔄 Clear Cache</button>
+            <span id="last-update">Update: —</span>
+        </div>
     </div>
 
     <!-- HEADER -->
@@ -550,102 +545,52 @@
             </div>
         </div>
         <nav class="header-nav">
-            <a href="index.html" class="nav-link active"> Dashboard</a>
-            <a href="position.html" class="nav-link">💼 Position</a>
+            <a href="index.html" class="nav-link active">📊 Dashboard</a>
+            <a href="position.html" class="nav-link"> My Position</a>
         </nav>
     </header>
 
-    <!-- TICKER TAPE -->
-    <div class="ticker-tape">
-        <div class="ticker-container">
-            <div class="ticker-item">
-                <span class="ticker-name">ICE</span>
-                <span class="ticker-value" id="tape-ice">—</span>
-                <span class="ticker-change" id="tape-ice-change">...</span>
-            </div>
-            <div class="ticker-item">
-                <span class="ticker-name">ITMG</span>
-                <span class="ticker-value" id="tape-itmg">—</span>
-            </div>
-            <div class="ticker-item">
-                <span class="ticker-name">PTBA</span>
-                <span class="ticker-value" id="tape-ptba">—</span>
-            </div>
-            <div class="ticker-item">
-                <span class="ticker-name">ADRO</span>
-                <span class="ticker-value" id="tape-adro">—</span>
-            </div>
-            <div class="ticker-item">
-                <span class="ticker-name">UNTR</span>
-                <span class="ticker-value" id="tape-untr">—</span>
-            </div>
-        </div>
-    </div>
-
     <!-- ALERTS -->
-    <div class="alert-container" id="alert-container"></div>
+    <div class="container">
+        <div class="alert-container" id="alert-container"></div>
 
-    <!-- MAIN CONTENT -->
-    <div class="main-container">
-        <!-- LEFT: Main Panel -->
-        <div>
-            <div class="panel">
-                <div class="tab-bar">
-                    <button class="tab-btn active" onclick="switchTab('swing')" id="tab-swing"> Swing</button>
-                    <button class="tab-btn" onclick="switchTab('dividend')" id="tab-dividend">💰 Dividen</button>
-                    <button class="tab-btn" onclick="switchTab('all')" id="tab-all">📋 Semua</button>
+        <div class="main-grid">
+            <!-- LEFT: Main Panel -->
+            <div>
+                <div class="panel">
+                    <div class="tab-bar">
+                        <button class="tab-btn active" onclick="switchTab('swing')" id="tab-swing">⚡ Swing</button>
+                        <button class="tab-btn" onclick="switchTab('dividend')" id="tab-dividend">💰 Dividen</button>
+                    </div>
+
+                    <div id="stock-list"></div>
                 </div>
-
-                <!-- DESKTOP TABLE -->
-                <div class="table-wrapper">
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Saham</th>
-                                <th>Harga</th>
-                                <th>Sinyal</th>
-                                <th>Skor</th>
-                                <th>TP/SL</th>
-                                <th>Yield</th>
-                                <th>vs MA50</th>
-                            </tr>
-                        </thead>
-                        <tbody id="stock-table-body">
-                            <tr><td colspan="7" style="text-align:center; padding: 30px;">
-                                <div class="spinner"></div>Memuat data...
-                            </td></tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <!-- MOBILE CARD VIEW -->
-                <div class="stock-cards" id="stock-cards"></div>
             </div>
-        </div>
 
-        <!-- RIGHT: Sidebar -->
-        <div class="sidebar">
-            <div class="widget">
-                <div class="widget-header"> ICE Newcastle</div>
-                <div class="widget-body">
-                    <div class="ice-big-price" id="ice-price">—</div>
-                    <div id="ice-status-badge" class="ice-status-badge error">Loading...</div>
-                    <div style="margin-top: 10px;">
-                        <div class="widget-row"><span class="widget-label">Floor</span><span class="widget-value">$120</span></div>
-                        <div class="widget-row"><span class="widget-label">Trend</span><span class="widget-value" id="ice-trend">—</span></div>
-                        <div class="widget-row"><span class="widget-label">ROC 5D</span><span class="widget-value" id="ice-roc5">—</span></div>
-                        <div class="widget-row"><span class="widget-label">vs MA200</span><span class="widget-value" id="ice-ma200">—</span></div>
+            <!-- RIGHT: Sidebar -->
+            <div class="sidebar">
+                <div class="widget">
+                    <div class="widget-header">📊 ICE Newcastle</div>
+                    <div class="widget-body">
+                        <div class="ice-big-price" id="ice-price">—</div>
+                        <div id="ice-status-badge" class="ice-status-badge error">Loading...</div>
+                        <div style="margin-top: 10px;">
+                            <div class="widget-row"><span class="widget-label">Floor</span><span class="widget-value">$120</span></div>
+                            <div class="widget-row"><span class="widget-label">Trend</span><span class="widget-value" id="ice-trend">—</span></div>
+                            <div class="widget-row"><span class="widget-label">ROC 5D</span><span class="widget-value" id="ice-roc5">—</span></div>
+                            <div class="widget-row"><span class="widget-label">vs MA200</span><span class="widget-value" id="ice-ma200">—</span></div>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="widget">
-                <div class="widget-header">📈 Summary</div>
-                <div class="widget-body">
-                    <div class="widget-row"><span class="widget-label">Tickers</span><span class="widget-value" id="sum-tickers">0</span></div>
-                    <div class="widget-row"><span class="widget-label">BUY Signals</span><span class="widget-value change-pos" id="sum-swing">0</span></div>
-                    <div class="widget-row"><span class="widget-label">Accumulate</span><span class="widget-value change-pos" id="sum-div">0</span></div>
-                    <div class="widget-row"><span class="widget-label">Alerts</span><span class="widget-value" id="sum-alerts">0</span></div>
+                <div class="widget">
+                    <div class="widget-header">📈 Summary</div>
+                    <div class="widget-body">
+                        <div class="widget-row"><span class="widget-label">Tickers</span><span class="widget-value" id="sum-tickers">0</span></div>
+                        <div class="widget-row"><span class="widget-label">BUY Signals</span><span class="widget-value change-pos" id="sum-swing">0</span></div>
+                        <div class="widget-row"><span class="widget-label">Accumulate</span><span class="widget-value change-pos" id="sum-div">0</span></div>
+                        <div class="widget-row"><span class="widget-label">Alerts</span><span class="widget-value" id="sum-alerts">0</span></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -664,6 +609,8 @@
         <div class="footer-disclaimer">️ Disclaimer: Informasi bersifat edukatif, bukan ajakan membeli/menjual saham.</div>
     </footer>
 
+    <div class="toast" id="toast"></div>
+
     <script>
         let DATA = null;
         let CURRENT_TAB = 'swing';
@@ -672,34 +619,56 @@
             if (!num || isNaN(num)) return '—';
             return Math.round(num).toLocaleString('id-ID');
         };
+
         const fmtPct = (num) => {
             if (num === null || num === undefined || isNaN(num)) return '—';
             return (num >= 0 ? '+' : '') + num.toFixed(2) + '%';
         };
+
         const sigClass = (s) => {
             const m = { 'STRONG_BUY':'signal-strong-buy','BUY':'signal-buy','HOLD':'signal-hold','SELL':'signal-sell','STRONG_ACCUMULATE':'signal-accumulate','ACCUMULATE':'signal-accumulate','REINVEST_ZONE':'signal-buy','WAIT':'signal-no-data','NO_DATA':'signal-no-data' };
             return m[s] || 'signal-no-data';
         };
-        const sigIcon = (s) => ({ 'STRONG_BUY':'▲','BUY':'▲','HOLD':'■','SELL':'▼','STRONG_ACCUMULATE':'◆','ACCUMULATE':'◆','REINVEST_ZONE':'↻','WAIT':'○','NO_DATA':'?' }[s] || '?');
+
+        const sigIcon = (s) => ({ 'STRONG_BUY':'▲','BUY':'▲','HOLD':'■','SELL':'▼','STRONG_ACCUMULATE':'◆','ACCUMULATE':'◆','REINVEST_ZONE':'','WAIT':'○','NO_DATA':'?' }[s] || '?');
+
+        const showToast = (msg) => {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.className = 'toast show';
+            setTimeout(() => toast.className = 'toast', 3000);
+        };
+
+        // CLEAR CACHE
+        function clearCache() {
+            if (confirm('Clear cache untuk refresh data terbaru?')) {
+                if ('caches' in window) {
+                    caches.keys().then(names => {
+                        names.forEach(name => caches.delete(name));
+                    });
+                }
+                localStorage.clear();
+                showToast('🔄 Cache dibersihkan! Refreshing...');
+                setTimeout(() => location.reload(true), 1000);
+            }
+        }
 
         async function loadData() {
             try {
-                const res = await fetch('coal_data.json?t=' + Date.now());
+                const res = await fetch('coal_data.json?t=' + Date.now(), { cache: 'no-store' });
                 if (!res.ok) throw new Error('Failed');
                 DATA = await res.json();
                 renderAll();
             } catch (e) {
-                document.getElementById('stock-table-body').innerHTML = '<tr><td colspan="7" style="text-align:center; padding:30px; color:var(--red);">⚠️ Gagal memuat data<br><button onclick="loadData()" style="margin-top:10px; padding:8px 16px; background:var(--blue); color:white; border:none; border-radius:4px; cursor:pointer;">🔄 Coba Lagi</button></td></tr>';
+                document.getElementById('stock-list').innerHTML = '<div class="loading"><div class="spinner"></div>⚠️ Gagal memuat data<br><button onclick="loadData()" style="margin-top:10px; padding:8px 16px; background:var(--blue); color:white; border:none; border-radius:4px; cursor:pointer;">🔄 Coba Lagi</button></div>';
             }
         }
 
         function renderAll() {
             if (!DATA) return;
-            renderTickerTape();
             renderAlerts();
             renderICEWidget();
-            renderTable();
-            renderCards();
+            renderStocks();
             updateSummary();
             updateLastUpdate();
         }
@@ -709,24 +678,6 @@
                 const d = new Date(DATA.metadata.generated_at);
                 document.getElementById('last-update').textContent = 'Update: ' + d.toLocaleString('id-ID', { day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit' });
             }
-        }
-
-        function renderTickerTape() {
-            const ice = DATA.ice_newcastle;
-            if (ice?.current_price_usd) {
-                document.getElementById('tape-ice').textContent = '$' + ice.current_price_usd.toFixed(2);
-                const roc = ice.momentum?.roc_5d || 0;
-                const el = document.getElementById('tape-ice-change');
-                el.textContent = fmtPct(roc);
-                el.className = 'ticker-change ' + (roc >= 0 ? 'up-bg' : 'down-bg');
-            }
-            ['ITMG','PTBA','ADRO','UNTR'].forEach(t => {
-                const div = DATA.dividend_mode?.find(d => d.ticker === t+'.JK');
-                const swing = DATA.swing_mode?.find(s => s.ticker === t+'.JK');
-                const price = div?.current_price || swing?.current_price;
-                const el = document.getElementById('tape-'+t.toLowerCase());
-                if (el) el.textContent = price ? fmtRp(price) : '—';
-            });
         }
 
         function renderAlerts() {
@@ -754,7 +705,7 @@
             document.getElementById('ice-price').textContent = '$' + ice.current_price_usd.toFixed(2);
             const b = document.getElementById('ice-status-badge');
             if (ice.above_floor) { b.innerHTML = '✓ Above $120'; b.className = 'ice-status-badge ok'; }
-            else { b.innerHTML = '✗ Below $120'; b.className = 'ice-status-badge bad'; }
+            else { b.innerHTML = ' Below $120'; b.className = 'ice-status-badge bad'; }
             document.getElementById('ice-trend').textContent = ice.momentum?.trend || '—';
             const roc5 = ice.momentum?.roc_5d || 0;
             const r = document.getElementById('ice-roc5');
@@ -763,48 +714,42 @@
             document.getElementById('ice-ma200').textContent = ice.trend_barrier?.position || '—';
         }
 
-        function renderTable() {
-            const tbody = document.getElementById('stock-table-body');
-            let stocks = getStocks();
-            if (!stocks.length) { tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:30px;">Tidak ada data.</td></tr>'; return; }
-            tbody.innerHTML = stocks.map(s => {
-                const short = s.ticker.replace('.JK','');
-                const isSwing = s.mode === 'SWING';
-                const swing = s.swing || s;
-                const div = s.dividend || s;
-                return `<tr onclick="openModal('${s.ticker}','${s.mode}')">
-                    <td><div class="ticker-cell"><div class="ticker-logo">${short.substring(0,2)}</div><div><div class="ticker-name-main">${short}</div><div class="ticker-name-sub">${s.company_name||''} • ${isSwing?'⚡':'💰'}</div></div></div></td>
-                    <td class="price-cell">${fmtRp(s.current_price)}</td>
-                    <td><span class="signal-badge ${sigClass(s.signal)}">${sigIcon(s.signal)} ${s.signal.replace(/_/g,' ')}</span></td>
-                    <td style="font-weight:700;">${(s.composite_score||0).toFixed(0)}</td>
-                    <td>${isSwing && swing.target_profit ? `<div style="font-size:11px;"><div class="change-pos">TP: ${fmtRp(swing.target_profit)}</div><div class="change-neg">SL: ${fmtRp(swing.stop_loss)}</div></div>` : '—'}</td>
-                    <td>${div.forward_yield_pct ? `<span class="change-pos">${div.forward_yield_pct}%</span>` : '—'}</td>
-                    <td>${div.price_vs_ma50_pct !== undefined ? `<span class="${div.price_vs_ma50_pct>=0?'change-pos':'change-neg'}">${fmtPct(div.price_vs_ma50_pct)}</span>` : '—'}</td>
-                </tr>`;
-            }).join('');
-        }
+        function renderStocks() {
+            const container = document.getElementById('stock-list');
+            let stocks = [];
 
-        function renderCards() {
-            const container = document.getElementById('stock-cards');
-            let stocks = getStocks();
-            if (!stocks.length) { container.innerHTML = '<div style="text-align:center; padding:30px; color:var(--muted);">Tidak ada data.</div>'; return; }
+            if (CURRENT_TAB === 'swing') {
+                stocks = (DATA.swing_mode || []).map(s => ({...s, mode: 'SWING'}));
+            } else if (CURRENT_TAB === 'dividend') {
+                stocks = (DATA.dividend_mode || []).map(s => ({...s, mode: 'DIVIDEND'}));
+            }
+
+            if (!stocks.length) {
+                container.innerHTML = '<div class="loading">Tidak ada data.</div>';
+                return;
+            }
+
+            stocks.sort((a,b) => (b.composite_score||0) - (a.composite_score||0));
+
             container.innerHTML = stocks.map(s => {
                 const short = s.ticker.replace('.JK','');
+                const company = s.company_name || '';
                 const isSwing = s.mode === 'SWING';
-                const swing = s.swing || s;
-                const div = s.dividend || s;
+                const swing = s;
+                const div = s;
+
                 return `<div class="stock-card" onclick="openModal('${s.ticker}','${s.mode}')">
                     <div class="stock-card-header">
                         <div class="stock-card-ticker">
-                            <div class="ticker-logo">${short.substring(0,2)}</div>
+                            <div class="stock-card-logo">${short.substring(0,2)}</div>
                             <div>
-                                <div class="ticker-name-main">${short}</div>
-                                <div class="ticker-name-sub">${s.company_name||''} • ${isSwing?'⚡ Swing':'💰 Dividen'}</div>
+                                <div class="stock-card-name">${short}</div>
+                                <div class="stock-card-company">${company} • ${isSwing ? '⚡ Swing' : '💰 Dividen'}</div>
                             </div>
                         </div>
                         <div class="stock-card-price">
                             <div class="stock-card-price-value">${fmtRp(s.current_price)}</div>
-                            <span class="signal-badge ${sigClass(s.signal)}" style="margin-top:4px;">${sigIcon(s.signal)} ${s.signal.replace(/_/g,' ')}</span>
+                            <span class="signal-badge ${sigClass(s.signal)}">${sigIcon(s.signal)} ${s.signal.replace(/_/g,' ')}</span>
                         </div>
                     </div>
                     <div class="stock-card-body">
@@ -822,13 +767,13 @@
                             <div class="stock-card-value change-neg">${fmtRp(swing.stop_loss)}</div>
                         </div>
                         ` : ''}
-                        ${div.forward_yield_pct ? `
+                        ${!isSwing && div.forward_yield_pct ? `
                         <div class="stock-card-item">
                             <div class="stock-card-label">Yield</div>
                             <div class="stock-card-value change-pos">${div.forward_yield_pct}%</div>
                         </div>
                         ` : ''}
-                        ${div.price_vs_ma50_pct !== undefined ? `
+                        ${!isSwing && div.price_vs_ma50_pct !== undefined ? `
                         <div class="stock-card-item">
                             <div class="stock-card-label">vs MA50</div>
                             <div class="stock-card-value ${div.price_vs_ma50_pct>=0?'change-pos':'change-neg'}">${fmtPct(div.price_vs_ma50_pct)}</div>
@@ -837,25 +782,6 @@
                     </div>
                 </div>`;
             }).join('');
-        }
-
-        function getStocks() {
-            let stocks = [];
-            if (CURRENT_TAB === 'swing') stocks = (DATA.swing_mode||[]).map(s => ({...s, mode:'SWING'}));
-            else if (CURRENT_TAB === 'dividend') stocks = (DATA.dividend_mode||[]).map(s => ({...s, mode:'DIVIDEND'}));
-            else {
-                const sm = new Map((DATA.swing_mode||[]).map(s=>[s.ticker,s]));
-                const dm = new Map((DATA.dividend_mode||[]).map(s=>[s.ticker,s]));
-                stocks = Array.from(new Set([...sm.keys(),...dm.keys()])).map(t => ({
-                    ticker:t, swing:sm.get(t), dividend:dm.get(t), mode:'BOTH',
-                    current_price: sm.get(t)?.current_price || dm.get(t)?.current_price,
-                    composite_score: Math.max(sm.get(t)?.composite_score||0, dm.get(t)?.composite_score||0),
-                    signal: sm.get(t)?.signal || dm.get(t)?.signal,
-                    company_name: sm.get(t)?.company_name || dm.get(t)?.company_name || ''
-                }));
-            }
-            stocks.sort((a,b) => (b.composite_score||0) - (a.composite_score||0));
-            return stocks;
         }
 
         function updateSummary() {
@@ -914,8 +840,8 @@
                         <div class="modal-section-title">💰 Dividend Analysis</div>
                         <div class="metrics-grid">
                             <div class="metric-card"><div class="metric-card-label">Forward Yield</div><div class="metric-card-value change-pos">${div.forward_yield_pct?div.forward_yield_pct+'%':'—'}</div></div>
-                            <div class="metric-card"><div class="metric-card-label">DER</div><div class="metric-card-value">${det.der?.toFixed(2)||'—'}</div><div class="metric-card-sub">${det.der<1?'✓ Sehat':'⚠ Tinggi'}</div></div>
-                            <div class="metric-card"><div class="metric-card-label">vs MA50</div><div class="metric-card-value ${div.price_vs_ma50_pct>=0?'change-pos':'change-neg'}">${fmtPct(div.price_vs_ma50_pct)}</div><div class="metric-card-sub">${div.price_vs_ma50_pct<-8?' Diskon!':'Normal'}</div></div>
+                            <div class="metric-card"><div class="metric-card-label">DER</div><div class="metric-card-value">${det.der?.toFixed(2)||'—'}</div><div class="metric-card-sub">${det.der<1?'✓ Sehat':' Tinggi'}</div></div>
+                            <div class="metric-card"><div class="metric-card-label">vs MA50</div><div class="metric-card-value ${div.price_vs_ma50_pct>=0?'change-pos':'change-neg'}">${fmtPct(div.price_vs_ma50_pct)}</div><div class="metric-card-sub">${div.price_vs_ma50_pct<-8?'🔥 Diskon!':'Normal'}</div></div>
                             <div class="metric-card"><div class="metric-card-label">Fear Index</div><div class="metric-card-value">${fear.score?.toFixed(0)||'—'}</div><div class="metric-card-sub">${fear.panic_detected?'🚨 PANIC!':'Normal'}</div></div>
                         </div>
                         <div class="detail-box">
@@ -987,9 +913,8 @@
 
         function switchTab(tab) {
             CURRENT_TAB = tab;
-            ['swing','dividend','all'].forEach(t => document.getElementById('tab-'+t).classList.toggle('active', t===tab));
-            renderTable();
-            renderCards();
+            ['swing','dividend'].forEach(t => document.getElementById('tab-'+t).classList.toggle('active', t===tab));
+            renderStocks();
         }
 
         document.getElementById('modal').addEventListener('click', e => { if (e.target.id==='modal') closeModal(); });
