@@ -1,104 +1,20 @@
 {
   "metadata": {
     "system": "Coal Algo-Trader v1.0",
-    "generated_at": "2025-01-15T16:30:00",
+    "generated_at": "2026-10-18T03:30:18.364433",
     "ice_floor_filter_usd": 120.0,
-    "tickers_analyzed": ["ITMG.JK", "PTBA.JK", "ADRO.JK", "PTCO.JK", "BUMI.JK", "MBAP.JK"]
+    "tickers_analyzed": [
+      "ITMG.JK",
+      "PTBA.JK",
+      "ADRO.JK",
+      "PTCO.JK",
+      "BUMI.JK",
+      "MBAP.JK"
+    ],
+    "error": "ICE_DATA_UNAVAILABLE"
   },
-  "ice_newcastle": {
-    "current_price_usd": 135.50,
-    "floor_threshold_usd": 120.0,
-    "above_floor": true,
-    "momentum": {
-      "score": 72.5,
-      "roc_5d": 3.2,
-      "roc_10d": 5.1,
-      "roc_20d": -1.8,
-      "trend": "BULLISH",
-      "current_price_usd": 135.50
-    },
-    "trend_barrier": {
-      "score": 80.0,
-      "above_ma50": true,
-      "above_ma200": true,
-      "position": "STRONG_BULL",
-      "ma50": 128.30,
-      "ma200": 122.10
-    }
-  },
-  "swing_mode": [
-    {
-      "ticker": "ITMG.JK",
-      "mode": "SWING",
-      "current_price": 21700,
-      "signal": "STRONG_BUY",
-      "composite_score": 82.5,
-      "target_profit": 23870,
-      "stop_loss": 20615,
-      "ice_filter_passed": true,
-      "ice_momentum": { "...": "..." },
-      "technical": {
-        "score": 78.0,
-        "ma10": 21200,
-        "ma20": 20800,
-        "rsi": 55.3,
-        "macd_histogram": 125.5
-      },
-      "volume_sentiment": {
-        "score": 85.0,
-        "volume_ratio": 2.3,
-        "avg_volume_20d": 5000000,
-        "last_volume": 11500000
-      },
-      "accumulation": {
-        "accumulation_score": 75,
-        "signal": "STRONG_ACCUMULATION",
-        "signals_detail": ["VOLUME_SPIKE_STABLE_PRICE", "OBV_UPTREND", "BUYING_PRESSURE_HIGH_VOL"]
-      }
-    }
-  ],
-  "dividend_mode": [
-    {
-      "ticker": "ITMG.JK",
-      "mode": "DIVIDEND",
-      "current_price": 21700,
-      "signal": "REINVEST_ZONE",
-      "composite_score": 68.5,
-      "forward_yield_pct": 14.2,
-      "fundamental_safety": {
-        "score": 85.0,
-        "details": {
-          "eps_growth_pct": 5.2,
-          "dividend_yield_pct": 14.2,
-          "dividend_rate": 3080,
-          "payout_ratio_pct": 72.5,
-          "fcf_positive": true,
-          "der": 0.45
-        }
-      },
-      "fear_panic_detector": {
-        "score": 45.0,
-        "panic_detected": false,
-        "discount_from_ma50_pct": 4.2,
-        "volume_spike_ratio": 1.1,
-        "opportunity": "MILD_DISCOUNT"
-      }
-    }
-  ],
-  "alerts": [
-    {
-      "type": "BANDAR_ACCUMULATION_DETECTED",
-      "ticker": "ITMG.JK",
-      "score": 75,
-      "details": ["VOLUME_SPIKE_STABLE_PRICE", "OBV_UPTREND"],
-      "severity": "HIGH"
-    }
-  ],
-  "summary": {
-    "total_tickers": 6,
-    "swing_buy_signals": 2,
-    "dividend_accumulate_signals": 1,
-    "total_alerts": 3,
-    "ice_above_floor": true
-  }
+  "ice_newcastle": {},
+  "swing_mode": [],
+  "dividend_mode": [],
+  "alerts": []
 }
