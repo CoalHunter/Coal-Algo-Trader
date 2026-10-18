@@ -1,11 +1,20 @@
 {
   "metadata": {
     "system": "Coal Algo-Trader v1.0",
-    "generated_at": "2026-10-18T04:04:37.229640"
+    "generated_at": "2026-10-18T04:19:00.320344",
+    "ice_floor_filter_usd": 120.0,
+    "tickers_analyzed": [
+      "ITMG.JK",
+      "PTBA.JK",
+      "ADRO.JK",
+      "PTCO.JK",
+      "BUMI.JK",
+      "MBAP.JK"
+    ]
   },
   "ice_newcastle": {
     "status": "FAILED",
-    "error_message": "GAGAL MENGAMBIL DATA NEWCASTLE COAL. Semua sumber (yfinance, investpy) tidak berhasil mengembalikan data.",
+    "error_message": "GAGAL MENGAMBIL DATA NEWCASTLE COAL. Semua sumber (yfinance, investpy, Alpha Vantage) tidak berhasil mengembalikan data.",
     "current_price_usd": null
   },
   "swing_mode": [
@@ -75,8 +84,15 @@
   "alerts": [
     {
       "type": "CRITICAL_DATA_FAILURE",
-      "message": "GAGAL MENGAMBIL DATA NEWCASTLE COAL. Semua sumber (yfinance, investpy) tidak berhasil mengembalikan data.",
+      "message": "GAGAL MENGAMBIL DATA NEWCASTLE COAL. Semua sumber (yfinance, investpy, Alpha Vantage) tidak berhasil mengembalikan data.",
       "severity": "CRITICAL"
     }
-  ]
+  ],
+  "summary": {
+    "total_tickers": 6,
+    "swing_buy_signals": 0,
+    "dividend_accumulate_signals": 0,
+    "total_alerts": 1,
+    "ice_above_floor": false
+  }
 }
