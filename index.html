@@ -3,1559 +3,351 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Coal Algo-Trader v1.0 — Rekomendasi Saham Batu Bara</title>
-    <meta name="description" content="Sistem rekomendasi saham batu bara BEI berbasis algoritma dual-engine">
-    
+    <title>Coal Algo-Trader v1.0</title>
     <style>
-        /* ============================================ */
-        /* RESET & BASE                                 */
-        /* ============================================ */
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
         :root {
-            --inv-green: #00a651;
-            --inv-red: #ed1c24;
-            --inv-blue: #2962ff;
-            --inv-blue-dark: #1e4bd8;
-            --inv-bg: #f5f6f8;
-            --inv-white: #ffffff;
-            --inv-border: #e0e3eb;
-            --inv-text: #333333;
-            --inv-text-muted: #787b86;
-            --inv-header: #1a1a1a;
-            --inv-hover: #f0f2f5;
-            --inv-yellow: #ffb800;
+            --inv-green: #00a651; --inv-red: #ed1c24; --inv-blue: #2962ff;
+            --inv-bg: #f5f6f8; --inv-white: #ffffff; --inv-border: #e0e3eb;
+            --inv-text: #333333; --inv-text-muted: #787b86; --inv-header: #1a1a1a;
         }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: var(--inv-bg);
-            color: var(--inv-text);
-            font-size: 13px;
-            line-height: 1.4;
-        }
-
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; background: var(--inv-bg); color: var(--inv-text); font-size: 13px; }
         a { text-decoration: none; color: inherit; }
-
-        /* ============================================ */
-        /* TOP BAR                                      */
-        /* ============================================ */
-        .top-bar {
-            background: var(--inv-header);
-            color: #c5c5c5;
-            font-size: 12px;
-            padding: 6px 0;
-        }
-
-        .top-bar-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 16px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .top-bar-links { display: flex; gap: 16px; }
-
-        /* ============================================ */
-        /* MAIN HEADER                                  */
-        /* ============================================ */
-        .main-header {
-            background: var(--inv-white);
-            border-bottom: 1px solid var(--inv-border);
-            padding: 12px 0;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-        }
-
-        .header-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 16px;
-            display: flex;
-            align-items: center;
-            gap: 24px;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            flex-shrink: 0;
-        }
-
-        .logo-icon {
-            width: 36px;
-            height: 36px;
-            background: linear-gradient(135deg, var(--inv-blue) 0%, var(--inv-blue-dark) 100%);
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            color: white;
-            font-weight: 700;
-        }
-
-        .logo-text h1 {
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--inv-header);
-            line-height: 1.2;
-        }
-
-        .logo-text p {
-            font-size: 11px;
-            color: var(--inv-text-muted);
-        }
-
-        .header-search {
-            flex: 1;
-            max-width: 400px;
-            position: relative;
-        }
-
-        .header-search input {
-            width: 100%;
-            padding: 8px 12px 8px 32px;
-            border: 1px solid var(--inv-border);
-            border-radius: 4px;
-            font-size: 13px;
-            background: var(--inv-bg);
-            transition: all 0.2s;
-        }
-
-        .header-search input:focus {
-            outline: none;
-            border-color: var(--inv-blue);
-            background: white;
-        }
-
-        .header-search::before {
-            content: '🔍';
-            position: absolute;
-            left: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 12px;
-        }
-
-        .header-nav {
-            display: flex;
-            gap: 4px;
-            margin-left: auto;
-        }
-
-        .nav-link {
-            padding: 8px 14px;
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--inv-text);
-            border-radius: 4px;
-            transition: all 0.2s;
-        }
-
-        .nav-link:hover { background: var(--inv-hover); }
+        
+        /* Header */
+        .top-bar { background: var(--inv-header); color: #c5c5c5; font-size: 12px; padding: 6px 16px; display: flex; justify-content: space-between; }
+        .main-header { background: var(--inv-white); border-bottom: 1px solid var(--inv-border); padding: 12px 16px; display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 100; }
+        .logo { display: flex; align-items: center; gap: 10px; }
+        .logo-icon { width: 32px; height: 32px; background: var(--inv-blue); border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; }
+        .logo-text h1 { font-size: 16px; font-weight: 700; }
+        .logo-text p { font-size: 11px; color: var(--inv-text-muted); }
+        .header-nav { display: flex; gap: 4px; margin-left: auto; }
+        .nav-link { padding: 6px 12px; font-size: 12px; font-weight: 600; border-radius: 4px; }
         .nav-link.active { background: var(--inv-blue); color: white; }
 
-        /* ============================================ */
-        /* TICKER TAPE                                  */
-        /* ============================================ */
-        .ticker-tape {
-            background: var(--inv-white);
-            border-bottom: 1px solid var(--inv-border);
-            overflow: hidden;
-            padding: 10px 0;
-        }
+        /* Layout */
+        .container { max-width: 1400px; margin: 0 auto; padding: 16px; }
+        .main-container { display: grid; grid-template-columns: 1fr 300px; gap: 16px; }
+        @media (max-width: 968px) { .main-container { grid-template-columns: 1fr; } }
 
-        .ticker-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 16px;
-            display: flex;
-            gap: 24px;
-            overflow-x: auto;
-        }
-
-        .ticker-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            flex-shrink: 0;
-            padding: 6px 12px;
-            background: var(--inv-bg);
-            border-radius: 4px;
-            border: 1px solid var(--inv-border);
-        }
-
-        .ticker-name {
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--inv-text-muted);
-        }
-
-        .ticker-value {
-            font-size: 14px;
-            font-weight: 700;
-        }
-
-        .ticker-change {
-            font-size: 12px;
-            font-weight: 600;
-            padding: 2px 6px;
-            border-radius: 3px;
-        }
-
-        .up { color: var(--inv-green); }
-        .down { color: var(--inv-red); }
-        .up-bg { background: #e6f7ef; color: var(--inv-green); }
-        .down-bg { background: #fde8e9; color: var(--inv-red); }
-
-        /* ============================================ */
-        /* ALERT BANNER                                 */
-        /* ============================================ */
-        .alert-container {
-            max-width: 1400px;
-            margin: 16px auto 0;
-            padding: 0 16px;
-        }
-
-        .alert-banner {
-            padding: 12px 16px;
-            border-radius: 4px;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 13px;
-            font-weight: 500;
-            border-left: 4px solid;
-        }
-
-        .alert-banner.critical {
-            background: #fde8e9;
-            border-left-color: var(--inv-red);
-            color: #7a0f14;
-        }
-
-        .alert-banner.high {
-            background: #fff4e5;
-            border-left-color: var(--inv-yellow);
-            color: #7a5500;
-        }
-
-        .alert-banner.medium {
-            background: #e8f4fd;
-            border-left-color: var(--inv-blue);
-            color: #0d3d7a;
-        }
-
-        .alert-content { flex: 1; }
-        .alert-close {
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: 18px;
-            color: inherit;
-            opacity: 0.6;
-        }
-        .alert-close:hover { opacity: 1; }
-
-        /* ============================================ */
-        /* MAIN LAYOUT (2 column)                       */
-        /* ============================================ */
-        .main-container {
-            max-width: 1400px;
-            margin: 16px auto;
-            padding: 0 16px;
-            display: grid;
-            grid-template-columns: 1fr 320px;
-            gap: 16px;
-        }
-
-        @media (max-width: 968px) {
-            .main-container { grid-template-columns: 1fr; }
-        }
-
-        /* ============================================ */
-        /* PANEL / CARD                                 */
-        /* ============================================ */
-        .panel {
-            background: var(--inv-white);
-            border: 1px solid var(--inv-border);
-            border-radius: 4px;
-            margin-bottom: 16px;
-        }
-
-        .panel-header {
-            padding: 12px 16px;
-            border-bottom: 1px solid var(--inv-border);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: #fafbfc;
-        }
-
-        .panel-title {
-            font-size: 14px;
-            font-weight: 700;
-            color: var(--inv-header);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .panel-body { padding: 16px; }
-
-        /* ============================================ */
-        /* TAB BAR                                      */
-        /* ============================================ */
-        .tab-bar {
-            display: flex;
-            border-bottom: 1px solid var(--inv-border);
-            background: var(--inv-white);
-        }
-
-        .tab-btn {
-            padding: 12px 20px;
-            background: none;
-            border: none;
-            border-bottom: 3px solid transparent;
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--inv-text-muted);
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .tab-btn:hover { color: var(--inv-blue); }
-
-        .tab-btn.active {
-            color: var(--inv-blue);
-            border-bottom-color: var(--inv-blue);
-        }
-
-        .tab-count {
-            background: var(--inv-bg);
-            padding: 1px 6px;
-            border-radius: 10px;
-            font-size: 11px;
-            font-weight: 700;
-        }
-
-        .tab-btn.active .tab-count {
-            background: var(--inv-blue);
-            color: white;
-        }
-
-        /* ============================================ */
-        /* TABLE                                        */
-        /* ============================================ */
-        .data-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 13px;
-        }
-
-        .data-table thead th {
-            background: #fafbfc;
-            padding: 10px 12px;
-            text-align: left;
-            font-size: 11px;
-            font-weight: 600;
-            color: var(--inv-text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            border-bottom: 1px solid var(--inv-border);
-            white-space: nowrap;
-        }
-
-        .data-table tbody tr {
-            border-bottom: 1px solid var(--inv-border);
-            cursor: pointer;
-            transition: background 0.15s;
-        }
-
-        .data-table tbody tr:hover {
-            background: var(--inv-hover);
-        }
-
-        .data-table tbody tr:last-child { border-bottom: none; }
-
-        .data-table td {
-            padding: 12px;
-            vertical-align: middle;
-        }
-
-        .ticker-cell {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .ticker-logo {
-            width: 32px;
-            height: 32px;
-            background: linear-gradient(135deg, var(--inv-blue) 0%, var(--inv-blue-dark) 100%);
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 700;
-            font-size: 11px;
-            flex-shrink: 0;
-        }
-
-        .ticker-name-main {
-            font-weight: 700;
-            color: var(--inv-header);
-            font-size: 14px;
-        }
-
-        .ticker-name-sub {
-            font-size: 11px;
-            color: var(--inv-text-muted);
-        }
-
-        .price-cell {
-            font-weight: 700;
-            font-size: 14px;
-            font-variant-numeric: tabular-nums;
-        }
-
-        .signal-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            padding: 3px 8px;
-            border-radius: 3px;
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
-        }
-
-        .signal-strong-buy { background: var(--inv-green); color: white; }
+        /* Panel & Table */
+        .panel { background: var(--inv-white); border: 1px solid var(--inv-border); border-radius: 4px; margin-bottom: 16px; }
+        .tab-bar { display: flex; border-bottom: 1px solid var(--inv-border); background: var(--inv-white); }
+        .tab-btn { padding: 12px 20px; background: none; border: none; border-bottom: 3px solid transparent; font-size: 13px; font-weight: 600; color: var(--inv-text-muted); cursor: pointer; }
+        .tab-btn.active { color: var(--inv-blue); border-bottom-color: var(--inv-blue); }
+        
+        .table-wrapper { overflow-x: auto; }
+        .data-table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 600px; }
+        .data-table th { background: #fafbfc; padding: 10px; text-align: left; font-size: 11px; color: var(--inv-text-muted); text-transform: uppercase; border-bottom: 1px solid var(--inv-border); }
+        .data-table td { padding: 12px 10px; border-bottom: 1px solid var(--inv-border); vertical-align: middle; }
+        .data-table tr:hover { background: #f9fafb; cursor: pointer; }
+        
+        .ticker-cell { display: flex; align-items: center; gap: 10px; }
+        .ticker-logo { width: 32px; height: 32px; background: var(--inv-blue); border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 11px; }
+        .ticker-name-main { font-weight: 700; font-size: 14px; }
+        .ticker-name-sub { font-size: 11px; color: var(--inv-text-muted); }
+        
+        .signal-badge { padding: 3px 8px; border-radius: 3px; font-size: 11px; font-weight: 700; text-transform: uppercase; }
         .signal-buy { background: #e6f7ef; color: var(--inv-green); }
+        .signal-sell { background: #fde8e9; color: var(--inv-red); }
         .signal-hold { background: #fff4e5; color: #b8860b; }
-        .signal-sell { background: var(--inv-red); color: white; }
-        .signal-accumulate { background: #e8f4fd; color: var(--inv-blue); }
-        .signal-wait { background: #f0f2f5; color: var(--inv-text-muted); }
         .signal-no-data { background: #f0f2f5; color: var(--inv-text-muted); }
 
-        .score-bar-mini {
-            width: 60px;
-            height: 4px;
-            background: #e0e3eb;
-            border-radius: 2px;
-            overflow: hidden;
-            display: inline-block;
-            vertical-align: middle;
-            margin-right: 6px;
-        }
-
-        .score-bar-mini-fill {
-            height: 100%;
-            border-radius: 2px;
-        }
-
-        .score-high { background: var(--inv-green); }
-        .score-medium { background: var(--inv-blue); }
-        .score-low { background: var(--inv-yellow); }
-        .score-bad { background: var(--inv-red); }
-
-        .score-value {
-            font-weight: 700;
-            font-size: 13px;
-            font-variant-numeric: tabular-nums;
-        }
-
-        .change-positive { color: var(--inv-green); font-weight: 600; }
-        .change-negative { color: var(--inv-red); font-weight: 600; }
-
-        .action-arrow {
-            color: var(--inv-blue);
-            font-size: 16px;
-            opacity: 0;
-            transition: opacity 0.2s;
-        }
-
-        .data-table tbody tr:hover .action-arrow { opacity: 1; }
-
-        /* ============================================ */
-        /* SIDEBAR WIDGETS                              */
-        /* ============================================ */
-        .widget {
-            background: var(--inv-white);
-            border: 1px solid var(--inv-border);
-            border-radius: 4px;
-            margin-bottom: 16px;
-        }
-
-        .widget-header {
-            padding: 12px 16px;
-            border-bottom: 1px solid var(--inv-border);
-            background: #fafbfc;
-            font-size: 13px;
-            font-weight: 700;
-            color: var(--inv-header);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .widget-body { padding: 16px; }
-
-        .widget-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 8px 0;
-            border-bottom: 1px solid var(--inv-border);
-            font-size: 13px;
-        }
-
-        .widget-row:last-child { border-bottom: none; }
-
-        .widget-label {
-            color: var(--inv-text-muted);
-            font-size: 12px;
-        }
-
-        .widget-value {
-            font-weight: 700;
-            font-variant-numeric: tabular-nums;
-        }
-
-        .ice-big-price {
-            font-size: 28px;
-            font-weight: 700;
-            color: var(--inv-header);
-            margin: 8px 0;
-            font-variant-numeric: tabular-nums;
-        }
-
-        .ice-status-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            padding: 4px 10px;
-            border-radius: 3px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-        .ice-status-badge.ok { background: #e6f7ef; color: var(--inv-green); }
-        .ice-status-badge.bad { background: #fde8e9; color: var(--inv-red); }
-        .ice-status-badge.error { background: #fff4e5; color: #b8860b; }
-
-        /* ============================================ */
-        /* MODAL                                        */
-        /* ============================================ */
-        .modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.6);
-            display: none;
-            align-items: flex-start;
-            justify-content: center;
-            z-index: 1000;
-            padding: 40px 20px;
-            overflow-y: auto;
-        }
-
+        /* Modal */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 16px; }
         .modal-overlay.active { display: flex; }
-
-        .modal-content {
-            background: white;
-            border-radius: 4px;
-            max-width: 900px;
-            width: 100%;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-            animation: modalSlide 0.2s ease-out;
-        }
-
-        @keyframes modalSlide {
-            from { transform: translateY(-20px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-
-        .modal-header {
-            background: var(--inv-header);
-            color: white;
-            padding: 20px 24px;
-            border-radius: 4px 4px 0 0;
-            position: relative;
-        }
-
-        .modal-close {
-            position: absolute;
-            top: 16px;
-            right: 16px;
-            background: rgba(255,255,255,0.1);
-            border: none;
-            color: white;
-            width: 32px;
-            height: 32px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 18px;
-        }
-
-        .modal-close:hover { background: rgba(255,255,255,0.2); }
-
-        .modal-title {
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 4px;
-        }
-
-        .modal-subtitle {
-            font-size: 13px;
-            opacity: 0.8;
-        }
-
-        .modal-price-row {
-            display: flex;
-            align-items: baseline;
-            gap: 12px;
-            margin-top: 16px;
-        }
-
-        .modal-price {
-            font-size: 32px;
-            font-weight: 700;
-            font-variant-numeric: tabular-nums;
-        }
-
+        .modal-content { background: white; border-radius: 4px; max-width: 800px; width: 100%; max-height: 90vh; overflow-y: auto; }
+        .modal-header { background: var(--inv-header); color: white; padding: 24px; position: relative; }
+        .modal-close { position: absolute; top: 16px; right: 16px; background: rgba(255,255,255,0.2); border: none; color: white; width: 30px; height: 30px; border-radius: 4px; cursor: pointer; }
+        .modal-title { font-size: 28px; font-weight: 700; margin-bottom: 4px; }
+        .modal-subtitle { font-size: 14px; opacity: 0.8; margin-bottom: 16px; }
+        .modal-price { font-size: 32px; font-weight: 700; }
         .modal-body { padding: 24px; }
+        
+        .section-title { font-size: 16px; font-weight: 700; margin-bottom: 16px; border-bottom: 2px solid var(--inv-blue); padding-bottom: 8px; }
+        .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 20px; }
+        .metric-card { background: #f8f9fa; padding: 12px; border-radius: 4px; border: 1px solid var(--inv-border); }
+        .metric-label { font-size: 11px; color: var(--inv-text-muted); text-transform: uppercase; margin-bottom: 4px; }
+        .metric-value { font-size: 18px; font-weight: 700; }
+        .metric-sub { font-size: 11px; margin-top: 4px; font-weight: 600; }
+        
+        .change-pos { color: var(--inv-green); }
+        .change-neg { color: var(--inv-red); }
+        
+        .error-box { background: #fde8e9; border: 1px solid var(--inv-red); padding: 20px; border-radius: 4px; text-align: center; color: #7a0f14; }
 
-        .modal-section { margin-bottom: 24px; }
-
-        .modal-section-title {
-            font-size: 15px;
-            font-weight: 700;
-            color: var(--inv-header);
-            margin-bottom: 16px;
-            padding-bottom: 8px;
-            border-bottom: 2px solid var(--inv-blue);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .metrics-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-            gap: 12px;
-        }
-
-        .metric-card {
-            background: var(--inv-bg);
-            padding: 12px;
-            border-radius: 4px;
-            border: 1px solid var(--inv-border);
-        }
-
-        .metric-card-label {
-            font-size: 11px;
-            color: var(--inv-text-muted);
-            margin-bottom: 4px;
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
-        }
-
-        .metric-card-value {
-            font-size: 18px;
-            font-weight: 700;
-            font-variant-numeric: tabular-nums;
-        }
-
-        .metric-card-sub {
-            font-size: 11px;
-            margin-top: 4px;
-            font-weight: 600;
-        }
-
-        .detail-box {
-            background: var(--inv-bg);
-            padding: 16px;
-            border-radius: 4px;
-            border: 1px solid var(--inv-border);
-            margin-top: 12px;
-        }
-
-        .detail-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px solid var(--inv-border);
-            font-size: 13px;
-        }
-
-        .detail-row:last-child { border-bottom: none; }
-
-        .action-plan {
-            background: #fff8e1;
-            padding: 16px;
-            border-radius: 4px;
-            border-left: 4px solid var(--inv-yellow);
-        }
-
-        .action-step {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 10px;
-            font-size: 13px;
-        }
-
-        .step-number {
-            background: var(--inv-blue);
-            color: white;
-            width: 22px;
-            height: 22px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 11px;
-            font-weight: 700;
-            flex-shrink: 0;
-        }
-
-        /* ============================================ */
-        /* LOADING & EMPTY                              */
-        /* ============================================ */
-        .loading, .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: var(--inv-text-muted);
-        }
-
-        .spinner {
-            width: 36px;
-            height: 36px;
-            border: 3px solid var(--inv-border);
-            border-top-color: var(--inv-blue);
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            margin: 0 auto 16px;
-        }
-
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        .error-state {
-            background: #fde8e9;
-            border: 1px solid var(--inv-red);
-            border-left: 4px solid var(--inv-red);
-            border-radius: 4px;
-            padding: 20px;
-            text-align: center;
-            margin: 16px 0;
-        }
-
-        .error-state h3 {
-            color: var(--inv-red);
-            font-size: 16px;
-            margin-bottom: 8px;
-        }
-
-        .btn-refresh {
-            padding: 8px 16px;
-            background: var(--inv-blue);
-            color: white;
-            border: none;
-            border-radius: 4px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            margin-top: 12px;
-        }
-
-        .btn-refresh:hover { background: var(--inv-blue-dark); }
-
-        /* ============================================ */
-        /* FOOTER                                       */
-        /* ============================================ */
-        .footer {
-            background: var(--inv-header);
-            color: #c5c5c5;
-            padding: 24px 0;
-            margin-top: 40px;
-            font-size: 12px;
-        }
-
-        .footer-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 16px;
-            text-align: center;
-        }
-
-        .footer-disclaimer {
-            max-width: 700px;
-            margin: 8px auto;
-            font-size: 11px;
-            opacity: 0.7;
-        }
-
-        /* ============================================ */
-        /* RESPONSIVE                                   */
-        /* ============================================ */
-        @media (max-width: 768px) {
-            .header-container { flex-wrap: wrap; }
-            .header-search { order: 3; max-width: 100%; margin-top: 8px; }
-            .header-nav { margin-left: 0; }
-            .data-table { font-size: 12px; }
-            .data-table td, .data-table th { padding: 8px 6px; }
-            .hide-mobile { display: none; }
-            .modal-overlay { padding: 10px; }
-        }
+        /* Widget Sidebar */
+        .widget { background: var(--inv-white); border: 1px solid var(--inv-border); border-radius: 4px; padding: 16px; margin-bottom: 16px; }
+        .widget-title { font-size: 13px; font-weight: 700; margin-bottom: 12px; border-bottom: 1px solid var(--inv-border); padding-bottom: 8px; }
+        .widget-row { display: flex; justify-content: space-between; padding: 6px 0; font-size: 12px; border-bottom: 1px solid #f0f0f0; }
     </style>
 </head>
 <body>
 
-    <!-- TOP BAR -->
     <div class="top-bar">
-        <div class="top-bar-container">
-            <div class="top-bar-links">
-                <span>🔥 Coal Algo-Trader v1.0</span>
-            </div>
-            <div class="top-bar-links">
-                <span id="last-update">Update: —</span>
-            </div>
-        </div>
+        <span>🔥 Coal Algo-Trader v1.0</span>
+        <span id="last-update">Update: —</span>
     </div>
 
-    <!-- MAIN HEADER -->
     <header class="main-header">
-        <div class="header-container">
-            <div class="logo">
-                <div class="logo-icon"></div>
-                <div class="logo-text">
-                    <h1>Coal Algo-Trader</h1>
-                    <p>Dual-Engine Recommendation System</p>
-                </div>
+        <div class="logo">
+            <div class="logo-icon">C</div>
+            <div class="logo-text">
+                <h1>Coal Algo-Trader</h1>
+                <p>Dual-Engine System</p>
             </div>
-            <div class="header-search">
-                <input type="text" id="search-input" placeholder="Cari ticker saham...">
-            </div>
-            <nav class="header-nav">
-                <a href="index.html" class="nav-link active">Dashboard</a>
-                <a href="position.html" class="nav-link">💼 My Position</a>
-            </nav>
         </div>
+        <nav class="header-nav">
+            <a href="index.html" class="nav-link active">Dashboard</a>
+            <a href="position.html" class="nav-link">My Position</a>
+        </nav>
     </header>
 
-    <!-- TICKER TAPE -->
-    <div class="ticker-tape">
-        <div class="ticker-container" id="ticker-tape">
-            <div class="ticker-item">
-                <span class="ticker-name">ICE Newcastle</span>
-                <span class="ticker-value" id="tape-ice">—</span>
-                <span class="ticker-change" id="tape-ice-change">Loading...</span>
-            </div>
-            <div class="ticker-item">
-                <span class="ticker-name">ITMG.JK</span>
-                <span class="ticker-value" id="tape-itmg">—</span>
-                <span class="ticker-change" id="tape-itmg-change">—</span>
-            </div>
-            <div class="ticker-item">
-                <span class="ticker-name">PTBA.JK</span>
-                <span class="ticker-value" id="tape-ptba">—</span>
-                <span class="ticker-change" id="tape-ptba-change">—</span>
-            </div>
-            <div class="ticker-item">
-                <span class="ticker-name">ADRO.JK</span>
-                <span class="ticker-value" id="tape-adro">—</span>
-                <span class="ticker-change" id="tape-adro-change">—</span>
-            </div>
-        </div>
-    </div>
-
-    <!-- ALERTS -->
-    <div class="alert-container" id="alert-container"></div>
-
-    <!-- MAIN CONTENT -->
-    <div class="main-container">
-        <!-- LEFT: Main Panel -->
-        <div class="main-content">
-            <div class="panel">
-                <div class="tab-bar">
-                    <button class="tab-btn active" onclick="switchTab('swing')" id="tab-swing">
-                        ⚡ Swing Trading <span class="tab-count" id="swing-count">0</span>
-                    </button>
-                    <button class="tab-btn" onclick="switchTab('dividend')" id="tab-dividend">
-                        💰 Dividend <span class="tab-count" id="dividend-count">0</span>
-                    </button>
-                    <button class="tab-btn" onclick="switchTab('all')" id="tab-all">
-                        📋 Semua Saham
-                    </button>
-                </div>
-
-                <div id="stock-table-container">
-                    <div class="loading">
-                        <div class="spinner"></div>
-                        <div>Memuat data rekomendasi...</div>
+    <div class="container">
+        <div class="main-container">
+            <!-- Main Content -->
+            <div>
+                <div class="panel">
+                    <div class="tab-bar">
+                        <button class="tab-btn active" onclick="switchTab('swing')" id="tab-swing">⚡ Swing</button>
+                        <button class="tab-btn" onclick="switchTab('dividend')" id="tab-dividend">💰 Dividen</button>
+                        <button class="tab-btn" onclick="switchTab('all')" id="tab-all">📋 Semua</button>
                     </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- RIGHT: Sidebar (HANYA ICE + SUMMARY, TANPA MY POSITION) -->
-        <div class="sidebar">
-            <!-- ICE Widget -->
-            <div class="widget">
-                <div class="widget-header">📊 ICE Newcastle Futures</div>
-                <div class="widget-body">
-                    <div class="ice-big-price" id="ice-price">—</div>
-                    <div id="ice-status-badge" class="ice-status-badge error">Loading...</div>
-                    <div style="margin-top: 16px;">
-                        <div class="widget-row">
-                            <span class="widget-label">Floor Threshold</span>
-                            <span class="widget-value">$120.00</span>
-                        </div>
-                        <div class="widget-row">
-                            <span class="widget-label">Trend</span>
-                            <span class="widget-value" id="ice-trend">—</span>
-                        </div>
-                        <div class="widget-row">
-                            <span class="widget-label">ROC 5D</span>
-                            <span class="widget-value" id="ice-roc5">—</span>
-                        </div>
-                        <div class="widget-row">
-                            <span class="widget-label">vs MA200</span>
-                            <span class="widget-value" id="ice-ma200">—</span>
-                        </div>
+                    <div class="table-wrapper">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Saham</th>
+                                    <th>Harga</th>
+                                    <th>Sinyal</th>
+                                    <th>Skor</th>
+                                    <th>Info</th>
+                                </tr>
+                            </thead>
+                            <tbody id="stock-table-body">
+                                <tr><td colspan="5" style="text-align:center; padding: 20px;">Memuat data...</td></tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
 
-            <!-- Market Summary -->
-            <div class="widget">
-                <div class="widget-header">📈 Market Summary</div>
-                <div class="widget-body">
-                    <div class="widget-row">
-                        <span class="widget-label">Total Tickers</span>
-                        <span class="widget-value" id="sum-tickers">—</span>
-                    </div>
-                    <div class="widget-row">
-                        <span class="widget-label">Swing BUY Signals</span>
-                        <span class="widget-value change-positive" id="sum-swing">0</span>
-                    </div>
-                    <div class="widget-row">
-                        <span class="widget-label">Dividend Accumulate</span>
-                        <span class="widget-value change-positive" id="sum-div">0</span>
-                    </div>
-                    <div class="widget-row">
-                        <span class="widget-label">Total Alerts</span>
-                        <span class="widget-value" id="sum-alerts">0</span>
-                    </div>
+            <!-- Sidebar -->
+            <div>
+                <div class="widget">
+                    <div class="widget-title"> ICE Newcastle</div>
+                    <div id="ice-price" style="font-size: 24px; font-weight: 700; margin-bottom: 8px;">—</div>
+                    <div id="ice-status" style="font-size: 12px; font-weight: 600;">Loading...</div>
+                </div>
+                <div class="widget">
+                    <div class="widget-title">📈 Market Summary</div>
+                    <div class="widget-row"><span>Total Tickers</span><span id="sum-tickers">0</span></div>
+                    <div class="widget-row"><span>Buy Signals</span><span id="sum-buy" class="change-pos">0</span></div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- MODAL -->
+    <!-- Modal -->
     <div class="modal-overlay" id="modal">
         <div class="modal-content">
             <div id="modal-body"></div>
         </div>
     </div>
 
-    <!-- FOOTER -->
-    <footer class="footer">
-        <div class="footer-container">
-            <div><strong>🔥 Coal Algo-Trader v1.0</strong> — Dual-Engine Recommendation System</div>
-            <div class="footer-disclaimer">
-                ️ <strong>Disclaimer:</strong> Informasi bersifat edukatif, bukan ajakan membeli/menjual saham. 
-                Semua keputusan investasi adalah tanggung jawab Anda. Data diperbarui otomatis setiap hari kerja pukul 16:30 WIB.
-            </div>
-        </div>
-    </footer>
-
     <script>
-        // ============================================
-        // STATE
-        // ============================================
         let DATA = null;
         let CURRENT_TAB = 'swing';
 
-        // ============================================
-        // UTILITIES
-        // ============================================
-        const formatRupiah = (num) => {
-            if (!num && num !== 0) return '—';
-            return Math.round(num).toLocaleString('id-ID');
+        // Utilities
+        const fmtRp = (num) => {
+            if (!num || isNaN(num)) return '—';
+            return 'Rp ' + Math.round(num).toLocaleString('id-ID');
+        };
+        const fmtPct = (num) => {
+            if (num === null || num === undefined || isNaN(num)) return '—';
+            return (num >= 0 ? '+' : '') + num.toFixed(2) + '%';
         };
 
-        const formatPercent = (num) => {
-            if (num === null || num === undefined) return '—';
-            const sign = num >= 0 ? '+' : '';
-            return sign + num.toFixed(2) + '%';
-        };
-
-        const getSignalClass = (signal) => {
-            const map = {
-                'STRONG_BUY': 'signal-strong-buy',
-                'BUY': 'signal-buy',
-                'HOLD': 'signal-hold',
-                'SELL': 'signal-sell',
-                'STRONG_ACCUMULATE': 'signal-accumulate',
-                'ACCUMULATE': 'signal-accumulate',
-                'REINVEST_ZONE': 'signal-buy',
-                'WAIT': 'signal-wait',
-                'NO_DATA': 'signal-no-data'
-            };
-            return map[signal] || 'signal-no-data';
-        };
-
-        const getScoreClass = (score) => {
-            if (score >= 75) return 'score-high';
-            if (score >= 60) return 'score-medium';
-            if (score >= 45) return 'score-low';
-            return 'score-bad';
-        };
-
-        const getSignalIcon = (signal) => {
-            const icons = {
-                'STRONG_BUY': '▲', 'BUY': '▲', 'HOLD': '■', 'SELL': '▼',
-                'STRONG_ACCUMULATE': '◆', 'ACCUMULATE': '◆',
-                'REINVEST_ZONE': '↻', 'WAIT': '○', 'NO_DATA': '?'
-            };
-            return icons[signal] || '?';
-        };
-
-        // ============================================
-        // DATA LOADING
-        // ============================================
         async function loadData() {
             try {
-                const res = await fetch('coal_data.json', { cache: 'no-store' });
-                if (!res.ok) throw new Error('Failed to load');
+                const res = await fetch('coal_data.json?t=' + new Date().getTime());
                 DATA = await res.json();
                 renderAll();
-            } catch (err) {
-                console.error(err);
-                document.getElementById('stock-table-container').innerHTML = `
-                    <div class="error-state" style="margin: 0;">
-                        <h3>⚠️ Gagal Memuat Data</h3>
-                        <p>Pastikan file coal_data.json tersedia.</p>
-                        <button class="btn-refresh" onclick="loadData()">🔄 Coba Lagi</button>
-                    </div>`;
-            }
+            } catch (e) { console.error(e); }
         }
 
-        // ============================================
-        // RENDER ALL
-        // ============================================
         function renderAll() {
             if (!DATA) return;
-            renderTickerTape();
-            renderAlerts();
-            renderICEWidget();
-            renderTable();
-            updateCounts();
-            updateSummary();
-            updateLastUpdate();
-        }
+            
+            // Update Header Info
+            const ice = DATA.ice_newcastle || {};
+            document.getElementById('ice-price').textContent = ice.current_price_usd ? '$' + ice.current_price_usd.toFixed(2) : '—';
+            const iceStatus = document.getElementById('ice-status');
+            if (ice.status === 'FAILED') {
+                iceStatus.textContent = '⚠️ Data Gagal';
+                iceStatus.style.color = 'var(--inv-red)';
+            } else if (ice.above_floor) {
+                iceStatus.textContent = '✅ Above Floor ($120)';
+                iceStatus.style.color = 'var(--inv-green)';
+            } else {
+                iceStatus.textContent = '❌ Below Floor';
+                iceStatus.style.color = 'var(--inv-red)';
+            }
 
-        function updateLastUpdate() {
             if (DATA.metadata?.generated_at) {
                 const d = new Date(DATA.metadata.generated_at);
-                document.getElementById('last-update').textContent = 
-                    'Update: ' + d.toLocaleString('id-ID', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
-            }
-        }
-
-        function renderTickerTape() {
-            const ice = DATA.ice_newcastle;
-            if (ice?.current_price_usd) {
-                document.getElementById('tape-ice').textContent = '$' + ice.current_price_usd.toFixed(2);
-                const roc = ice.momentum?.roc_5d || 0;
-                const el = document.getElementById('tape-ice-change');
-                el.textContent = formatPercent(roc);
-                el.className = 'ticker-change ' + (roc >= 0 ? 'up-bg' : 'down-bg');
+                document.getElementById('last-update').textContent = 'Update: ' + d.toLocaleString('id-ID', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
             }
 
-            ['ITMG.JK', 'PTBA.JK', 'ADRO.JK'].forEach(ticker => {
-                const div = DATA.dividend_mode?.find(d => d.ticker === ticker);
-                const swing = DATA.swing_mode?.find(s => s.ticker === ticker);
-                const price = div?.current_price || swing?.current_price;
-                const change = div?.price_vs_ma50_pct;
-                
-                const id = ticker.replace('.JK', '').toLowerCase();
-                if (price) document.getElementById('tape-' + id).textContent = formatRupiah(price);
-                if (change !== undefined) {
-                    const el = document.getElementById('tape-' + id + '-change');
-                    el.textContent = formatPercent(change);
-                    el.className = 'ticker-change ' + (change >= 0 ? 'up-bg' : 'down-bg');
-                }
-            });
-        }
+            document.getElementById('sum-tickers').textContent = DATA.summary?.total_tickers || 0;
+            document.getElementById('sum-buy').textContent = DATA.summary?.swing_buy_signals || 0;
 
-        function renderAlerts() {
-            const container = document.getElementById('alert-container');
-            if (!DATA.alerts?.length) { container.innerHTML = ''; return; }
-
-            container.innerHTML = DATA.alerts.map(alert => {
-                let sev = 'medium';
-                if (alert.severity === 'CRITICAL') sev = 'critical';
-                else if (alert.severity === 'HIGH') sev = 'high';
-
-                return `
-                    <div class="alert-banner ${sev}">
-                        <div class="alert-content">${alert.message || formatAlert(alert)}</div>
-                        <button class="alert-close" onclick="this.parentElement.remove()">✕</button>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function formatAlert(alert) {
-            if (alert.type === 'SWING_BUY_SIGNAL') 
-                return `<strong>${alert.ticker}</strong> — Sinyal BUY @ ${formatRupiah(alert.price)} | TP: ${formatRupiah(alert.tp)}`;
-            if (alert.type === 'DIVIDEND_ACCUMULATE_SIGNAL') 
-                return `<strong>${alert.ticker}</strong> — Zona Akumulasi @ ${formatRupiah(alert.price)} | Yield: ${alert.forward_yield}%`;
-            if (alert.type === 'BANDAR_ACCUMULATION_DETECTED') 
-                return `<strong>${alert.ticker}</strong> — Akumulasi Bandar Terdeteksi! Score: ${alert.score}`;
-            if (alert.type === 'CRITICAL_DATA_FAILURE') 
-                return `<strong>CRITICAL:</strong> ${alert.message}`;
-            return JSON.stringify(alert);
-        }
-
-        function renderICEWidget() {
-            const ice = DATA.ice_newcastle;
-            if (!ice) return;
-
-            if (ice.status === 'FAILED') {
-                document.getElementById('ice-price').textContent = 'ERROR';
-                const badge = document.getElementById('ice-status-badge');
-                badge.textContent = '✗ Gagal mengambil data';
-                badge.className = 'ice-status-badge error';
-                return;
-            }
-
-            if (!ice.current_price_usd) return;
-
-            document.getElementById('ice-price').textContent = '$' + ice.current_price_usd.toFixed(2);
-            const badge = document.getElementById('ice-status-badge');
-            
-            if (ice.above_floor) {
-                badge.innerHTML = '✓ Above Floor $120';
-                badge.className = 'ice-status-badge ok';
-            } else {
-                badge.innerHTML = '✗ Below Floor';
-                badge.className = 'ice-status-badge bad';
-            }
-
-            document.getElementById('ice-trend').textContent = ice.momentum?.trend || '—';
-            const roc5 = ice.momentum?.roc_5d || 0;
-            const rocEl = document.getElementById('ice-roc5');
-            rocEl.textContent = formatPercent(roc5);
-            rocEl.className = 'widget-value ' + (roc5 >= 0 ? 'change-positive' : 'change-negative');
-            document.getElementById('ice-ma200').textContent = ice.trend_barrier?.position || '—';
+            renderTable();
         }
 
         function renderTable() {
-            const container = document.getElementById('stock-table-container');
-            const search = document.getElementById('search-input').value.toLowerCase();
-
-            if (DATA.ice_newcastle?.status === 'FAILED') {
-                container.innerHTML = `
-                    <div class="error-state">
-                        <h3>🚨 Data Gagal Diambil</h3>
-                        <p>${DATA.ice_newcastle.error_message || 'Tidak dapat mengambil data Newcastle Coal.'}</p>
-                        <button class="btn-refresh" onclick="loadData()">🔄 Refresh Data</button>
-                    </div>`;
-                return;
-            }
-
+            const tbody = document.getElementById('stock-table-body');
             let stocks = [];
-            if (CURRENT_TAB === 'swing') {
-                stocks = DATA.swing_mode.map(s => ({ ...s, mode: 'SWING' }));
-            } else if (CURRENT_TAB === 'dividend') {
-                stocks = DATA.dividend_mode.map(s => ({ ...s, mode: 'DIVIDEND' }));
-            } else {
-                const swingMap = new Map(DATA.swing_mode.map(s => [s.ticker, s]));
-                const divMap = new Map(DATA.dividend_mode.map(s => [s.ticker, s]));
-                stocks = Array.from(new Set([...swingMap.keys(), ...divMap.keys()])).map(t => ({
-                    ticker: t,
-                    swing: swingMap.get(t),
-                    dividend: divMap.get(t),
-                    mode: 'BOTH',
-                    current_price: swingMap.get(t)?.current_price || divMap.get(t)?.current_price,
-                    composite_score: Math.max(swingMap.get(t)?.composite_score || 0, divMap.get(t)?.composite_score || 0),
-                    signal: swingMap.get(t)?.signal || divMap.get(t)?.signal
-                }));
+            
+            if (CURRENT_TAB === 'swing') stocks = DATA.swing_mode || [];
+            else if (CURRENT_TAB === 'dividend') stocks = DATA.dividend_mode || [];
+            else {
+                // Merge unique tickers
+                const map = new Map();
+                [...(DATA.swing_mode||[]), ...(DATA.dividend_mode||[])].forEach(s => map.set(s.ticker, s));
+                stocks = Array.from(map.values());
             }
 
-            if (search) stocks = stocks.filter(s => s.ticker.toLowerCase().includes(search));
-            stocks.sort((a, b) => (b.composite_score || 0) - (a.composite_score || 0));
-
-            if (!stocks.length) {
-                container.innerHTML = '<div class="empty-state">Tidak ada saham yang cocok.</div>';
+            if (stocks.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Tidak ada data.</td></tr>';
                 return;
             }
 
-            let html = `
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Saham</th>
-                            <th>Harga</th>
-                            <th>Sinyal</th>
-                            <th>Skor</th>
-                            <th class="hide-mobile">TP/SL</th>
-                            <th class="hide-mobile">Yield</th>
-                            <th class="hide-mobile">vs MA50</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-            `;
-
-            stocks.forEach(s => {
-                const sigClass = getSignalClass(s.signal);
-                const scoreClass = getScoreClass(s.composite_score);
-                const isSwing = s.mode === 'SWING';
-                const swing = s.swing || s;
-                const div = s.dividend || s;
+            tbody.innerHTML = stocks.map(s => {
                 const shortName = s.ticker.replace('.JK', '');
-
-                html += `
-                    <tr onclick="openModal('${s.ticker}', '${s.mode}')">
-                        <td>
-                            <div class="ticker-cell">
-                                <div class="ticker-logo">${shortName.substring(0, 2)}</div>
-                                <div>
-                                    <div class="ticker-name-main">${shortName}</div>
-                                    <div class="ticker-name-sub">${isSwing ? '⚡ Swing' : '💰 Dividend'} • .JK</div>
-                                </div>
+                const companyName = s.company_name || '';
+                const sigClass = s.signal.includes('BUY') ? 'signal-buy' : s.signal.includes('SELL') ? 'signal-sell' : 'signal-no-data';
+                
+                return `
+                <tr onclick="openModal('${s.ticker}')">
+                    <td>
+                        <div class="ticker-cell">
+                            <div class="ticker-logo">${shortName.substring(0,2)}</div>
+                            <div>
+                                <div class="ticker-name-main">${shortName}</div>
+                                <div class="ticker-name-sub">${companyName}</div>
                             </div>
-                        </td>
-                        <td class="price-cell">${formatRupiah(s.current_price)}</td>
-                        <td>
-                            <span class="signal-badge ${sigClass}">
-                                ${getSignalIcon(s.signal)} ${s.signal.replace(/_/g, ' ')}
-                            </span>
-                        </td>
-                        <td>
-                            <div class="score-bar-mini">
-                                <div class="score-bar-mini-fill ${scoreClass}" style="width: ${s.composite_score || 0}%"></div>
-                            </div>
-                            <span class="score-value">${(s.composite_score || 0).toFixed(0)}</span>
-                        </td>
-                        <td class="hide-mobile">
-                            ${isSwing ? `
-                                <div style="font-size: 12px;">
-                                    <div class="change-positive">TP: ${formatRupiah(swing.target_profit)}</div>
-                                    <div class="change-negative">SL: ${formatRupiah(swing.stop_loss)}</div>
-                                </div>
-                            ` : '<span style="color: var(--inv-text-muted);">—</span>'}
-                        </td>
-                        <td class="hide-mobile">
-                            ${div.forward_yield_pct ? `<span style="color: var(--inv-green); font-weight: 600;">${div.forward_yield_pct}%</span>` : '<span style="color: var(--inv-text-muted);">—</span>'}
-                        </td>
-                        <td class="hide-mobile">
-                            ${div.price_vs_ma50_pct !== undefined ? 
-                                `<span class="${div.price_vs_ma50_pct >= 0 ? 'change-positive' : 'change-negative'}">${formatPercent(div.price_vs_ma50_pct)}</span>` 
-                                : '<span style="color: var(--inv-text-muted);">—</span>'}
-                        </td>
-                        <td><span class="action-arrow">→</span></td>
-                    </tr>
-                `;
-            });
-
-            html += '</tbody></table>';
-            container.innerHTML = html;
+                        </div>
+                    </td>
+                    <td style="font-weight:700;">${fmtRp(s.current_price)}</td>
+                    <td><span class="signal-badge ${sigClass}">${s.signal.replace(/_/g,' ')}</span></td>
+                    <td style="font-weight:700;">${s.composite_score?.toFixed(0) || 0}</td>
+                    <td style="font-size:11px; color:var(--inv-text-muted);">Klik untuk detail →</td>
+                </tr>`;
+            }).join('');
         }
 
-        function updateCounts() {
-            if (!DATA) return;
-            document.getElementById('swing-count').textContent = DATA.swing_mode.filter(s => ['BUY', 'STRONG_BUY'].includes(s.signal)).length;
-            document.getElementById('dividend-count').textContent = DATA.dividend_mode.filter(s => ['ACCUMULATE', 'STRONG_ACCUMULATE'].includes(s.signal)).length;
-        }
+        function openModal(ticker) {
+            const s = DATA.swing_mode.find(x => x.ticker === ticker) || DATA.dividend_mode.find(x => x.ticker === ticker);
+            if (!s) return;
 
-        function updateSummary() {
-            if (!DATA?.summary) return;
-            document.getElementById('sum-tickers').textContent = DATA.summary.total_tickers || 0;
-            document.getElementById('sum-swing').textContent = DATA.summary.swing_buy_signals || 0;
-            document.getElementById('sum-div').textContent = DATA.summary.dividend_accumulate_signals || 0;
-            document.getElementById('sum-alerts').textContent = DATA.summary.total_alerts || 0;
-        }
-
-        // ============================================
-        // MODAL
-        // ============================================
-        function openModal(ticker, mode) {
-            const modal = document.getElementById('modal');
-            const body = document.getElementById('modal-body');
-            const swing = DATA.swing_mode.find(s => s.ticker === ticker);
-            const div = DATA.dividend_mode.find(s => s.ticker === ticker);
-            const active = mode === 'SWING' ? swing : mode === 'DIVIDEND' ? div : (swing || div);
             const shortName = ticker.replace('.JK', '');
+            const companyName = s.company_name || 'Unknown Company';
+            const hasData = s.current_price && s.current_price > 0;
 
-            body.innerHTML = `
+            let contentHtml = '';
+
+            if (!hasData) {
+                contentHtml = `
+                    <div class="error-box">
+                        <h3>⚠️ Data Tidak Tersedia</h3>
+                        <p>Tidak ada data harga atau sinyal untuk <strong>${shortName}</strong> saat ini.</p>
+                    </div>
+                `;
+            } else {
+                // Swing Data
+                if (s.mode === 'SWING' || s.signal.includes('BUY') || s.signal.includes('SELL')) {
+                    const tp = s.target_profit || 0;
+                    const sl = s.stop_loss || 0;
+                    // Safe calculation to prevent NaN
+                    const tpPct = s.current_price ? ((tp / s.current_price - 1) * 100) : 0;
+                    const slPct = s.current_price ? ((sl / s.current_price - 1) * 100) : 0;
+                    const rsi = s.technical?.rsi || 0;
+                    const vol = s.volume_sentiment?.volume_ratio || 0;
+
+                    contentHtml += `
+                        <div class="section-title">⚡ Swing Analysis</div>
+                        <div class="metrics-grid">
+                            <div class="metric-card">
+                                <div class="metric-label">Target Profit</div>
+                                <div class="metric-value change-pos">${fmtRp(tp)}</div>
+                                <div class="metric-sub change-pos">+${tpPct.toFixed(1)}%</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-label">Stop Loss</div>
+                                <div class="metric-value change-neg">${fmtRp(sl)}</div>
+                                <div class="metric-sub change-neg">${slPct.toFixed(1)}%</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-label">RSI (14)</div>
+                                <div class="metric-value">${rsi.toFixed(1)}</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-label">Vol Ratio</div>
+                                <div class="metric-value">${vol.toFixed(2)}x</div>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                // Dividend Data
+                if (s.mode === 'DIVIDEND' || s.signal.includes('ACCUMULATE')) {
+                    const yieldPct = s.forward_yield_pct || 0;
+                    const der = s.fundamental_safety?.details?.der || 0;
+                    
+                    contentHtml += `
+                        <div class="section-title"> Dividend Analysis</div>
+                        <div class="metrics-grid">
+                            <div class="metric-card">
+                                <div class="metric-label">Forward Yield</div>
+                                <div class="metric-value change-pos">${yieldPct.toFixed(2)}%</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-label">DER</div>
+                                <div class="metric-value">${der.toFixed(2)}</div>
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+
+            document.getElementById('modal-body').innerHTML = `
                 <div class="modal-header">
-                    <button class="modal-close" onclick="closeModal()"></button>
+                    <button class="modal-close" onclick="closeModal()">✕</button>
                     <div class="modal-title">${shortName}</div>
-                    <div class="modal-subtitle">${ticker} • ${mode === 'BOTH' ? 'Dual Analysis' : mode + ' Mode'}</div>
-                    <div class="modal-price-row">
-                        <div class="modal-price">${formatRupiah(active.current_price)}</div>
-                        <span class="signal-badge ${getSignalClass(active.signal)}" style="font-size: 13px; padding: 4px 12px;">
-                            ${getSignalIcon(active.signal)} ${active.signal.replace(/_/g, ' ')}
-                        </span>
+                    <div class="modal-subtitle">${companyName} • ${ticker}</div>
+                    <div style="display:flex; align-items:center; gap:16px; margin-top:16px;">
+                        <div class="modal-price">${fmtRp(s.current_price)}</div>
+                        <span class="signal-badge ${s.signal.includes('BUY')?'signal-buy':'signal-no-data'}" style="font-size:14px; padding:6px 12px;">${s.signal.replace(/_/g,' ')}</span>
                     </div>
                 </div>
                 <div class="modal-body">
-                    ${mode !== 'DIVIDEND' && swing ? renderSwingModal(swing) : ''}
-                    ${mode !== 'SWING' && div ? renderDivModal(div) : ''}
-                    ${renderICEModal()}
-                    ${renderActionModal(active)}
-                </div>`;
-            
-            modal.classList.add('active');
-            document.body.style.overflow = 'hidden';
+                    ${contentHtml}
+                </div>
+            `;
+            document.getElementById('modal').classList.add('active');
         }
 
-        function renderSwingModal(swing) {
-            const tech = swing.technical || {}, vol = swing.volume_sentiment || {};
-            return `
-                <div class="modal-section">
-                    <div class="modal-section-title">⚡ Swing Trading Analysis</div>
-                    <div class="metrics-grid">
-                        <div class="metric-card">
-                            <div class="metric-card-label">Target Profit</div>
-                            <div class="metric-card-value change-positive">${formatRupiah(swing.target_profit)}</div>
-                            <div class="metric-card-sub change-positive">+${((swing.target_profit/swing.current_price-1)*100).toFixed(1)}%</div>
-                        </div>
-                        <div class="metric-card">
-                            <div class="metric-card-label">Stop Loss</div>
-                            <div class="metric-card-value change-negative">${formatRupiah(swing.stop_loss)}</div>
-                            <div class="metric-card-sub change-negative">${((swing.stop_loss/swing.current_price-1)*100).toFixed(1)}%</div>
-                        </div>
-                        <div class="metric-card">
-                            <div class="metric-card-label">RSI (14)</div>
-                            <div class="metric-card-value">${tech.rsi?.toFixed(1) || '—'}</div>
-                            <div class="metric-card-sub">${getRSIZone(tech.rsi)}</div>
-                        </div>
-                        <div class="metric-card">
-                            <div class="metric-card-label">Volume Ratio</div>
-                            <div class="metric-card-value">${vol.volume_ratio?.toFixed(2) || '—'}x</div>
-                            <div class="metric-card-sub">vs 20d avg</div>
-                        </div>
-                    </div>
-                    <div class="detail-box">
-                        <div style="font-weight: 700; margin-bottom: 12px; font-size: 14px;">Technical Breakdown</div>
-                        <div class="detail-row">
-                            <span>vs MA10</span>
-                            <span class="${tech.price_vs_ma10_pct >= 0 ? 'change-positive' : 'change-negative'}">${formatPercent(tech.price_vs_ma10_pct)}</span>
-                        </div>
-                        <div class="detail-row">
-                            <span>vs MA20</span>
-                            <span class="${tech.price_vs_ma20_pct >= 0 ? 'change-positive' : 'change-negative'}">${formatPercent(tech.price_vs_ma20_pct)}</span>
-                        </div>
-                        <div class="detail-row">
-                            <span>MACD Histogram</span>
-                            <span class="${tech.macd_histogram >= 0 ? 'change-positive' : 'change-negative'}">${tech.macd_histogram?.toFixed(2) || '—'}</span>
-                        </div>
-                    </div>
-                </div>`;
-        }
-
-        function renderDivModal(div) {
-            const fund = div.fundamental_safety || {}, details = fund.details || {}, fear = div.fear_panic_detector || {};
-            return `
-                <div class="modal-section">
-                    <div class="modal-section-title">💰 Dividend Investing Analysis</div>
-                    <div class="metrics-grid">
-                        <div class="metric-card">
-                            <div class="metric-card-label">Forward Yield</div>
-                            <div class="metric-card-value" style="color: var(--inv-green);">${div.forward_yield_pct ? div.forward_yield_pct + '%' : '—'}</div>
-                            <div class="metric-card-sub">p.a. estimate</div>
-                        </div>
-                        <div class="metric-card">
-                            <div class="metric-card-label">DER</div>
-                            <div class="metric-card-value">${details.der?.toFixed(2) || '—'}</div>
-                            <div class="metric-card-sub">${details.der < 1 ? '✓ Sehat' : '⚠ Tinggi'}</div>
-                        </div>
-                        <div class="metric-card">
-                            <div class="metric-card-label">vs MA50</div>
-                            <div class="metric-card-value ${div.price_vs_ma50_pct >= 0 ? 'change-positive' : 'change-negative'}">${formatPercent(div.price_vs_ma50_pct)}</div>
-                            <div class="metric-card-sub">${div.price_vs_ma50_pct < -8 ? '🔥 Diskon!' : 'Normal'}</div>
-                        </div>
-                        <div class="metric-card">
-                            <div class="metric-card-label">Fear Index</div>
-                            <div class="metric-card-value">${fear.score?.toFixed(0) || '—'}</div>
-                            <div class="metric-card-sub">${fear.panic_detected ? '🚨 PANIC!' : 'Normal'}</div>
-                        </div>
-                    </div>
-                    <div class="detail-box">
-                        <div style="font-weight: 700; margin-bottom: 12px; font-size: 14px;">Fundamental Safety: <span style="color: var(--inv-blue);">${fund.score?.toFixed(1) || '—'}/100</span></div>
-                        <div class="detail-row">
-                            <span>EPS Growth</span>
-                            <span class="${details.eps_growth_pct >= 0 ? 'change-positive' : 'change-negative'}">${details.eps_growth_pct ? formatPercent(details.eps_growth_pct) : '—'}</span>
-                        </div>
-                        <div class="detail-row">
-                            <span>Dividend Rate</span>
-                            <span style="font-weight: 600;">${details.dividend_rate ? formatRupiah(details.dividend_rate) : '—'}</span>
-                        </div>
-                        <div class="detail-row">
-                            <span>Payout Ratio</span>
-                            <span style="font-weight: 600;">${details.payout_ratio_pct ? details.payout_ratio_pct + '%' : '—'}</span>
-                        </div>
-                        <div class="detail-row">
-                            <span>Free Cash Flow</span>
-                            <span class="${details.fcf_positive ? 'change-positive' : 'change-negative'}">${details.fcf_positive ? '✓ Positif' : '✗ Negatif'}</span>
-                        </div>
-                    </div>
-                </div>`;
-        }
-
-        function renderICEModal() {
-            const ice = DATA.ice_newcastle;
-            if (!ice) return '';
-            
-            if (ice.status === 'FAILED') {
-                return `
-                    <div class="modal-section">
-                        <div class="modal-section-title">📊 ICE Newcastle Analysis</div>
-                        <div class="error-state">
-                            <h3>🚨 Data ICE Gagal Diambil</h3>
-                            <p>${ice.error_message || 'Tidak dapat mengambil data Newcastle Coal.'}</p>
-                        </div>
-                    </div>`;
-            }
-
-            const mom = ice.momentum || {};
-            return `
-                <div class="modal-section">
-                    <div class="modal-section-title">📊 ICE Newcastle Analysis</div>
-                    <div class="detail-box" style="background: #fff8e1; border-left: 4px solid var(--inv-yellow);">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;">
-                            <div>
-                                <div style="font-size: 11px; color: var(--inv-text-muted); text-transform: uppercase;">Current Price</div>
-                                <div style="font-size: 28px; font-weight: 700;">$${ice.current_price_usd?.toFixed(2) || '—'}</div>
-                            </div>
-                            <div style="text-align: right;">
-                                <div style="font-size: 11px; color: var(--inv-text-muted); text-transform: uppercase;">Status</div>
-                                <div class="ice-status-badge ${ice.above_floor ? 'ok' : 'bad'}" style="font-size: 13px;">
-                                    ${ice.above_floor ? '✓ Above Floor' : '✗ Below Floor'}
-                                </div>
-                            </div>
-                        </div>
-                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 12px;">
-                            <div>
-                                <div style="font-size: 11px; color: var(--inv-text-muted); text-transform: uppercase;">ROC 5D</div>
-                                <div class="${mom.roc_5d >= 0 ? 'change-positive' : 'change-negative'}" style="font-weight: 700;">${formatPercent(mom.roc_5d)}</div>
-                            </div>
-                            <div>
-                                <div style="font-size: 11px; color: var(--inv-text-muted); text-transform: uppercase;">ROC 10D</div>
-                                <div class="${mom.roc_10d >= 0 ? 'change-positive' : 'change-negative'}" style="font-weight: 700;">${formatPercent(mom.roc_10d)}</div>
-                            </div>
-                            <div>
-                                <div style="font-size: 11px; color: var(--inv-text-muted); text-transform: uppercase;">Trend</div>
-                                <div style="font-weight: 700;">${mom.trend || '—'}</div>
-                            </div>
-                            <div>
-                                <div style="font-size: 11px; color: var(--inv-text-muted); text-transform: uppercase;">vs MA200</div>
-                                <div style="font-weight: 700;">${ice.trend_barrier?.position || '—'}</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>`;
-        }
-
-        function renderActionModal(data) {
-            let steps = [], title = '';
-            
-            if (data.signal === 'NO_DATA') {
-                title = 'Data tidak tersedia. Tidak ada rekomendasi.';
-                steps = ['Tunggu hingga data berhasil diambil', 'Refresh halaman setelah beberapa saat', 'Periksa log GitHub Actions'];
-            } else if (data.mode === 'SWING' || data.signal?.includes('BUY')) {
-                title = 'Eksekusi BUY dengan disiplin pada Stop Loss.';
-                steps = [
-                    `Beli di harga ${formatRupiah(data.current_price)}`,
-                    `Pasang Stop Loss di ${formatRupiah(data.stop_loss)}`,
-                    `Target Profit di ${formatRupiah(data.target_profit)}`,
-                    'Monitor harian, trailing stop jika profit > 5%',
-                    'Exit jika ICE Newcastle < $120/ton'
-                ];
-            } else if (data.mode === 'DIVIDEND') {
-                title = 'Akumulasi bertahap untuk koleksi dividen jangka panjang.';
-                steps = [
-                    `Entry di zona ${formatRupiah(data.current_price)}`,
-                    'Gunakan strategi pyramiding',
-                    'Reinvestasikan dividen (DRIP)',
-                    'Hold minimal 1 tahun',
-                    'Switch ke PTBA jika yield > 12%'
-                ];
-            } else {
-                title = 'Wait and see. Belum ada sinyal kuat.';
-                steps = ['Pantau ICE Newcastle', 'Tunggu koreksi', 'Monitor volume'];
-            }
-
-            return `
-                <div class="modal-section">
-                    <div class="modal-section-title">🎯 Action Plan</div>
-                    <div class="action-plan">
-                        <div style="font-weight: 700; margin-bottom: 14px; font-size: 15px;">${title}</div>
-                        ${steps.map((step, i) => `
-                            <div class="action-step">
-                                <div class="step-number">${i+1}</div>
-                                <div>${step}</div>
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>`;
-        }
-
-        function getRSIZone(rsi) {
-            if (!rsi) return '—';
-            if (rsi < 30) return 'Oversold';
-            if (rsi < 40) return 'Near Oversold';
-            if (rsi < 60) return 'Netral';
-            if (rsi < 70) return 'Near Overbought';
-            return 'Overbought';
-        }
-
-        function closeModal() {
-            document.getElementById('modal').classList.remove('active');
-            document.body.style.overflow = '';
-        }
-
-        // ============================================
-        // TABS & EVENTS
-        // ============================================
+        function closeModal() { document.getElementById('modal').classList.remove('active'); }
         function switchTab(tab) {
             CURRENT_TAB = tab;
-            ['swing', 'dividend', 'all'].forEach(t => {
-                document.getElementById('tab-' + t).classList.toggle('active', t === tab);
-            });
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('tab-'+tab).classList.add('active');
             renderTable();
         }
 
-        document.getElementById('search-input').addEventListener('input', renderTable);
-        document.getElementById('modal').addEventListener('click', (e) => {
-            if (e.target.id === 'modal') closeModal();
-        });
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') closeModal();
-        });
-
-        // ============================================
-        // INIT
-        // ============================================
         loadData();
-        setInterval(loadData, 5 * 60 * 1000);
     </script>
 </body>
-    </html>
+</html>
