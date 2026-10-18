@@ -1,7 +1,7 @@
 {
   "metadata": {
     "system": "Coal Algo-Trader v1.0",
-    "generated_at": "2026-10-18T05:05:42.852026",
+    "generated_at": "2026-10-18T05:33:21.297002",
     "ice_floor_filter_usd": 120.0,
     "tickers_analyzed": [
       "ITMG.JK",
@@ -81,7 +81,7 @@
         "high_vol_days": 0,
         "price_change_pct": -10.13
       },
-      "timestamp": "2026-10-18T05:05:47.966903",
+      "timestamp": "2026-10-18T05:33:23.616628",
       "company_name": "United Tractors"
     },
     {
@@ -123,7 +123,7 @@
         "high_vol_days": 0,
         "price_change_pct": -9.8
       },
-      "timestamp": "2026-10-18T05:05:46.604362",
+      "timestamp": "2026-10-18T05:33:22.922241",
       "company_name": "Ind Tambang Raya"
     },
     {
@@ -165,7 +165,7 @@
         "high_vol_days": 0,
         "price_change_pct": -14.37
       },
-      "timestamp": "2026-10-18T05:05:47.097595",
+      "timestamp": "2026-10-18T05:33:23.157860",
       "company_name": "Bukit Asam"
     },
     {
@@ -207,7 +207,7 @@
         "high_vol_days": 0,
         "price_change_pct": -14.67
       },
-      "timestamp": "2026-10-18T05:05:47.506993",
+      "timestamp": "2026-10-18T05:33:23.368491",
       "company_name": "Adaro Energy Indonesia"
     },
     {
@@ -249,7 +249,7 @@
         "high_vol_days": 0,
         "price_change_pct": -13.11
       },
-      "timestamp": "2026-10-18T05:05:48.982577",
+      "timestamp": "2026-10-18T05:33:24.033812",
       "company_name": "Mitrabara Adiperdana"
     },
     {
@@ -291,7 +291,7 @@
         "high_vol_days": 0,
         "price_change_pct": -24.72
       },
-      "timestamp": "2026-10-18T05:05:48.455193",
+      "timestamp": "2026-10-18T05:33:23.824050",
       "company_name": "Bumi Resources"
     }
   ],
@@ -341,7 +341,7 @@
       "ma200": 23895.0,
       "price_vs_ma50_pct": -9.87,
       "price_vs_ma200_pct": -3.75,
-      "timestamp": "2026-10-18T05:05:46.605909",
+      "timestamp": "2026-10-18T05:33:22.924305",
       "company_name": "Ind Tambang Raya"
     },
     {
@@ -361,7 +361,7 @@
       "fundamental_safety": {
         "score": 50,
         "details": {
-          "eps_growth_pct": 52.06,
+          "eps_growth_pct": 69.26,
           "dividend_yield_pct": 10.7,
           "dividend_rate": 237.0,
           "payout_ratio_pct": 78.99,
@@ -389,7 +389,7 @@
       "ma200": 2330.0,
       "price_vs_ma50_pct": -14.48,
       "price_vs_ma200_pct": -5.14,
-      "timestamp": "2026-10-18T05:05:47.508433",
+      "timestamp": "2026-10-18T05:33:23.370500",
       "company_name": "Adaro Energy Indonesia"
     },
     {
@@ -437,7 +437,7 @@
       "ma200": 25978.0,
       "price_vs_ma50_pct": -7.39,
       "price_vs_ma200_pct": -12.91,
-      "timestamp": "2026-10-18T05:05:47.968354",
+      "timestamp": "2026-10-18T05:33:23.618563",
       "company_name": "United Tractors"
     },
     {
@@ -485,7 +485,7 @@
       "ma200": 1596.0,
       "price_vs_ma50_pct": -12.15,
       "price_vs_ma200_pct": -10.72,
-      "timestamp": "2026-10-18T05:05:48.984019",
+      "timestamp": "2026-10-18T05:33:24.035717",
       "company_name": "Mitrabara Adiperdana"
     },
     {
@@ -533,7 +533,7 @@
       "ma200": 2610.0,
       "price_vs_ma50_pct": -2.57,
       "price_vs_ma200_pct": 7.29,
-      "timestamp": "2026-10-18T05:05:47.099118",
+      "timestamp": "2026-10-18T05:33:23.159851",
       "company_name": "Bukit Asam"
     },
     {
@@ -580,7 +580,7 @@
       "ma200": 227.0,
       "price_vs_ma50_pct": -28.81,
       "price_vs_ma200_pct": -40.96,
-      "timestamp": "2026-10-18T05:05:48.456613",
+      "timestamp": "2026-10-18T05:33:23.825994",
       "company_name": "Bumi Resources"
     }
   ],
