@@ -1,7 +1,7 @@
 {
   "metadata": {
     "system": "Coal Algo-Trader v1.0",
-    "generated_at": "2026-10-18T03:30:18.364433",
+    "generated_at": "2026-10-18T03:45:51.572905",
     "ice_floor_filter_usd": 120.0,
     "tickers_analyzed": [
       "ITMG.JK",
@@ -10,11 +10,497 @@
       "PTCO.JK",
       "BUMI.JK",
       "MBAP.JK"
-    ],
-    "error": "ICE_DATA_UNAVAILABLE"
+    ]
   },
-  "ice_newcastle": {},
-  "swing_mode": [],
-  "dividend_mode": [],
-  "alerts": []
+  "ice_newcastle": {
+    "current_price_usd": 3.12,
+    "floor_threshold_usd": 120.0,
+    "above_floor": false,
+    "momentum": {
+      "score": 51.96,
+      "roc_5d": -3.23,
+      "roc_10d": 2.67,
+      "roc_20d": 7.01,
+      "trend": "SIDEWAYS",
+      "current_price_usd": 3.12
+    },
+    "trend_barrier": {
+      "score": 70,
+      "above_ma50": "True",
+      "above_ma200": null,
+      "position": "ABOVE_MA50",
+      "current_price_usd": 3.12
+    }
+  },
+  "swing_mode": [
+    {
+      "ticker": "ITMG.JK",
+      "mode": "SWING",
+      "current_price": 23000.0,
+      "signal": "HOLD",
+      "composite_score": 48.78,
+      "target_profit": 0,
+      "stop_loss": 0,
+      "ice_filter_passed": false,
+      "ice_momentum": {
+        "score": 51.96,
+        "roc_5d": -3.23,
+        "roc_10d": 2.67,
+        "roc_20d": 7.01,
+        "trend": "SIDEWAYS",
+        "current_price_usd": 3.12
+      },
+      "technical": {
+        "score": 25,
+        "ma10": 25330.0,
+        "ma20": 25306.0,
+        "rsi": 30.63,
+        "macd_histogram": -171.82,
+        "price_vs_ma10_pct": -9.2,
+        "price_vs_ma20_pct": -9.11
+      },
+      "volume_sentiment": {
+        "score": 90,
+        "volume_ratio": 2.69,
+        "avg_volume_20d": 1388890,
+        "last_volume": 3730800
+      },
+      "accumulation": {
+        "accumulation_score": 0,
+        "signal": "NO_SIGNIFICANT_ACCUMULATION",
+        "signals_detail": [],
+        "high_vol_days": 0,
+        "price_change_pct": -9.8
+      },
+      "timestamp": "2026-10-18T03:45:54.539603"
+    },
+    {
+      "ticker": "PTBA.JK",
+      "mode": "SWING",
+      "current_price": 2800.0,
+      "signal": "HOLD",
+      "composite_score": 48.78,
+      "target_profit": 0,
+      "stop_loss": 0,
+      "ice_filter_passed": false,
+      "ice_momentum": {
+        "score": 51.96,
+        "roc_5d": -3.23,
+        "roc_10d": 2.67,
+        "roc_20d": 7.01,
+        "trend": "SIDEWAYS",
+        "current_price_usd": 3.12
+      },
+      "technical": {
+        "score": 25,
+        "ma10": 3244.0,
+        "ma20": 3168.0,
+        "rsi": 33.9,
+        "macd_histogram": -49.08,
+        "price_vs_ma10_pct": -13.69,
+        "price_vs_ma20_pct": -11.62
+      },
+      "volume_sentiment": {
+        "score": 90,
+        "volume_ratio": 3.58,
+        "avg_volume_20d": 39626055,
+        "last_volume": 141705700
+      },
+      "accumulation": {
+        "accumulation_score": 0,
+        "signal": "NO_SIGNIFICANT_ACCUMULATION",
+        "signals_detail": [],
+        "high_vol_days": 0,
+        "price_change_pct": -14.37
+      },
+      "timestamp": "2026-10-18T03:45:54.856453"
+    },
+    {
+      "ticker": "ADRO.JK",
+      "mode": "SWING",
+      "current_price": 2210.0,
+      "signal": "HOLD",
+      "composite_score": 48.78,
+      "target_profit": 0,
+      "stop_loss": 0,
+      "ice_filter_passed": false,
+      "ice_momentum": {
+        "score": 51.96,
+        "roc_5d": -3.23,
+        "roc_10d": 2.67,
+        "roc_20d": 7.01,
+        "trend": "SIDEWAYS",
+        "current_price_usd": 3.12
+      },
+      "technical": {
+        "score": 25,
+        "ma10": 2511.0,
+        "ma20": 2525.0,
+        "rsi": 28.41,
+        "macd_histogram": -23.72,
+        "price_vs_ma10_pct": -11.99,
+        "price_vs_ma20_pct": -12.48
+      },
+      "volume_sentiment": {
+        "score": 90,
+        "volume_ratio": 3.15,
+        "avg_volume_20d": 36876655,
+        "last_volume": 116082400
+      },
+      "accumulation": {
+        "accumulation_score": 0,
+        "signal": "NO_SIGNIFICANT_ACCUMULATION",
+        "signals_detail": [],
+        "high_vol_days": 0,
+        "price_change_pct": -14.67
+      },
+      "timestamp": "2026-10-18T03:45:55.158377"
+    },
+    {
+      "ticker": "MBAP.JK",
+      "mode": "SWING",
+      "current_price": 1425.0,
+      "signal": "HOLD",
+      "composite_score": 48.78,
+      "target_profit": 0,
+      "stop_loss": 0,
+      "ice_filter_passed": false,
+      "ice_momentum": {
+        "score": 51.96,
+        "roc_5d": -3.23,
+        "roc_10d": 2.67,
+        "roc_20d": 7.01,
+        "trend": "SIDEWAYS",
+        "current_price_usd": 3.12
+      },
+      "technical": {
+        "score": 25,
+        "ma10": 1643.0,
+        "ma20": 1668.0,
+        "rsi": 21.35,
+        "macd_histogram": -23.51,
+        "price_vs_ma10_pct": -13.27,
+        "price_vs_ma20_pct": -14.58
+      },
+      "volume_sentiment": {
+        "score": 90,
+        "volume_ratio": 2.93,
+        "avg_volume_20d": 84570,
+        "last_volume": 247800
+      },
+      "accumulation": {
+        "accumulation_score": 0,
+        "signal": "NO_SIGNIFICANT_ACCUMULATION",
+        "signals_detail": [],
+        "high_vol_days": 0,
+        "price_change_pct": -13.11
+      },
+      "timestamp": "2026-10-18T03:45:56.273245"
+    },
+    {
+      "ticker": "BUMI.JK",
+      "mode": "SWING",
+      "current_price": 134.0,
+      "signal": "HOLD",
+      "composite_score": 32.78,
+      "target_profit": 0,
+      "stop_loss": 0,
+      "ice_filter_passed": false,
+      "ice_momentum": {
+        "score": 51.96,
+        "roc_5d": -3.23,
+        "roc_10d": 2.67,
+        "roc_20d": 7.01,
+        "trend": "SIDEWAYS",
+        "current_price_usd": 3.12
+      },
+      "technical": {
+        "score": 25,
+        "ma10": 168.0,
+        "ma20": 175.0,
+        "rsi": 24.44,
+        "macd_histogram": -3.65,
+        "price_vs_ma10_pct": -20.43,
+        "price_vs_ma20_pct": -23.36
+      },
+      "volume_sentiment": {
+        "score": 10,
+        "volume_ratio": 0.53,
+        "avg_volume_20d": 2036614370,
+        "last_volume": 1075718600
+      },
+      "accumulation": {
+        "accumulation_score": 0,
+        "signal": "NO_SIGNIFICANT_ACCUMULATION",
+        "signals_detail": [],
+        "high_vol_days": 0,
+        "price_change_pct": -24.72
+      },
+      "timestamp": "2026-10-18T03:45:55.983311"
+    },
+    {
+      "ticker": "PTCO.JK",
+      "mode": "SWING",
+      "signal": "NO_DATA",
+      "reason": "INSUFFICIENT_DATA",
+      "composite_score": 0
+    }
+  ],
+  "dividend_mode": [
+    {
+      "ticker": "ITMG.JK",
+      "mode": "DIVIDEND",
+      "current_price": 23000.0,
+      "signal": "ACCUMULATE",
+      "composite_score": 71.2,
+      "forward_yield_pct": 7.52,
+      "ice_trend_barrier": {
+        "score": 70,
+        "above_ma50": "True",
+        "above_ma200": null,
+        "position": "ABOVE_MA50",
+        "current_price_usd": 3.12
+      },
+      "fundamental_safety": {
+        "score": 70,
+        "details": {
+          "eps_growth_pct": 28.39,
+          "dividend_yield_pct": 7.52,
+          "dividend_rate": 1730.0,
+          "payout_ratio_pct": 54.79,
+          "fcf_positive": true,
+          "fcf_value": 203206128,
+          "der": null
+        }
+      },
+      "fear_panic_detector": {
+        "score": 76,
+        "panic_detected": true,
+        "discount_from_ma50_pct": 9.87,
+        "volume_spike_ratio": 2.69,
+        "ice_roc_5d_pct": -1.61,
+        "opportunity": "PANIC_BUYING_ZONE"
+      },
+      "accumulation": {
+        "accumulation_score": 0,
+        "signal": "NO_SIGNIFICANT_ACCUMULATION",
+        "signals_detail": [],
+        "high_vol_days": 0,
+        "price_change_pct": -9.8
+      },
+      "ma50": 25518.0,
+      "ma200": 23895.0,
+      "price_vs_ma50_pct": -9.87,
+      "price_vs_ma200_pct": -3.75,
+      "timestamp": "2026-10-18T03:45:54.541737"
+    },
+    {
+      "ticker": "ADRO.JK",
+      "mode": "DIVIDEND",
+      "current_price": 2210.0,
+      "signal": "ACCUMULATE",
+      "composite_score": 68.0,
+      "forward_yield_pct": 10.7,
+      "ice_trend_barrier": {
+        "score": 70,
+        "above_ma50": "True",
+        "above_ma200": null,
+        "position": "ABOVE_MA50",
+        "current_price_usd": 3.12
+      },
+      "fundamental_safety": {
+        "score": 50,
+        "details": {
+          "eps_growth_pct": 69.26,
+          "dividend_yield_pct": 10.7,
+          "dividend_rate": 237.0,
+          "payout_ratio_pct": 78.99,
+          "fcf_positive": false,
+          "fcf_value": -271952000,
+          "der": null
+        }
+      },
+      "fear_panic_detector": {
+        "score": 100,
+        "panic_detected": true,
+        "discount_from_ma50_pct": 14.48,
+        "volume_spike_ratio": 3.15,
+        "ice_roc_5d_pct": -1.61,
+        "opportunity": "PANIC_BUYING_ZONE"
+      },
+      "accumulation": {
+        "accumulation_score": 0,
+        "signal": "NO_SIGNIFICANT_ACCUMULATION",
+        "signals_detail": [],
+        "high_vol_days": 0,
+        "price_change_pct": -14.67
+      },
+      "ma50": 2584.0,
+      "ma200": 2330.0,
+      "price_vs_ma50_pct": -14.48,
+      "price_vs_ma200_pct": -5.14,
+      "timestamp": "2026-10-18T03:45:55.160344"
+    },
+    {
+      "ticker": "MBAP.JK",
+      "mode": "DIVIDEND",
+      "current_price": 1425.0,
+      "signal": "WAIT",
+      "composite_score": 46.0,
+      "forward_yield_pct": 2.67,
+      "ice_trend_barrier": {
+        "score": 70,
+        "above_ma50": "True",
+        "above_ma200": null,
+        "position": "ABOVE_MA50",
+        "current_price_usd": 3.12
+      },
+      "fundamental_safety": {
+        "score": 0,
+        "details": {
+          "eps_growth_pct": null,
+          "dividend_yield_pct": 2.67,
+          "dividend_rate": 38.0,
+          "payout_ratio_pct": null,
+          "fcf_positive": false,
+          "fcf_value": -8818104,
+          "der": null
+        }
+      },
+      "fear_panic_detector": {
+        "score": 90,
+        "panic_detected": true,
+        "discount_from_ma50_pct": 12.15,
+        "volume_spike_ratio": 2.93,
+        "ice_roc_5d_pct": -1.61,
+        "opportunity": "PANIC_BUYING_ZONE"
+      },
+      "accumulation": {
+        "accumulation_score": 0,
+        "signal": "NO_SIGNIFICANT_ACCUMULATION",
+        "signals_detail": [],
+        "high_vol_days": 0,
+        "price_change_pct": -13.11
+      },
+      "ma50": 1622.0,
+      "ma200": 1596.0,
+      "price_vs_ma50_pct": -12.15,
+      "price_vs_ma200_pct": -10.72,
+      "timestamp": "2026-10-18T03:45:56.275313"
+    },
+    {
+      "ticker": "PTBA.JK",
+      "mode": "DIVIDEND",
+      "current_price": 2800.0,
+      "signal": "WAIT",
+      "composite_score": 44.0,
+      "forward_yield_pct": 4.09,
+      "ice_trend_barrier": {
+        "score": 70,
+        "above_ma50": "True",
+        "above_ma200": null,
+        "position": "ABOVE_MA50",
+        "current_price_usd": 3.12
+      },
+      "fundamental_safety": {
+        "score": 40,
+        "details": {
+          "eps_growth_pct": -0.75,
+          "dividend_yield_pct": 4.09,
+          "dividend_rate": 115.0,
+          "payout_ratio_pct": 27.79,
+          "fcf_positive": true,
+          "fcf_value": 2637183844352,
+          "der": null
+        }
+      },
+      "fear_panic_detector": {
+        "score": 0,
+        "panic_detected": false,
+        "discount_from_ma50_pct": 2.57,
+        "volume_spike_ratio": 3.58,
+        "ice_roc_5d_pct": -1.61,
+        "opportunity": "FAIR_VALUE"
+      },
+      "accumulation": {
+        "accumulation_score": 0,
+        "signal": "NO_SIGNIFICANT_ACCUMULATION",
+        "signals_detail": [],
+        "high_vol_days": 0,
+        "price_change_pct": -14.37
+      },
+      "ma50": 2874.0,
+      "ma200": 2610.0,
+      "price_vs_ma50_pct": -2.57,
+      "price_vs_ma200_pct": 7.29,
+      "timestamp": "2026-10-18T03:45:54.858522"
+    },
+    {
+      "ticker": "BUMI.JK",
+      "mode": "DIVIDEND",
+      "current_price": 134.0,
+      "signal": "WAIT",
+      "composite_score": 28.0,
+      "forward_yield_pct": null,
+      "ice_trend_barrier": {
+        "score": 70,
+        "above_ma50": "True",
+        "above_ma200": null,
+        "position": "ABOVE_MA50",
+        "current_price_usd": 3.12
+      },
+      "fundamental_safety": {
+        "score": 0,
+        "details": {
+          "eps_growth_pct": null,
+          "dividend_yield_pct": 0,
+          "payout_ratio_pct": null,
+          "fcf_positive": false,
+          "fcf_value": -113085288,
+          "der": null
+        }
+      },
+      "fear_panic_detector": {
+        "score": 0,
+        "panic_detected": false,
+        "discount_from_ma50_pct": 28.81,
+        "volume_spike_ratio": 0.53,
+        "ice_roc_5d_pct": -1.61,
+        "opportunity": "EXTREME_FEAR_ALL_IN"
+      },
+      "accumulation": {
+        "accumulation_score": 0,
+        "signal": "NO_SIGNIFICANT_ACCUMULATION",
+        "signals_detail": [],
+        "high_vol_days": 0,
+        "price_change_pct": -24.72
+      },
+      "ma50": 188.0,
+      "ma200": 227.0,
+      "price_vs_ma50_pct": -28.81,
+      "price_vs_ma200_pct": -40.96,
+      "timestamp": "2026-10-18T03:45:55.985347"
+    },
+    {
+      "ticker": "PTCO.JK",
+      "mode": "DIVIDEND",
+      "signal": "NO_DATA",
+      "reason": "INSUFFICIENT_DATA",
+      "composite_score": 0
+    }
+  ],
+  "alerts": [
+    {
+      "type": "ICE_FLOOR_BREACH",
+      "message": "\u26a0\ufe0f ICE NEWCASTLE DI BAWAH FLOOR: $3.12/ton (Floor: $120.0/ton)",
+      "severity": "HIGH"
+    }
+  ],
+  "summary": {
+    "total_tickers": 6,
+    "swing_buy_signals": 0,
+    "dividend_accumulate_signals": 2,
+    "total_alerts": 1,
+    "ice_above_floor": false
+  }
 }
