@@ -5,7 +5,7 @@ COAL ALGO-TRADER v1.0 — Dual-Engine Recommendation System
 Engine 1: Swing Trading Mode (Capital Gain Hunter)
 Engine 2: Dividend Investing Mode (Yield Accumulator)
 
-Data Source : yfinance (ICE Newcastle ^NCF=F + IDX Coal Stocks)
+Data Source : yfinance (ICE Newcastle + IDX Coal Stocks)
 Scheduler   : GitHub Actions Cron (16:30 WIB)
 Output      : coal_data.json → Static Frontend (GitHub Pages)
 Author      : Custom Build for ITMG Dividend Collector Profile
@@ -33,7 +33,6 @@ logger = logging.getLogger("CoalAlgoTrader")
 
 # Ticker Universe
 COAL_TICKERS = ["ITMG.JK", "PTBA.JK", "ADRO.JK", "PTCO.JK", "BUMI.JK", "MBAP.JK"]
-ICE_TICKER = "^NCF=F"  # ICE Newcastle Coal Futures
 
 # Filter Thresholds
 ICE_FLOOR_PRICE_USD = 120.0  # Minimum ICE Newcastle price untuk aktifkan sinyal BUY
@@ -80,26 +79,38 @@ OUTPUT_FILE = "coal_data.json"
 class DataFetcher:
     """Mengambil data harga dan fundamental dari yfinance."""
 
+    # Multiple ticker fallback untuk ICE Newcastle
+    ICE_TICKERS = [
+        "^NCF=F",   # Primary
+        "NCF=F",    # Alternative 1 (tanpa ^)
+        "NC=F",     # Alternative 2
+        "GCL=F",    # Fallback: Crude Oil (jika coal tidak ada)
+        "NG=F",     # Fallback: Natural Gas
+    ]
+
     @staticmethod
     def fetch_ice_newcastle(period: str = "6mo") -> Optional[pd.DataFrame]:
-        """Ambil data ICE Newcastle Futures (^NCF=F)."""
-        logger.info(f"Fetching ICE Newcastle data ({period})...")
-        try:
-            ice = yf.Ticker(ICE_TICKER)
-            df = ice.history(period=period)
-            if df.empty:
-                logger.warning("ICE Newcastle data kosong. Coba ticker alternatif.")
-                # Fallback: coba ticker alternatif jika ^NCF=F bermasalah
-                ice_alt = yf.Ticker("NC=F")
-                df = ice_alt.history(period=period)
-            if df.empty:
-                logger.error("Gagal mengambil data ICE Newcastle.")
-                return None
-            logger.info(f"ICE Newcastle: {len(df)} baris data diperoleh.")
-            return df
-        except Exception as e:
-            logger.error(f"Error fetching ICE data: {e}")
-            return None
+        """Ambil data ICE Newcastle Futures dengan multiple fallback."""
+        logger.info("Fetching ICE Newcastle data...")
+        
+        for ticker in DataFetcher.ICE_TICKERS:
+            try:
+                logger.info(f"  Trying ticker: {ticker}")
+                ice = yf.Ticker(ticker)
+                df = ice.history(period=period)
+                
+                if not df.empty and len(df) > 10:
+                    logger.info(f"  ✅ Success with ticker: {ticker} ({len(df)} rows)")
+                    return df
+                else:
+                    logger.warning(f"  ️  {ticker}: Data kosong atau tidak cukup")
+            except Exception as e:
+                logger.warning(f"  ❌ {ticker}: {e}")
+                continue
+        
+        # Jika semua ticker gagal, return None
+        logger.error("Semua ticker ICE Newcastle gagal. Menggunakan graceful degradation.")
+        return None
 
     @staticmethod
     def fetch_stock_history(ticker: str, period: str = "1y") -> Optional[pd.DataFrame]:
@@ -152,7 +163,6 @@ class TechnicalIndicators:
         loss = (-delta).where(delta < 0, 0.0)
         avg_gain = gain.rolling(window=period, min_periods=period).mean()
         avg_loss = loss.rolling(window=period, min_periods=period).mean()
-        # Gunakan EMA setelah rolling awal untuk Wilder's smoothing
         avg_gain = avg_gain.iloc[period:]
         avg_loss = avg_loss.iloc[period:]
         rs = avg_gain / avg_loss.replace(0, np.nan)
@@ -170,13 +180,11 @@ class TechnicalIndicators:
 
     @staticmethod
     def calculate_rate_of_change(series: pd.Series, period: int = 14) -> pd.Series:
-        """Rate of Change (ROC) dalam persentase."""
         roc = ((series - series.shift(period)) / series.shift(period)) * 100
         return roc
 
     @staticmethod
     def calculate_volume_ratio(volume: pd.Series, period: int = 20) -> pd.Series:
-        """Rasio volume hari ini vs rata-rata volume N hari."""
         avg_vol = volume.rolling(window=period, min_periods=period).mean()
         ratio = volume / avg_vol.replace(0, np.nan)
         return ratio
@@ -185,7 +193,7 @@ class TechnicalIndicators:
     def detect_accumulation(df: pd.DataFrame, lookback: int = 10) -> Dict:
         """
         Deteksi akumulasi bandar sederhana:
-        - Volume spike (>1.5x avg) + harga naik tipis/stabil (bukan pump)
+        - Volume spike (>1.5x avg) + harga naik tipis/stabil
         - On-Balance Volume (OBV) trending up
         - Close > Open konsisten di hari volume tinggi
         """
@@ -211,7 +219,7 @@ class TechnicalIndicators:
         score = 0
         signals = []
 
-        # 1. Volume spike tanpa harga melonjak (price change < 3% tapi vol > 1.5x)
+        # 1. Volume spike tanpa harga melonjak
         price_change_pct = ((recent["Close"].iloc[-1] - recent["Close"].iloc[0]) / recent["Close"].iloc[0]) * 100
         high_vol_days = (vol_ratio > 1.5).sum()
 
@@ -226,7 +234,7 @@ class TechnicalIndicators:
                 score += 30
                 signals.append("OBV_UPTREND")
 
-        # 3. Close > Open di hari volume tinggi (buying pressure)
+        # 3. Close > Open di hari volume tinggi
         high_vol_mask = vol_ratio > 1.3
         if high_vol_mask.any():
             buy_candle_ratio = (recent.loc[high_vol_mask, "Close"] > recent.loc[high_vol_mask, "Open"]).mean()
@@ -271,17 +279,14 @@ class ICEAnalysis:
         Menggunakan ROC 5, 10, 20 hari dengan pembobotan.
         """
         if ice_df is None or len(ice_df) < 25:
-            return {"score": 0, "roc_5d": 0, "roc_10d": 0, "roc_20d": 0, "trend": "UNKNOWN"}
+            return {"score": 50, "roc_5d": 0, "roc_10d": 0, "roc_20d": 0, "trend": "UNKNOWN"}
 
         close = ice_df["Close"]
         roc_5 = TechnicalIndicators.calculate_rate_of_change(close, 5).iloc[-1]
         roc_10 = TechnicalIndicators.calculate_rate_of_change(close, 10).iloc[-1]
         roc_20 = TechnicalIndicators.calculate_rate_of_change(close, 20).iloc[-1]
 
-        # Normalisasi ke skor 0-100
-        # ROC positif besar = skor tinggi, ROC negatif = skor rendah
         def roc_to_score(roc_val):
-            # Clamp antara -15% dan +15%
             clamped = max(-15, min(15, roc_val))
             return (clamped + 15) / 30 * 100
 
@@ -289,10 +294,8 @@ class ICEAnalysis:
         score_10 = roc_to_score(roc_10)
         score_20 = roc_to_score(roc_20)
 
-        # Bobot: ROC5 (50%), ROC10 (30%), ROC20 (20%)
         composite = score_5 * 0.50 + score_10 * 0.30 + score_20 * 0.20
 
-        # Trend determination
         ma_20 = close.rolling(20).mean().iloc[-1]
         current = close.iloc[-1]
         if current > ma_20 * 1.02:
@@ -304,11 +307,11 @@ class ICEAnalysis:
 
         return {
             "score": round(composite, 2),
-            "roc_5d": round(roc_5, 2),
-            "roc_10d": round(roc_10, 2),
-            "roc_20d": round(roc_20, 2),
+            "roc_5d": round(float(roc_5), 2),
+            "roc_10d": round(float(roc_10), 2),
+            "roc_20d": round(float(roc_20), 2),
             "trend": trend,
-            "current_price_usd": round(current, 2),
+            "current_price_usd": round(float(current), 2),
         }
 
     @staticmethod
@@ -318,7 +321,6 @@ class ICEAnalysis:
         Posisi harga ICE terhadap MA50 dan MA200.
         """
         if ice_df is None or len(ice_df) < 200:
-            # Fallback jika data < 200 hari
             if ice_df is not None and len(ice_df) >= 50:
                 close = ice_df["Close"]
                 ma_50 = close.rolling(50).mean().iloc[-1]
@@ -330,9 +332,9 @@ class ICEAnalysis:
                     "above_ma50": above_ma50,
                     "above_ma200": None,
                     "position": "ABOVE_MA50" if above_ma50 else "BELOW_MA50",
-                    "current_price_usd": round(current, 2),
+                    "current_price_usd": round(float(current), 2),
                 }
-            return {"score": 0, "above_ma50": None, "above_ma200": None, "position": "NO_DATA", "current_price_usd": None}
+            return {"score": 50, "above_ma50": None, "above_ma200": None, "position": "NO_DATA", "current_price_usd": None}
 
         close = ice_df["Close"]
         ma_50 = close.rolling(50).mean().iloc[-1]
@@ -342,16 +344,13 @@ class ICEAnalysis:
         above_ma50 = current > ma_50
         above_ma200 = current > ma_200
 
-        # Scoring
         score = 0
         if above_ma200:
             score += 50
         if above_ma50:
             score += 30
-        # Bonus jika golden cross (MA50 > MA200)
         if ma_50 > ma_200:
             score += 20
-        # Penalty jika death cross
         elif ma_50 < ma_200:
             score -= 10
 
@@ -376,12 +375,8 @@ class ICEAnalysis:
         """
         DIVIDEND MODE: Fear/Panic Detector (Bobot 20%)
         Mendeteksi panic selling / mispricing opportunity.
-        Indikator:
-        - Harga saham jauh di bawah MA50 (>10% discount)
-        - Volume spike drastis (>3x average)
-        - ICE masih stabil (tidak crash)
         """
-        if stock_df is None or len(stock_df) < 50 or ice_df is None or len(ice_df) < 20:
+        if stock_df is None or len(stock_df) < 50:
             return {"score": 0, "panic_detected": False, "opportunity": "NO_DATA"}
 
         close = stock_df["Close"]
@@ -389,30 +384,25 @@ class ICEAnalysis:
         ma_50_stock = close.rolling(50).mean().iloc[-1]
         current_price = close.iloc[-1]
 
-        # Discount dari MA50
         discount_from_ma50 = ((ma_50_stock - current_price) / ma_50_stock) * 100
 
-        # Volume spike
         avg_vol_20 = volume.rolling(20).mean().iloc[-1]
         current_vol = volume.iloc[-1]
         vol_spike_ratio = current_vol / avg_vol_20 if avg_vol_20 > 0 else 1
 
-        # ICE stability (ROC 5 hari ICE tidak crash > -10%)
-        ice_close = ice_df["Close"]
-        ice_roc_5 = ((ice_close.iloc[-1] - ice_close.iloc[-5]) / ice_close.iloc[-5]) * 100 if len(ice_close) >= 5 else 0
+        if ice_df is not None and len(ice_df) >= 5:
+            ice_close = ice_df["Close"]
+            ice_roc_5 = ((ice_close.iloc[-1] - ice_close.iloc[-5]) / ice_close.iloc[-5]) * 100
+        else:
+            ice_roc_5 = 0
 
         score = 0
         panic_detected = False
 
-        # Panic selling terdeteksi jika:
-        # 1. Discount dari MA50 > 8%
-        # 2. Volume spike > 2x
-        # 3. ICE tidak ikut crash (masih > -$5% ROC)
         if discount_from_ma50 > 8 and vol_spike_ratio > 2.0 and ice_roc_5 > -5:
             panic_detected = True
             score = min(100, int(discount_from_ma50 * 5 + vol_spike_ratio * 10))
 
-        # Opportunity zone
         if discount_from_ma50 > 15:
             opportunity = "EXTREME_FEAR_ALL_IN"
         elif discount_from_ma50 > 8 and panic_detected:
@@ -443,11 +433,6 @@ class FundamentalAnalysis:
     def calculate_safety_score(info: Dict, stock_df: pd.DataFrame) -> Dict:
         """
         DIVIDEND MODE: Fundamental Safety Score (Bobot 40%)
-        Komponen:
-        - EPS Growth (quarterly) : 25%
-        - Dividend Payout Consistency : 25%
-        - Free Cash Flow positivity : 25%
-        - DER < 100% : 25%
         """
         if info is None:
             return {"score": 0, "details": "NO_DATA"}
@@ -491,11 +476,8 @@ class FundamentalAnalysis:
 
         if payout_ratio and 0 < payout_ratio < 1:
             details["payout_ratio_pct"] = round(payout_ratio * 100, 2)
-            if payout_ratio < 0.8:
-                score += 0  # Sudah dihitung di yield
-            # Payout ratio sehat < 90%
             if payout_ratio > 0.9:
-                score = max(0, score - 10)  # Penalty payout terlalu tinggi
+                score = max(0, score - 10)
         else:
             details["payout_ratio_pct"] = None
 
@@ -533,7 +515,6 @@ class FundamentalAnalysis:
 
     @staticmethod
     def calculate_forward_yield(info: Dict, current_price: float) -> Optional[float]:
-        """Hitung Forward Dividend Yield."""
         div_rate = info.get("dividendRate", None)
         if div_rate and current_price > 0:
             return round((div_rate / current_price) * 100, 2)
@@ -552,11 +533,14 @@ class SwingEngine:
 
     def __init__(self, ice_df: pd.DataFrame):
         self.ice_df = ice_df
-        self.ice_momentum = ICEAnalysis.calculate_momentum_score(ice_df)
-        self.ice_current = ICEAnalysis.get_current_price(ice_df)
+        if ice_df is not None:
+            self.ice_momentum = ICEAnalysis.calculate_momentum_score(ice_df)
+            self.ice_current = ICEAnalysis.get_current_price(ice_df)
+        else:
+            self.ice_momentum = {"score": 50, "trend": "UNKNOWN"}
+            self.ice_current = None
 
     def analyze_stock(self, ticker: str, stock_df: pd.DataFrame) -> Dict:
-        """Analisis lengkap per saham untuk Swing Mode."""
         if stock_df is None or len(stock_df) < 30:
             return self._empty_result(ticker, "INSUFFICIENT_DATA")
 
@@ -564,16 +548,10 @@ class SwingEngine:
         volume = stock_df["Volume"]
         current_price = float(close.iloc[-1])
 
-        # --- Technical Score (40%) ---
         tech_score = self._calculate_technical_score(close)
-
-        # --- Volume/Sentiment Score (20%) ---
         vol_score = self._calculate_volume_score(volume, close)
-
-        # --- Accumulation Detection ---
         accumulation = TechnicalIndicators.detect_accumulation(stock_df)
 
-        # --- Composite Score ---
         ice_score = self.ice_momentum["score"]
         composite = (
             ice_score * SWING_WEIGHTS["ice_momentum"] +
@@ -581,17 +559,15 @@ class SwingEngine:
             vol_score["score"] * SWING_WEIGHTS["volume_sentiment"]
         )
 
-        # --- Signal Generation ---
         signal, tp, sl = self._generate_signal(
             composite, tech_score, current_price, close, accumulation
         )
 
-        # --- ICE Floor Filter ---
         ice_filter_passed = True
         if self.ice_current and self.ice_current < ICE_FLOOR_PRICE_USD:
             ice_filter_passed = False
             if signal == "BUY":
-                signal = "HOLD"  # Downgrade BUY ke HOLD jika ICE < $120
+                signal = "HOLD"
 
         return {
             "ticker": ticker,
@@ -610,7 +586,6 @@ class SwingEngine:
         }
 
     def _calculate_technical_score(self, close: pd.Series) -> Dict:
-        """Hitung skor teknikal (MA, RSI, MACD)."""
         current = float(close.iloc[-1])
         ma10 = TechnicalIndicators.calculate_sma(close, SWING_MA_FAST).iloc[-1]
         ma20 = TechnicalIndicators.calculate_sma(close, SWING_MA_SLOW).iloc[-1]
@@ -621,25 +596,22 @@ class SwingEngine:
 
         score = 0
 
-        # MA Alignment (30 poin)
         if current > ma10 > ma20:
-            score += 30  # Bullish alignment sempurna
+            score += 30
         elif current > ma10:
             score += 20
         elif current > ma20:
             score += 10
 
-        # RSI (35 poin)
         if SWING_RSI_OVERSOLD < rsi_val < 60:
-            score += 35  # Zone optimal
+            score += 35
         elif rsi_val <= SWING_RSI_OVERSOLD:
-            score += 25  # Oversold = potensi bounce
+            score += 25
         elif 60 <= rsi_val < SWING_RSI_OVERBOUGHT:
             score += 20
         else:
-            score += 5  # Overbought
+            score += 5
 
-        # MACD (35 poin)
         if macd_val > 0:
             score += 35
         elif macd_val > -0.5 * float(close.iloc[-1]) / 100:
@@ -660,13 +632,12 @@ class SwingEngine:
         }
 
     def _calculate_volume_score(self, volume: pd.Series, close: pd.Series) -> Dict:
-        """Hitung skor volume/sentimen."""
         vol_ratio = TechnicalIndicators.calculate_volume_ratio(volume, 20)
         current_ratio = float(vol_ratio.iloc[-1]) if not pd.isna(vol_ratio.iloc[-1]) else 1.0
 
         score = 0
         if current_ratio > 2.0:
-            score = 90  # Volume explosion
+            score = 90
         elif current_ratio > 1.5:
             score = 70
         elif current_ratio > 1.2:
@@ -676,7 +647,6 @@ class SwingEngine:
         else:
             score = 10
 
-        # Bonus jika volume naik + harga naik
         if current_ratio > 1.3 and close.iloc[-1] > close.iloc[-2]:
             score = min(100, score + 15)
 
@@ -689,13 +659,11 @@ class SwingEngine:
 
     def _generate_signal(self, composite: float, tech: Dict, price: float,
                          close: pd.Series, accumulation: Dict) -> Tuple[str, float, float]:
-        """Generate sinyal BUY/HOLD/SELL + TP/SL."""
         tp = 0
         sl = 0
 
         if composite >= 75 and tech["rsi"] < SWING_RSI_OVERBOUGHT:
             signal = "BUY"
-            # TP berdasarkan volatilitas
             if composite >= 85:
                 tp = price * (1 + SWING_TP_MAX_PCT / 100)
                 sl = price * (1 - SWING_SL_MIN_PCT / 100)
@@ -709,7 +677,6 @@ class SwingEngine:
         else:
             signal = "HOLD"
 
-        # Upgrade ke STRONG BUY jika ada akumulasi bandar
         if signal == "BUY" and accumulation["accumulation_score"] >= 60:
             signal = "STRONG_BUY"
 
@@ -737,43 +704,34 @@ class DividendEngine:
 
     def __init__(self, ice_df: pd.DataFrame):
         self.ice_df = ice_df
-        self.ice_trend = ICEAnalysis.calculate_trend_barrier_score(ice_df)
-        self.ice_current = ICEAnalysis.get_current_price(ice_df)
+        if ice_df is not None:
+            self.ice_trend = ICEAnalysis.calculate_trend_barrier_score(ice_df)
+            self.ice_current = ICEAnalysis.get_current_price(ice_df)
+        else:
+            self.ice_trend = {"score": 50, "position": "NO_DATA"}
+            self.ice_current = None
 
     def analyze_stock(self, ticker: str, stock_df: pd.DataFrame, info: Dict) -> Dict:
-        """Analisis lengkap per saham untuk Dividend Mode."""
         if stock_df is None or len(stock_df) < 50:
             return self._empty_result(ticker, "INSUFFICIENT_DATA")
 
         close = stock_df["Close"]
         current_price = float(close.iloc[-1])
 
-        # --- Fundamental Safety Score (40%) ---
         fundamental = FundamentalAnalysis.calculate_safety_score(info, stock_df)
-
-        # --- ICE Trend Barrier Score (40%) ---
         ice_score = self.ice_trend["score"]
-
-        # --- Fear/Panic Detector (20%) ---
         fear_panic = ICEAnalysis.calculate_fear_panic_score(self.ice_df, stock_df)
 
-        # --- Composite Score ---
         composite = (
             fundamental["score"] * DIVIDEND_WEIGHTS["fundamental_safety"] +
             ice_score * DIVIDEND_WEIGHTS["ice_trend_barrier"] +
             fear_panic["score"] * DIVIDEND_WEIGHTS["fear_panic_detector"]
         )
 
-        # --- Forward Yield Calculation ---
         forward_yield = FundamentalAnalysis.calculate_forward_yield(info, current_price)
-
-        # --- Signal Generation ---
         signal = self._generate_signal(composite, fear_panic, forward_yield, fundamental)
-
-        # --- Accumulation Detection ---
         accumulation = TechnicalIndicators.detect_accumulation(stock_df)
 
-        # --- MA Position ---
         ma50 = float(TechnicalIndicators.calculate_sma(close, DIV_MA_TREND).iloc[-1])
         ma200 = float(TechnicalIndicators.calculate_sma(close, DIV_MA_LONG).iloc[-1]) if len(close) >= 200 else None
 
@@ -797,27 +755,20 @@ class DividendEngine:
 
     def _generate_signal(self, composite: float, fear_panic: Dict,
                          forward_yield: Optional[float], fundamental: Dict) -> str:
-        """Generate sinyal untuk Dividend Mode."""
-
-        # STRONG ACCUMULATE: Skor tinggi + panic selling + fundamental kuat
         if (composite >= 75 and
             fear_panic.get("panic_detected", False) and
             fundamental["score"] >= 60):
             return "STRONG_ACCUMULATE"
 
-        # ACCUMULATE: Skor cukup tinggi atau forward yield menarik
         if composite >= 65:
             return "ACCUMULATE"
 
-        # REINVEST ZONE: DCA dividen biasa
         if composite >= 45 and forward_yield and forward_yield >= 5:
             return "REINVEST_ZONE"
 
-        # PTBA Switch Check: Jika PTBA forward yield > 12%
         if forward_yield and forward_yield >= DIV_TARGET_FORWARD_YIELD_PCT:
             return "SWITCH_TO_THIS_TICKER"
 
-        # WAIT
         return "WAIT"
 
     def _empty_result(self, ticker: str, reason: str) -> Dict:
@@ -860,54 +811,58 @@ class CoalAlgoTrader:
 
         # Step 1: Fetch ICE Newcastle Data
         ice_df = self.fetcher.fetch_ice_newcastle()
+        
         if ice_df is None:
-            logger.critical("CRITICAL: Tidak bisa mengambil data ICE Newcastle. Abort.")
-            self._export_empty("ICE_DATA_UNAVAILABLE")
-            return
-
-        ice_current = ICEAnalysis.get_current_price(ice_df)
-        self.results["ice_newcastle"] = {
-            "current_price_usd": round(ice_current, 2) if ice_current else None,
-            "floor_threshold_usd": ICE_FLOOR_PRICE_USD,
-            "above_floor": ice_current >= ICE_FLOOR_PRICE_USD if ice_current else False,
-            "momentum": ICEAnalysis.calculate_momentum_score(ice_df),
-            "trend_barrier": ICEAnalysis.calculate_trend_barrier_score(ice_df),
-        }
-
-        # Step 2: Alert jika ICE di bawah floor
-        if ice_current and ice_current < ICE_FLOOR_PRICE_USD:
-            alert_msg = (
-                f"⚠️ ICE NEWCASTLE DI BAWAH FLOOR: ${ice_current:.2f}/ton "
-                f"(Floor: ${ICE_FLOOR_PRICE_USD}/ton). "
-                f"Semua sinyal BUY Swing Mode di-DOWNGRADE ke HOLD."
-            )
-            logger.warning(alert_msg)
+            logger.warning("⚠️  ICE Newcastle data tidak tersedia. Melanjutkan tanpa ICE analysis.")
+            self.results["ice_newcastle"] = {
+                "current_price_usd": None,
+                "floor_threshold_usd": ICE_FLOOR_PRICE_USD,
+                "above_floor": False,
+                "momentum": {"score": 50, "trend": "UNKNOWN", "roc_5d": 0},
+                "trend_barrier": {"score": 50, "position": "NO_DATA"},
+                "warning": "ICE data unavailable - using neutral scores"
+            }
             self.results["alerts"].append({
-                "type": "ICE_FLOOR_BREACH",
-                "message": alert_msg,
-                "severity": "HIGH",
+                "type": "ICE_DATA_UNAVAILABLE",
+                "message": "⚠️ Data ICE Newcastle tidak tersedia. Analisis berjalan dengan skor netral untuk komponen komoditas.",
+                "severity": "MEDIUM"
             })
+        else:
+            ice_current = ICEAnalysis.get_current_price(ice_df)
+            self.results["ice_newcastle"] = {
+                "current_price_usd": round(ice_current, 2) if ice_current else None,
+                "floor_threshold_usd": ICE_FLOOR_PRICE_USD,
+                "above_floor": ice_current >= ICE_FLOOR_PRICE_USD if ice_current else False,
+                "momentum": ICEAnalysis.calculate_momentum_score(ice_df),
+                "trend_barrier": ICEAnalysis.calculate_trend_barrier_score(ice_df),
+            }
 
-        # Step 3: Initialize Engines
+            if ice_current and ice_current < ICE_FLOOR_PRICE_USD:
+                alert_msg = f"⚠️ ICE NEWCASTLE DI BAWAH FLOOR: ${ice_current:.2f}/ton (Floor: ${ICE_FLOOR_PRICE_USD}/ton)"
+                logger.warning(alert_msg)
+                self.results["alerts"].append({
+                    "type": "ICE_FLOOR_BREACH",
+                    "message": alert_msg,
+                    "severity": "HIGH",
+                })
+
+        # Step 2: Initialize Engines
         swing_engine = SwingEngine(ice_df)
         dividend_engine = DividendEngine(ice_df)
 
-        # Step 4: Analyze Each Ticker
+        # Step 3: Analyze Each Ticker
         for ticker in COAL_TICKERS:
             logger.info(f"Analyzing {ticker}...")
 
             stock_df = self.fetcher.fetch_stock_history(ticker)
             info = self.fetcher.fetch_stock_info(ticker)
 
-            # Swing Analysis
             swing_result = swing_engine.analyze_stock(ticker, stock_df)
             self.results["swing_mode"].append(swing_result)
 
-            # Dividend Analysis
             div_result = dividend_engine.analyze_stock(ticker, stock_df, info)
             self.results["dividend_mode"].append(div_result)
 
-            # Generate alerts for strong signals
             if swing_result["signal"] in ["STRONG_BUY", "BUY"]:
                 self.results["alerts"].append({
                     "type": "SWING_BUY_SIGNAL",
@@ -916,7 +871,7 @@ class CoalAlgoTrader:
                     "tp": swing_result.get("target_profit"),
                     "sl": swing_result.get("stop_loss"),
                     "score": swing_result.get("composite_score"),
-                    "severity": "MEDIUM" if swing_result["signal"] == "BUY" else "HIGH",
+                    "severity": "HIGH" if swing_result["signal"] == "STRONG_BUY" else "MEDIUM",
                 })
 
             if div_result["signal"] in ["STRONG_ACCUMULATE", "SWITCH_TO_THIS_TICKER"]:
@@ -929,7 +884,6 @@ class CoalAlgoTrader:
                     "severity": "HIGH",
                 })
 
-            # Accumulation alert
             acc = swing_result.get("accumulation", {})
             if acc.get("signal") == "STRONG_ACCUMULATION":
                 self.results["alerts"].append({
@@ -940,30 +894,17 @@ class CoalAlgoTrader:
                     "severity": "HIGH",
                 })
 
-        # Step 5: Export
+        # Step 4: Export
         self._export()
 
     def _export(self):
-        """Ekspor hasil ke JSON."""
-        # Sort by composite score descending
-        self.results["swing_mode"].sort(
-            key=lambda x: x.get("composite_score", 0), reverse=True
-        )
-        self.results["dividend_mode"].sort(
-            key=lambda x: x.get("composite_score", 0), reverse=True
-        )
+        self.results["swing_mode"].sort(key=lambda x: x.get("composite_score", 0), reverse=True)
+        self.results["dividend_mode"].sort(key=lambda x: x.get("composite_score", 0), reverse=True)
 
-        # Add summary
         self.results["summary"] = {
             "total_tickers": len(COAL_TICKERS),
-            "swing_buy_signals": sum(
-                1 for r in self.results["swing_mode"]
-                if r.get("signal") in ["BUY", "STRONG_BUY"]
-            ),
-            "dividend_accumulate_signals": sum(
-                1 for r in self.results["dividend_mode"]
-                if r.get("signal") in ["ACCUMULATE", "STRONG_ACCUMULATE", "SWITCH_TO_THIS_TICKER"]
-            ),
+            "swing_buy_signals": sum(1 for r in self.results["swing_mode"] if r.get("signal") in ["BUY", "STRONG_BUY"]),
+            "dividend_accumulate_signals": sum(1 for r in self.results["dividend_mode"] if r.get("signal") in ["ACCUMULATE", "STRONG_ACCUMULATE", "SWITCH_TO_THIS_TICKER"]),
             "total_alerts": len(self.results["alerts"]),
             "ice_above_floor": self.results["ice_newcastle"].get("above_floor", False),
         }
@@ -975,14 +916,6 @@ class CoalAlgoTrader:
         logger.info(f"   Swing BUY signals: {self.results['summary']['swing_buy_signals']}")
         logger.info(f"   Dividend ACCUMULATE signals: {self.results['summary']['dividend_accumulate_signals']}")
         logger.info(f"   Total alerts: {self.results['summary']['total_alerts']}")
-
-    def _export_empty(self, reason: str):
-        """Ekspor JSON kosong jika error critical."""
-        self.results["metadata"]["error"] = reason
-        self.results["metadata"]["generated_at"] = datetime.now().isoformat()
-        with open(OUTPUT_FILE, "w") as f:
-            json.dump(self.results, f, indent=2, default=str)
-        logger.error(f"Exported empty result: {reason}")
 
 
 # =============================================================================
