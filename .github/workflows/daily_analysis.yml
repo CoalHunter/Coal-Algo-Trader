@@ -2,9 +2,8 @@ name: Coal Algo-Trader Daily Analysis
 
 on:
   schedule:
-    # 16:30 WIB = 09:30 UTC (Senin-Jumat)
     - cron: '30 9 * * 1-5'
-  workflow_dispatch:  # Manual trigger dari tab Actions
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -16,8 +15,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
       
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -27,44 +24,17 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install yfinance pandas numpy
-      
-      - name: Verify files exist
-        run: |
-          echo "Checking repository structure..."
-          ls -la
-          if [ ! -f "algo_engine.py" ]; then
-            echo "❌ Error: algo_engine.py not found!"
-            exit 1
-          fi
-          echo "✅ algo_engine.py found"
+          pip install -r requirements.txt
       
       - name: Run Coal Algo-Trader Engine
-        run: |
-          echo "🚀 Starting analysis..."
-          python algo_engine.py
-          echo "✅ Analysis complete"
-      
-      - name: Verify output
-        run: |
-          if [ ! -f "coal_data.json" ]; then
-            echo "❌ Error: coal_data.json not generated!"
-            exit 1
-          fi
-          echo "✅ coal_data.json generated"
-          echo "File size: $(wc -c < coal_data.json) bytes"
+        env:
+          ALPHA_VANTAGE_KEY: ${{ secrets.ALPHA_VANTAGE_KEY }}
+        run: python algo_engine.py
       
       - name: Commit and push results
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add coal_data.json
-          
-          # Only commit if there are changes
-          if git diff --staged --quiet; then
-            echo "📊 No changes in data"
-          else
-            git commit -m "📊 Daily analysis: $(date +'%Y-%m-%d %H:%M WIB')"
-            git push
-            echo "✅ Changes pushed successfully"
-          fi
+          git diff --staged --quiet || git commit -m "📊 Daily analysis: $(date +'%Y-%m-%d %H:%M WIB')"
+          git push
