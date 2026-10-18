@@ -7,128 +7,194 @@
     <meta name="description" content="Kelola portofolio saham batu bara Anda">
     
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         :root {
-            --primary: #0a1f44;
-            --primary-light: #1a3a6f;
-            --accent: #e63946;
-            --success: #2d9f4a;
-            --warning: #f59e0b;
-            --bg: #f5f5f5;
-            --card: #ffffff;
-            --text: #333333;
-            --text-muted: #666666;
-            --border: #e0e0e0;
-            --shadow: 0 2px 8px rgba(0,0,0,0.08);
+            --inv-green: #00a651;
+            --inv-red: #ed1c24;
+            --inv-blue: #2962ff;
+            --inv-blue-dark: #1e4bd8;
+            --inv-bg: #f5f6f8;
+            --inv-white: #ffffff;
+            --inv-border: #e0e3eb;
+            --inv-text: #333333;
+            --inv-text-muted: #787b86;
+            --inv-header: #1a1a1a;
+            --inv-hover: #f0f2f5;
+            --inv-yellow: #ffb800;
         }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            line-height: 1.6;
+            background: var(--inv-bg);
+            color: var(--inv-text);
+            font-size: 13px;
+            line-height: 1.4;
         }
 
-        .header {
-            background: var(--primary);
-            color: white;
-            padding: 16px 0;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        a { text-decoration: none; color: inherit; }
+
+        /* HEADER */
+        .top-bar {
+            background: var(--inv-header);
+            color: #c5c5c5;
+            font-size: 12px;
+            padding: 6px 0;
+        }
+
+        .top-bar-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 16px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .main-header {
+            background: var(--inv-white);
+            border-bottom: 1px solid var(--inv-border);
+            padding: 12px 0;
             position: sticky;
             top: 0;
             z-index: 100;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
 
         .header-container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
-            padding: 0 20px;
+            padding: 0 16px;
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 16px;
+            gap: 24px;
         }
 
-        .logo-section {
+        .logo {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
         }
 
-        .logo-icon { font-size: 32px; }
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--inv-blue) 0%, var(--inv-blue-dark) 100%);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: white;
+            font-weight: 700;
+        }
 
         .logo-text h1 {
-            font-size: 24px;
+            font-size: 18px;
             font-weight: 700;
+            color: var(--inv-header);
         }
 
         .logo-text p {
-            font-size: 12px;
-            opacity: 0.8;
+            font-size: 11px;
+            color: var(--inv-text-muted);
         }
 
-        .nav-links {
+        .header-nav {
             display: flex;
-            gap: 12px;
+            gap: 4px;
+            margin-left: auto;
         }
 
         .nav-link {
-            padding: 8px 16px;
-            background: rgba(255,255,255,0.1);
-            color: white;
-            text-decoration: none;
-            border-radius: 6px;
-            font-size: 14px;
+            padding: 8px 14px;
+            font-size: 13px;
             font-weight: 600;
+            color: var(--inv-text);
+            border-radius: 4px;
             transition: all 0.2s;
         }
 
-        .nav-link:hover {
-            background: rgba(255,255,255,0.2);
-        }
+        .nav-link:hover { background: var(--inv-hover); }
+        .nav-link.active { background: var(--inv-blue); color: white; }
 
+        /* CONTAINER */
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 24px auto;
-            padding: 0 20px;
+            padding: 0 16px;
         }
 
         .page-title {
-            font-size: 28px;
+            font-size: 24px;
             font-weight: 700;
-            color: var(--primary);
+            color: var(--inv-header);
             margin-bottom: 8px;
         }
 
         .page-subtitle {
-            color: var(--text-muted);
+            color: var(--inv-text-muted);
             margin-bottom: 24px;
+            font-size: 13px;
         }
 
-        .card {
-            background: white;
-            border-radius: 12px;
-            padding: 24px;
-            box-shadow: var(--shadow);
-            margin-bottom: 24px;
-        }
-
-        .card-title {
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--primary);
+        /* PANEL */
+        .panel {
+            background: var(--inv-white);
+            border: 1px solid var(--inv-border);
+            border-radius: 4px;
             margin-bottom: 16px;
+        }
+
+        .panel-header {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--inv-border);
+            background: #fafbfc;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--inv-header);
             display: flex;
             align-items: center;
             gap: 8px;
         }
 
+        .panel-body { padding: 16px; }
+
+        /* SUMMARY CARDS */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .summary-card {
+            background: linear-gradient(135deg, var(--inv-header) 0%, #2d2d2d 100%);
+            color: white;
+            padding: 16px;
+            border-radius: 4px;
+        }
+
+        .summary-label {
+            font-size: 11px;
+            opacity: 0.8;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .summary-value {
+            font-size: 20px;
+            font-weight: 700;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .summary-sub {
+            font-size: 11px;
+            opacity: 0.7;
+            margin-top: 4px;
+        }
+
+        /* FORM */
         .form-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -142,30 +208,40 @@
         }
 
         .form-label {
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 600;
-            color: var(--text-muted);
+            color: var(--inv-text-muted);
             margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
         }
 
         .form-input {
             padding: 10px 12px;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            font-size: 14px;
+            border: 1px solid var(--inv-border);
+            border-radius: 4px;
+            font-size: 13px;
             transition: border-color 0.2s;
+            background: white;
         }
 
         .form-input:focus {
             outline: none;
-            border-color: var(--primary);
+            border-color: var(--inv-blue);
         }
 
+        .form-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        /* BUTTONS */
         .btn {
             padding: 10px 20px;
             border: none;
-            border-radius: 6px;
-            font-size: 14px;
+            border-radius: 4px;
+            font-size: 13px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
@@ -175,78 +251,93 @@
         }
 
         .btn-primary {
-            background: var(--primary);
+            background: var(--inv-blue);
             color: white;
         }
 
-        .btn-primary:hover {
-            background: var(--primary-light);
-        }
-
-        .btn-danger {
-            background: var(--accent);
-            color: white;
-        }
-
-        .btn-danger:hover {
-            background: #c92a3a;
-        }
+        .btn-primary:hover { background: var(--inv-blue-dark); }
 
         .btn-secondary {
-            background: #e5e7eb;
-            color: var(--text);
+            background: var(--inv-bg);
+            color: var(--inv-text);
+            border: 1px solid var(--inv-border);
         }
 
-        .btn-secondary:hover {
-            background: #d1d5db;
-        }
+        .btn-secondary:hover { background: var(--inv-hover); }
 
         .btn-success {
-            background: var(--success);
+            background: var(--inv-green);
             color: white;
         }
 
-        .btn-success:hover {
-            background: #238a3e;
+        .btn-success:hover { background: #008f45; }
+
+        .btn-danger {
+            background: var(--inv-red);
+            color: white;
         }
 
-        .position-table {
+        .btn-danger:hover { background: #c41820; }
+
+        /* TABLE */
+        .table-wrapper {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .data-table {
             width: 100%;
             border-collapse: collapse;
-        }
-
-        .position-table th {
-            text-align: left;
-            padding: 12px;
-            background: #f9fafb;
-            border-bottom: 2px solid var(--border);
             font-size: 13px;
+            min-width: 700px;
+        }
+
+        .data-table thead th {
+            background: #fafbfc;
+            padding: 10px 12px;
+            text-align: left;
+            font-size: 11px;
             font-weight: 600;
-            color: var(--text-muted);
+            color: var(--inv-text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--inv-border);
+            white-space: nowrap;
         }
 
-        .position-table td {
-            padding: 16px 12px;
-            border-bottom: 1px solid var(--border);
-            font-size: 14px;
+        .data-table tbody tr {
+            border-bottom: 1px solid var(--inv-border);
+            transition: background 0.15s;
         }
 
-        .position-table tr:hover {
-            background: #f9fafb;
+        .data-table tbody tr:hover {
+            background: var(--inv-hover);
+        }
+
+        .data-table tbody tr:last-child { border-bottom: none; }
+
+        .data-table td {
+            padding: 12px;
+            vertical-align: middle;
         }
 
         .ticker-cell {
             font-weight: 700;
-            color: var(--primary);
-            font-size: 16px;
+            color: var(--inv-header);
+            font-size: 14px;
         }
 
-        .pnl-positive { color: var(--success); font-weight: 700; }
-        .pnl-negative { color: var(--accent); font-weight: 700; }
+        .price-cell {
+            font-weight: 700;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .pnl-positive { color: var(--inv-green); font-weight: 600; }
+        .pnl-negative { color: var(--inv-red); font-weight: 600; }
 
         .action-btns {
             display: flex;
-            gap: 8px;
+            gap: 6px;
         }
 
         .action-btn {
@@ -256,60 +347,36 @@
             font-size: 12px;
             cursor: pointer;
             font-weight: 600;
+            transition: all 0.2s;
         }
 
         .action-btn.edit {
-            background: #dbeafe;
-            color: #1e40af;
+            background: #e8f4fd;
+            color: var(--inv-blue);
         }
+
+        .action-btn.edit:hover { background: #d0e8fd; }
 
         .action-btn.delete {
-            background: #fee2e2;
-            color: #991b1b;
+            background: #fde8e9;
+            color: var(--inv-red);
         }
 
-        .summary-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 16px;
-            margin-bottom: 24px;
-        }
+        .action-btn.delete:hover { background: #fdd0d2; }
 
-        .summary-card {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-            color: white;
-            padding: 20px;
-            border-radius: 10px;
-        }
-
-        .summary-label {
-            font-size: 12px;
-            opacity: 0.8;
-            margin-bottom: 4px;
-        }
-
-        .summary-value {
-            font-size: 24px;
-            font-weight: 700;
-        }
-
-        .summary-sub {
-            font-size: 11px;
-            opacity: 0.7;
-            margin-top: 4px;
-        }
-
+        /* EMPTY STATE */
         .empty-state {
             text-align: center;
             padding: 60px 20px;
-            color: var(--text-muted);
+            color: var(--inv-text-muted);
         }
 
         .empty-icon {
-            font-size: 64px;
+            font-size: 48px;
             margin-bottom: 16px;
         }
 
+        /* MODAL */
         .modal-overlay {
             position: fixed;
             inset: 0;
@@ -321,125 +388,154 @@
             padding: 20px;
         }
 
-        .modal-overlay.active {
-            display: flex;
-        }
+        .modal-overlay.active { display: flex; }
 
         .modal-content {
             background: white;
-            border-radius: 12px;
+            border-radius: 4px;
             max-width: 500px;
             width: 100%;
             padding: 24px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
         }
 
         .modal-title {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 700;
             margin-bottom: 16px;
+            color: var(--inv-header);
         }
 
+        /* TOAST */
         .toast {
             position: fixed;
             bottom: 20px;
             right: 20px;
-            background: var(--success);
+            background: var(--inv-green);
             color: white;
             padding: 12px 20px;
-            border-radius: 8px;
+            border-radius: 4px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
             display: none;
             animation: slideUp 0.3s ease-out;
             z-index: 2000;
+            font-size: 13px;
+            font-weight: 600;
         }
 
-        .toast.show {
-            display: block;
-        }
+        .toast.show { display: block; }
+        .toast.error { background: var(--inv-red); }
 
         @keyframes slideUp {
             from { transform: translateY(20px); opacity: 0; }
             to { transform: translateY(0); opacity: 1; }
         }
 
+        /* FOOTER */
+        .footer {
+            background: var(--inv-header);
+            color: #c5c5c5;
+            padding: 24px 0;
+            margin-top: 40px;
+            font-size: 12px;
+            text-align: center;
+        }
+
+        /* RESPONSIVE */
         @media (max-width: 768px) {
-            .header-container { flex-direction: column; align-items: start; }
-            .position-table { font-size: 12px; }
-            .position-table th, .position-table td { padding: 8px 6px; }
-            .action-btns { flex-direction: column; }
+            .header-container { flex-wrap: wrap; }
+            .header-nav { margin-left: 0; width: 100%; justify-content: center; }
+            .form-grid { grid-template-columns: 1fr; }
+            .summary-grid { grid-template-columns: 1fr 1fr; }
+            .form-actions { flex-direction: column; }
+            .btn { width: 100%; justify-content: center; }
+        }
+
+        @media (max-width: 480px) {
+            .summary-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
 
+    <!-- TOP BAR -->
+    <div class="top-bar">
+        <div class="top-bar-container">
+            <span> Coal Algo-Trader v1.0</span>
+            <span>Portfolio Manager</span>
+        </div>
+    </div>
+
     <!-- HEADER -->
-    <header class="header">
+    <header class="main-header">
         <div class="header-container">
-            <div class="logo-section">
-                <div class="logo-icon">🔥</div>
+            <div class="logo">
+                <div class="logo-icon"></div>
                 <div class="logo-text">
-                    <h1>Coal Algo-Trader <span style="font-size: 12px; opacity: 0.7;">v1.0</span></h1>
+                    <h1>Coal Algo-Trader</h1>
                     <p>Portfolio Manager</p>
                 </div>
             </div>
-            <div class="nav-links">
-                <a href="index.html" class="nav-link">📊 Dashboard</a>
-                <a href="position.html" class="nav-link" style="background: rgba(255,255,255,0.2);">💼 My Position</a>
-            </div>
+            <nav class="header-nav">
+                <a href="index.html" class="nav-link"> Dashboard</a>
+                <a href="position.html" class="nav-link active">💼 My Position</a>
+            </nav>
         </div>
     </header>
 
     <!-- MAIN CONTENT -->
     <div class="container">
-        <h1 class="page-title">💼 My Position Manager</h1>
+        <h1 class="page-title"> My Position Manager</h1>
         <p class="page-subtitle">Kelola portofolio saham batu bara Anda. Data disimpan di browser (localStorage).</p>
 
         <!-- SUMMARY -->
-        <div class="summary-grid" id="summary-grid">
-            <!-- Populated by JS -->
-        </div>
+        <div class="summary-grid" id="summary-grid"></div>
 
         <!-- ADD POSITION FORM -->
-        <div class="card">
-            <div class="card-title">➕ Tambah Posisi Baru</div>
-            <form id="add-form">
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label class="form-label">Ticker Emiten</label>
-                        <input type="text" class="form-input" id="input-ticker" placeholder="Contoh: ITMG.JK" required>
+        <div class="panel">
+            <div class="panel-header"> Tambah Posisi Baru</div>
+            <div class="panel-body">
+                <form id="add-form">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">Ticker Emiten</label>
+                            <input type="text" class="form-input" id="input-ticker" placeholder="Contoh: ITMG.JK" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Jumlah Lot</label>
+                            <input type="number" class="form-input" id="input-lots" placeholder="Contoh: 42" required min="1">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Harga Rata-rata (Rp)</label>
+                            <input type="number" class="form-input" id="input-avg" placeholder="Contoh: 21707" required min="1">
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label class="form-label">Jumlah Lot</label>
-                        <input type="number" class="form-input" id="input-lots" placeholder="Contoh: 42" required min="1">
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">💾 Simpan Posisi</button>
+                        <button type="reset" class="btn btn-secondary">🔄 Reset Form</button>
                     </div>
-                    <div class="form-group">
-                        <label class="form-label">Harga Rata-rata (Rp)</label>
-                        <input type="number" class="form-input" id="input-avg" placeholder="Contoh: 21707" required min="1">
-                    </div>
-                </div>
-                <div style="display: flex; gap: 12px;">
-                    <button type="submit" class="btn btn-primary">💾 Simpan Posisi</button>
-                    <button type="reset" class="btn btn-secondary">🔄 Reset Form</button>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
 
         <!-- POSITION LIST -->
-        <div class="card">
-            <div class="card-title">📋 Daftar Posisi Saya</div>
-            <div id="position-list">
-                <!-- Populated by JS -->
+        <div class="panel">
+            <div class="panel-header">📋 Daftar Posisi Saya</div>
+            <div class="panel-body">
+                <div id="position-list"></div>
             </div>
         </div>
 
         <!-- ACTIONS -->
-        <div class="card">
-            <div class="card-title">️ Aksi</div>
-            <div style="display: flex; gap: 12px; flex-wrap: wrap;">
-                <button onclick="exportData()" class="btn btn-success"> Export JSON</button>
-                <button onclick="document.getElementById('import-file').click()" class="btn btn-primary">📥 Import JSON</button>
-                <input type="file" id="import-file" accept=".json" style="display: none;" onchange="importData(event)">
-                <button onclick="clearAllData()" class="btn btn-danger">️ Hapus Semua</button>
+        <div class="panel">
+            <div class="panel-header">⚙️ Aksi</div>
+            <div class="panel-body">
+                <div class="form-actions">
+                    <button onclick="exportData()" class="btn btn-success">📤 Export JSON</button>
+                    <button onclick="document.getElementById('import-file').click()" class="btn btn-primary">📥 Import JSON</button>
+                    <input type="file" id="import-file" accept=".json" style="display: none;" onchange="importData(event)">
+                    <button onclick="clearAllData()" class="btn btn-danger">️ Hapus Semua</button>
+                </div>
             </div>
         </div>
     </div>
@@ -464,7 +560,7 @@
                         <input type="number" class="form-input" id="edit-avg" required min="1">
                     </div>
                 </div>
-                <div style="display: flex; gap: 12px; justify-content: flex-end;">
+                <div class="form-actions" style="justify-content: flex-end;">
                     <button type="button" onclick="closeEditModal()" class="btn btn-secondary">Batal</button>
                     <button type="submit" class="btn btn-primary">💾 Update</button>
                 </div>
@@ -474,6 +570,12 @@
 
     <!-- TOAST -->
     <div class="toast" id="toast"></div>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div><strong>🔥 Coal Algo-Trader v1.0</strong> — Portfolio Manager</div>
+        <div style="margin-top: 8px; opacity: 0.7;">Data disimpan di browser (localStorage)</div>
+    </footer>
 
     <script>
         // ============================================
@@ -500,9 +602,8 @@
         const showToast = (msg, type = 'success') => {
             const toast = document.getElementById('toast');
             toast.textContent = msg;
-            toast.style.background = type === 'error' ? 'var(--accent)' : 'var(--success)';
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 3000);
+            toast.className = 'toast show' + (type === 'error' ? ' error' : '');
+            setTimeout(() => toast.className = 'toast', 3000);
         };
 
         // ============================================
@@ -579,7 +680,7 @@
             positions = positions.filter(p => p.id !== id);
             savePositions();
             renderAll();
-            showToast('️ Posisi dihapus!');
+            showToast('🗑️ Posisi dihapus!');
         }
 
         function clearAllData() {
@@ -587,7 +688,7 @@
             positions = [];
             savePositions();
             renderAll();
-            showToast('🗑️ Semua data dihapus!');
+            showToast('️ Semua data dihapus!');
         }
 
         // ============================================
@@ -606,9 +707,7 @@
                 return;
             }
 
-            let totalModal = 0;
-            let totalValue = 0;
-            let totalEstDiv = 0;
+            let totalModal = 0, totalValue = 0, totalEstDiv = 0;
 
             positions.forEach(pos => {
                 const modal = pos.lots * 100 * pos.avgPrice;
@@ -643,7 +742,7 @@
                     <div class="summary-sub">${formatPercent(totalPnlPct)}</div>
                 </div>
                 <div class="summary-card" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
-                    <div class="summary-label">💰 Est. Dividen/Tahun</div>
+                    <div class="summary-label"> Est. Dividen/Tahun</div>
                     <div class="summary-value">${formatRupiah(totalEstDiv)}</div>
                     <div class="summary-sub">Dari data fundamental</div>
                 </div>
@@ -657,7 +756,7 @@
                 container.innerHTML = `
                     <div class="empty-state">
                         <div class="empty-icon">📭</div>
-                        <div style="font-size: 18px; font-weight: 600; margin-bottom: 8px;">Belum ada posisi</div>
+                        <div style="font-size: 16px; font-weight: 600; margin-bottom: 8px;">Belum ada posisi</div>
                         <div>Tambahkan posisi pertama Anda menggunakan form di atas.</div>
                     </div>
                 `;
@@ -665,21 +764,22 @@
             }
 
             let html = `
-                <table class="position-table">
-                    <thead>
-                        <tr>
-                            <th>Ticker</th>
-                            <th>Lot</th>
-                            <th>Avg Price</th>
-                            <th>Harga Live</th>
-                            <th>Modal</th>
-                            <th>Nilai Pasar</th>
-                            <th>P&L</th>
-                            <th>Est. Div/Tahun</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+                <div class="table-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Ticker</th>
+                                <th>Lot</th>
+                                <th>Avg Price</th>
+                                <th>Harga Live</th>
+                                <th>Modal</th>
+                                <th>Nilai Pasar</th>
+                                <th>P&L</th>
+                                <th>Est. Div/Tahun</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
             `;
 
             positions.forEach(pos => {
@@ -691,21 +791,21 @@
                 const pnlClass = pnl >= 0 ? 'pnl-positive' : 'pnl-negative';
                 const divRate = getDividendRate(pos.ticker);
                 const estDiv = pos.lots * 100 * divRate;
-                const pnlIcon = pnl >= 0 ? '📈' : '📉';
+                const pnlIcon = pnl >= 0 ? '' : '📉';
 
                 html += `
                     <tr>
                         <td class="ticker-cell">${pos.ticker.replace('.JK', '')}</td>
                         <td>${pos.lots}</td>
-                        <td>${formatRupiah(pos.avgPrice)}</td>
-                        <td>${price ? formatRupiah(price) : '—'}</td>
-                        <td>${formatRupiah(modal)}</td>
-                        <td>${formatRupiah(value)}</td>
+                        <td class="price-cell">${formatRupiah(pos.avgPrice)}</td>
+                        <td class="price-cell">${price ? formatRupiah(price) : '—'}</td>
+                        <td class="price-cell">${formatRupiah(modal)}</td>
+                        <td class="price-cell">${formatRupiah(value)}</td>
                         <td class="${pnlClass}">
                             ${pnlIcon} ${formatRupiah(pnl)}<br>
                             <small>${formatPercent(pnlPct)}</small>
                         </td>
-                        <td style="color: var(--warning); font-weight: 600;">${formatRupiah(estDiv)}</td>
+                        <td class="price-cell" style="color: var(--inv-yellow);">${formatRupiah(estDiv)}</td>
                         <td>
                             <div class="action-btns">
                                 <button class="action-btn edit" onclick="openEditModal('${pos.id}')">✏️ Edit</button>
@@ -716,7 +816,7 @@
                 `;
             });
 
-            html += '</tbody></table>';
+            html += '</tbody></table></div>';
             container.innerHTML = html;
         }
 
@@ -769,7 +869,7 @@
                         positions = data.positions;
                         savePositions();
                         renderAll();
-                        showToast('📥 Data berhasil diimport!');
+                        showToast(' Data berhasil diimport!');
                     } else {
                         throw new Error('Invalid format');
                     }
@@ -790,7 +890,7 @@
             const avg = document.getElementById('input-avg').value;
 
             if (!ticker || !lots || !avg) {
-                showToast('❌ Semua field harus diisi!', 'error');
+                showToast(' Semua field harus diisi!', 'error');
                 return;
             }
 
@@ -825,4 +925,4 @@
         init();
     </script>
 </body>
-  </html>
+</html>
