@@ -653,10 +653,20 @@
         }
 
         function updateLastUpdate() {
-            if (DATA.metadata?.generated_at) {
-                const d = new Date(DATA.metadata.generated_at);
-                document.getElementById('last-update').textContent = 'Update: ' + d.toLocaleString('id-ID', { day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit' });
-            }
+    if (DATA.metadata?.generated_at) {
+        const d = new Date(DATA.metadata.generated_at);
+        // Konversi ke WIB (UTC+7)
+        const wibTime = new Date(d.getTime() + (7 * 60 * 60 * 1000));
+        const options = { 
+            day: '2-digit', 
+            month: 'short', 
+            hour: '2-digit', 
+            minute: '2-digit',
+            hour12: false 
+        };
+        document.getElementById('last-update').textContent = 
+            'Update: ' + wibTime.toLocaleString('id-ID', options).replace(',', '') + ' WIB';
+    }
         }
 
         function renderAlerts() {
