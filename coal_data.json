@@ -1,7 +1,7 @@
 {
   "metadata": {
     "system": "Coal Algo-Trader v1.0",
-    "generated_at": "2026-10-18T04:19:00.320344",
+    "generated_at": "2026-10-18T04:27:19.509113",
     "ice_floor_filter_usd": 120.0,
     "tickers_analyzed": [
       "ITMG.JK",
@@ -14,7 +14,7 @@
   },
   "ice_newcastle": {
     "status": "FAILED",
-    "error_message": "GAGAL MENGAMBIL DATA NEWCASTLE COAL. Semua sumber (yfinance, investpy, Alpha Vantage) tidak berhasil mengembalikan data.",
+    "error_message": "GAGAL MENGAMBIL DATA NEWCASTLE COAL. Semua sumber (yfinance, Investing.com, EIA API, Cache) tidak berhasil mengembalikan data.",
     "current_price_usd": null
   },
   "swing_mode": [
@@ -84,7 +84,7 @@
   "alerts": [
     {
       "type": "CRITICAL_DATA_FAILURE",
-      "message": "GAGAL MENGAMBIL DATA NEWCASTLE COAL. Semua sumber (yfinance, investpy, Alpha Vantage) tidak berhasil mengembalikan data.",
+      "message": "GAGAL MENGAMBIL DATA NEWCASTLE COAL. Semua sumber (yfinance, Investing.com, EIA API, Cache) tidak berhasil mengembalikan data.",
       "severity": "CRITICAL"
     }
   ],
