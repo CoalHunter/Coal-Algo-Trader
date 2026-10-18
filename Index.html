@@ -1,0 +1,1287 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coal Algo-Trader v1.0 — Rekomendasi Saham Batu Bara</title>
+    <meta name="description" content="Sistem rekomendasi saham batu bara BEI berbasis algoritma dual-engine: Swing Trading & Dividend Investing">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Chart.js untuk visualisasi -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        shopee: {
+                            50: '#FFF5F2',
+                            100: '#FEE3DB',
+                            200: '#FDCBBB',
+                            300: '#FBAA90',
+                            400: '#F88460',
+                            500: '#F6613A',
+                            600: '#EE4D2D',
+                            700: '#D43D1F',
+                            800: '#AF321A',
+                            900: '#8F2A17',
+                        },
+                        coal: {
+                            dark: '#1A1A2E',
+                            deeper: '#16213E',
+                            accent: '#E94560',
+                        }
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'bounce-slow': 'bounce 2s infinite',
+                        'fade-in': 'fadeIn 0.3s ease-out',
+                        'slide-up': 'slideUp 0.4s ease-out',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        },
+                    },
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #FFF5F2 0%, #FFFFFF 50%, #FFF5F2 100%);
+            min-height: 100vh;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #EE4D2D; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #D43D1F; }
+
+        /* Card Hover Effect */
+        .stock-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
+        .stock-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 40px rgba(238, 77, 45, 0.15);
+        }
+
+        /* Signal Badge Pulse */
+        .badge-strong {
+            animation: pulse-strong 2s infinite;
+        }
+        @keyframes pulse-strong {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
+            50% { box-shadow: 0 0 0 10px rgba(34, 197, 94, 0); }
+        }
+
+        /* Modal Backdrop */
+        .modal-backdrop {
+            backdrop-filter: blur(8px);
+            background: rgba(0, 0, 0, 0.6);
+        }
+
+        /* Score Bar Animation */
+        .score-bar {
+            transition: width 1s ease-out;
+        }
+
+        /* Gradient Text */
+        .gradient-text {
+            background: linear-gradient(135deg, #EE4D2D 0%, #F88460 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Loading Spinner */
+        .loader {
+            border: 3px solid #FEE3DB;
+            border-top: 3px solid #EE4D2D;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* ICE Gauge */
+        .gauge-bg {
+            background: conic-gradient(
+                #22c55e 0deg 120deg,
+                #eab308 120deg 240deg,
+                #ef4444 240deg 360deg
+            );
+        }
+
+        /* Tab Active Indicator */
+        .tab-active {
+            position: relative;
+        }
+        .tab-active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: #EE4D2D;
+            border-radius: 3px 3px 0 0;
+        }
+
+        /* Alert Banner Slide */
+        .alert-banner {
+            animation: slideDown 0.5s ease-out;
+        }
+        @keyframes slideDown {
+            from { transform: translateY(-100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        /* Accumulation Heat */
+        .heat-strong {
+            background: linear-gradient(135deg, #fef3c7 0%, #fbbf24 100%);
+        }
+        .heat-moderate {
+            background: linear-gradient(135deg, #fef9c3 0%, #fde047 100%);
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <!-- ============================================ -->
+    <!-- HEADER -->
+    <!-- ============================================ -->
+    <header class="bg-gradient-to-r from-shopee-600 to-shopee-700 text-white shadow-lg sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 py-4">
+            <div class="flex items-center justify-between flex-wrap gap-4">
+                <!-- Logo -->
+                <div class="flex items-center gap-3">
+                    <div class="bg-white/20 p-2.5 rounded-xl backdrop-blur">
+                        <i class="fas fa-fire text-2xl text-yellow-300"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl md:text-2xl font-extrabold tracking-tight">
+                            Coal Algo-Trader
+                            <span class="text-xs bg-white/20 px-2 py-0.5 rounded-full ml-1 font-normal">v1.0</span>
+                        </h1>
+                        <p class="text-xs text-white/80">Dual-Engine Recommendation System • IDX Coal Stocks</p>
+                    </div>
+                </div>
+
+                <!-- ICE Newcastle Live -->
+                <div class="flex items-center gap-4">
+                    <div class="bg-white/10 backdrop-blur rounded-xl px-4 py-2 border border-white/20">
+                        <div class="flex items-center gap-2 text-xs text-white/80 mb-1">
+                            <i class="fas fa-chart-line"></i>
+                            <span>ICE Newcastle</span>
+                            <span id="ice-status-dot" class="w-2 h-2 rounded-full bg-gray-400 animate-pulse"></span>
+                        </div>
+                        <div class="flex items-baseline gap-2">
+                            <span id="ice-price" class="text-xl font-bold">—</span>
+                            <span id="ice-unit" class="text-xs text-white/70">USD/ton</span>
+                        </div>
+                        <div id="ice-trend" class="text-xs mt-0.5 text-white/80">Loading...</div>
+                    </div>
+
+                    <!-- Last Update -->
+                    <div class="hidden md:block text-right text-xs text-white/80">
+                        <div class="flex items-center gap-1">
+                            <i class="fas fa-clock"></i>
+                            <span>Update:</span>
+                        </div>
+                        <div id="last-update" class="font-semibold text-white">—</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ============================================ -->
+    <!-- ALERT BANNER -->
+    <!-- ============================================ -->
+    <div id="alert-container" class="max-w-7xl mx-auto px-4 mt-4 space-y-2"></div>
+
+    <!-- ============================================ -->
+    <!-- MY POSITION CARD (ITMG) -->
+    <!-- ============================================ -->
+    <section class="max-w-7xl mx-auto px-4 mt-6">
+        <div class="bg-gradient-to-br from-coal-dark to-coal-deeper rounded-2xl p-6 text-white shadow-2xl relative overflow-hidden">
+            <!-- Decorative -->
+            <div class="absolute top-0 right-0 w-64 h-64 bg-shopee-600/20 rounded-full -mr-32 -mt-32 blur-3xl"></div>
+            <div class="absolute bottom-0 left-0 w-48 h-48 bg-yellow-500/10 rounded-full -ml-24 -mb-24 blur-3xl"></div>
+
+            <div class="relative z-10">
+                <div class="flex items-center gap-2 mb-4">
+                    <i class="fas fa-briefcase text-shopee-400"></i>
+                    <h2 class="text-lg font-bold">My Position — Dividend Collector</h2>
+                    <span class="text-xs bg-shopee-600/30 px-2 py-0.5 rounded-full">LIVE TRACK</span>
+                </div>
+
+                <div id="my-position-content" class="grid grid-cols-2 md:grid-cols-5 gap-4">
+                    <!-- Populated by JS -->
+                    <div class="col-span-full text-center py-4">
+                        <div class="loader mx-auto"></div>
+                        <p class="text-sm text-white/60 mt-3">Memuat data posisi...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- TAB NAVIGATION -->
+    <!-- ============================================ -->
+    <section class="max-w-7xl mx-auto px-4 mt-8">
+        <div class="bg-white rounded-2xl shadow-md p-2 flex items-center gap-2 overflow-x-auto">
+            <button onclick="switchTab('swing')" id="tab-swing"
+                class="tab-active flex items-center gap-2 px-5 py-3 rounded-xl font-semibold text-shopee-600 bg-shopee-50 whitespace-nowrap transition-all">
+                <i class="fas fa-bolt"></i>
+                <span>Swing Trading</span>
+                <span class="bg-shopee-600 text-white text-xs px-2 py-0.5 rounded-full" id="swing-count">0</span>
+            </button>
+            <button onclick="switchTab('dividend')" id="tab-dividend"
+                class="flex items-center gap-2 px-5 py-3 rounded-xl font-semibold text-gray-600 hover:bg-gray-50 whitespace-nowrap transition-all">
+                <i class="fas fa-coins"></i>
+                <span>Dividend Investing</span>
+                <span class="bg-gray-200 text-gray-700 text-xs px-2 py-0.5 rounded-full" id="dividend-count">0</span>
+            </button>
+            <button onclick="switchTab('all')" id="tab-all"
+                class="flex items-center gap-2 px-5 py-3 rounded-xl font-semibold text-gray-600 hover:bg-gray-50 whitespace-nowrap transition-all">
+                <i class="fas fa-th-large"></i>
+                <span>Semua Saham</span>
+            </button>
+
+            <!-- Search & Sort -->
+            <div class="ml-auto flex items-center gap-2">
+                <div class="relative">
+                    <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+                    <input type="text" id="search-input" placeholder="Cari ticker..."
+                        class="pl-9 pr-4 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-shopee-500 w-40">
+                </div>
+                <select id="sort-select" class="px-3 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-shopee-500">
+                    <option value="score">Skor ↓</option>
+                    <option value="price">Harga ↓</option>
+                    <option value="ticker">Ticker A-Z</option>
+                </select>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- STOCK GRID -->
+    <!-- ============================================ -->
+    <section class="max-w-7xl mx-auto px-4 mt-6 pb-12">
+        <div id="stock-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+            <!-- Populated by JS -->
+            <div class="col-span-full text-center py-20">
+                <div class="loader mx-auto"></div>
+                <p class="text-gray-500 mt-4">Memuat data rekomendasi...</p>
+            </div>
+        </div>
+
+        <!-- Empty State -->
+        <div id="empty-state" class="hidden text-center py-20">
+            <i class="fas fa-search text-6xl text-gray-300 mb-4"></i>
+            <p class="text-gray-500">Tidak ada saham yang cocok dengan filter.</p>
+        </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- MODAL POPUP -->
+    <!-- ============================================ -->
+    <div id="modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 modal-backdrop">
+        <div class="bg-white rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl animate-slide-up">
+            <div id="modal-content">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- FOOTER -->
+    <!-- ============================================ -->
+    <footer class="bg-coal-dark text-white/70 py-8 mt-12">
+        <div class="max-w-7xl mx-auto px-4 text-center text-sm">
+            <div class="flex items-center justify-center gap-2 mb-3">
+                <i class="fas fa-fire text-shopee-500"></i>
+                <span class="font-bold text-white">Coal Algo-Trader v1.0</span>
+            </div>
+            <p class="mb-2">Sistem rekomendasi otomatis berbasis algoritma dual-engine.</p>
+            <p class="text-xs text-white/50 max-w-2xl mx-auto">
+                <i class="fas fa-exclamation-triangle text-yellow-500 mr-1"></i>
+                <strong>Disclaimer:</strong> Informasi di halaman ini bersifat edukatif dan bukan merupakan ajakan untuk membeli/menjual saham.
+                Semua keputusan investasi adalah tanggung jawab Anda. Past performance ≠ future results.
+                Data diperbarui otomatis setiap hari kerja pukul 16:30 WIB via GitHub Actions.
+            </p>
+            <div class="mt-4 flex items-center justify-center gap-4 text-xs">
+                <span><i class="fab fa-github mr-1"></i> GitHub Pages</span>
+                <span>•</span>
+                <span><i class="fab fa-python mr-1"></i> Python Engine</span>
+                <span>•</span>
+                <span><i class="fas fa-chart-line mr-1"></i> yfinance</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ============================================ -->
+    <!-- JAVASCRIPT -->
+    <!-- ============================================ -->
+    <script>
+        // ============================================
+        // STATE MANAGEMENT
+        // ============================================
+        let DATA = null;
+        let CURRENT_TAB = 'swing';
+        let MY_POSITION = {
+            ticker: 'ITMG.JK',
+            lots: 42,
+            avgPrice: 21707.74,
+            totalModal: 91309258,
+        };
+
+        // ============================================
+        // DATA FETCHING
+        // ============================================
+        async function loadData() {
+            try {
+                const response = await fetch('coal_data.json', { cache: 'no-store' });
+                if (!response.ok) throw new Error('Network response was not ok');
+                DATA = await response.json();
+                renderAll();
+            } catch (error) {
+                console.error('Error loading data:', error);
+                document.getElementById('stock-grid').innerHTML = `
+                    <div class="col-span-full text-center py-20">
+                        <i class="fas fa-exclamation-triangle text-6xl text-red-400 mb-4"></i>
+                        <p class="text-gray-700 font-semibold">Gagal memuat data</p>
+                        <p class="text-gray-500 text-sm mt-2">Pastikan file coal_data.json tersedia.</p>
+                        <button onclick="loadData()" class="mt-4 px-4 py-2 bg-shopee-600 text-white rounded-lg hover:bg-shopee-700">
+                            <i class="fas fa-redo mr-1"></i> Coba Lagi
+                        </button>
+                    </div>
+                `;
+            }
+        }
+
+        // ============================================
+        // UTILITIES
+        // ============================================
+        function formatRupiah(num) {
+            if (num === null || num === undefined) return '—';
+            return 'Rp ' + Math.round(num).toLocaleString('id-ID');
+        }
+
+        function formatPercent(num) {
+            if (num === null || num === undefined) return '—';
+            const sign = num >= 0 ? '+' : '';
+            return sign + num.toFixed(2) + '%';
+        }
+
+        function formatNumber(num) {
+            if (num === null || num === undefined) return '—';
+            return num.toLocaleString('id-ID');
+        }
+
+        function getSignalConfig(signal) {
+            const configs = {
+                'STRONG_BUY': { color: 'bg-green-500', text: 'text-white', icon: 'fa-rocket', label: 'STRONG BUY', pulse: true },
+                'BUY': { color: 'bg-green-400', text: 'text-white', icon: 'fa-arrow-trend-up', label: 'BUY', pulse: false },
+                'HOLD': { color: 'bg-yellow-400', text: 'text-white', icon: 'fa-pause', label: 'HOLD', pulse: false },
+                'SELL': { color: 'bg-red-500', text: 'text-white', icon: 'fa-arrow-trend-down', label: 'SELL', pulse: false },
+                'STRONG_ACCUMULATE': { color: 'bg-green-600', text: 'text-white', icon: 'fa-vault', label: 'STRONG ACCUMULATE', pulse: true },
+                'ACCUMULATE': { color: 'bg-emerald-500', text: 'text-white', icon: 'fa-piggy-bank', label: 'ACCUMULATE', pulse: false },
+                'REINVEST_ZONE': { color: 'bg-blue-500', text: 'text-white', icon: 'fa-arrows-rotate', label: 'REINVEST ZONE', pulse: false },
+                'SWITCH_TO_THIS_TICKER': { color: 'bg-purple-500', text: 'text-white', icon: 'fa-right-left', label: 'SWITCH HERE', pulse: true },
+                'WAIT': { color: 'bg-gray-400', text: 'text-white', icon: 'fa-clock', label: 'WAIT', pulse: false },
+                'NO_DATA': { color: 'bg-gray-300', text: 'text-gray-700', icon: 'fa-question', label: 'NO DATA', pulse: false },
+            };
+            return configs[signal] || configs['NO_DATA'];
+        }
+
+        function getScoreColor(score) {
+            if (score >= 75) return 'text-green-600 bg-green-100';
+            if (score >= 60) return 'text-blue-600 bg-blue-100';
+            if (score >= 45) return 'text-yellow-600 bg-yellow-100';
+            return 'text-red-600 bg-red-100';
+        }
+
+        function getScoreBarColor(score) {
+            if (score >= 75) return 'bg-gradient-to-r from-green-400 to-green-600';
+            if (score >= 60) return 'bg-gradient-to-r from-blue-400 to-blue-600';
+            if (score >= 45) return 'bg-gradient-to-r from-yellow-400 to-yellow-600';
+            return 'bg-gradient-to-r from-red-400 to-red-600';
+        }
+
+        // ============================================
+        // RENDER FUNCTIONS
+        // ============================================
+        function renderAll() {
+            if (!DATA) return;
+            renderICE();
+            renderAlerts();
+            renderMyPosition();
+            renderStockGrid();
+            updateCounts();
+        }
+
+        function renderICE() {
+            const ice = DATA.ice_newcastle;
+            if (!ice || !ice.current_price_usd) return;
+
+            document.getElementById('ice-price').textContent = '$' + ice.current_price_usd.toFixed(2);
+            document.getElementById('ice-unit').textContent = 'USD/ton';
+
+            const trend = ice.momentum?.trend || 'UNKNOWN';
+            const roc = ice.momentum?.roc_5d || 0;
+            const trendEl = document.getElementById('ice-trend');
+            const statusDot = document.getElementById('ice-status-dot');
+
+            if (ice.above_floor) {
+                statusDot.className = 'w-2 h-2 rounded-full bg-green-400 animate-pulse';
+                trendEl.innerHTML = `<span class="text-green-300"><i class="fas fa-check-circle"></i> Above floor $${DATA.metadata.ice_floor_filter_usd}</span>`;
+            } else {
+                statusDot.className = 'w-2 h-2 rounded-full bg-red-400 animate-pulse';
+                trendEl.innerHTML = `<span class="text-red-300"><i class="fas fa-exclamation-circle"></i> Below floor!</span>`;
+            }
+
+            trendEl.innerHTML += ` • ${trend} (${formatPercent(roc)})`;
+
+            // Last update
+            const updatedAt = new Date(DATA.metadata.generated_at);
+            document.getElementById('last-update').textContent = updatedAt.toLocaleString('id-ID', {
+                day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
+            });
+        }
+
+        function renderAlerts() {
+            const container = document.getElementById('alert-container');
+            if (!DATA.alerts || DATA.alerts.length === 0) {
+                container.innerHTML = '';
+                return;
+            }
+
+            container.innerHTML = DATA.alerts.map(alert => {
+                let bgColor, icon, title;
+                if (alert.severity === 'HIGH') {
+                    bgColor = 'bg-gradient-to-r from-red-500 to-shopee-600';
+                    icon = 'fa-fire';
+                } else {
+                    bgColor = 'bg-gradient-to-r from-yellow-400 to-orange-500';
+                    icon = 'fa-bell';
+                }
+
+                let content = '';
+                if (alert.type === 'ICE_FLOOR_BREACH') {
+                    content = alert.message;
+                } else if (alert.type === 'SWING_BUY_SIGNAL') {
+                    content = `<strong>${alert.ticker}</strong> — Sinyal ${alert.ticker === 'STRONG_BUY' ? 'STRONG BUY' : 'BUY'} @ ${formatRupiah(alert.price)} | TP: ${formatRupiah(alert.tp)} | SL: ${formatRupiah(alert.sl)}`;
+                } else if (alert.type === 'DIVIDEND_ACCUMULATE_SIGNAL') {
+                    content = `<strong>${alert.ticker}</strong> — Zona Akumulasi Dividen @ ${formatRupiah(alert.price)} | Forward Yield: ${alert.forward_yield}%`;
+                } else if (alert.type === 'BANDAR_ACCUMULATION_DETECTED') {
+                    content = `<strong>${alert.ticker}</strong> — 🐋 Akumulasi Bandar Terdeteksi! Score: ${alert.score}/100 | ${alert.details?.join(' • ') || ''}`;
+                } else {
+                    content = alert.message || JSON.stringify(alert);
+                }
+
+                return `
+                    <div class="alert-banner ${bgColor} text-white rounded-xl p-4 shadow-lg flex items-center gap-3">
+                        <i class="fas ${icon} text-2xl"></i>
+                        <div class="flex-1 text-sm">${content}</div>
+                        <button onclick="this.parentElement.remove()" class="text-white/70 hover:text-white">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderMyPosition() {
+            const container = document.getElementById('my-position-content');
+            const itmgData = DATA?.dividend_mode?.find(d => d.ticker === 'ITMG.JK');
+            const swingData = DATA?.swing_mode?.find(d => d.ticker === 'ITMG.JK');
+
+            if (!itmgData && !swingData) {
+                container.innerHTML = '<div class="col-span-full text-center text-white/60">Data ITMG tidak tersedia</div>';
+                return;
+            }
+
+            const currentPrice = itmgData?.current_price || swingData?.current_price || 0;
+            const currentValue = MY_POSITION.lots * 100 * currentPrice;
+            const pnl = currentValue - MY_POSITION.totalModal;
+            const pnlPct = (pnl / MY_POSITION.totalModal) * 100;
+            const pnlColor = pnl >= 0 ? 'text-green-400' : 'text-red-400';
+            const pnlIcon = pnl >= 0 ? 'fa-arrow-up' : 'fa-arrow-down';
+
+            const divYield = itmgData?.forward_yield_pct || 0;
+            const yearlyDiv = MY_POSITION.lots * 100 * (itmgData?.fundamental_safety?.details?.dividend_rate || 0);
+
+            container.innerHTML = `
+                <div class="bg-white/5 backdrop-blur rounded-xl p-4 border border-white/10">
+                    <div class="text-xs text-white/60 mb-1">Ticker</div>
+                    <div class="text-2xl font-bold">ITMG</div>
+                    <div class="text-xs text-white/60 mt-1">Indonesia Tambang</div>
+                </div>
+                <div class="bg-white/5 backdrop-blur rounded-xl p-4 border border-white/10">
+                    <div class="text-xs text-white/60 mb-1">Lots / Avg Price</div>
+                    <div class="text-lg font-bold">${MY_POSITION.lots} Lot</div>
+                    <div class="text-xs text-white/60 mt-1">@ ${formatRupiah(MY_POSITION.avgPrice)}</div>
+                </div>
+                <div class="bg-white/5 backdrop-blur rounded-xl p-4 border border-white/10">
+                    <div class="text-xs text-white/60 mb-1">Harga Sekarang</div>
+                    <div class="text-lg font-bold">${formatRupiah(currentPrice)}</div>
+                    <div class="text-xs ${pnlColor} mt-1"><i class="fas ${pnlIcon}"></i> ${formatPercent(pnlPct)}</div>
+                </div>
+                <div class="bg-white/5 backdrop-blur rounded-xl p-4 border border-white/10">
+                    <div class="text-xs text-white/60 mb-1">Unrealized P&L</div>
+                    <div class="text-xl font-bold ${pnlColor}">${pnl >= 0 ? '+' : ''}${formatRupiah(pnl)}</div>
+                    <div class="text-xs text-white/60 mt-1">Modal: ${formatRupiah(MY_POSITION.totalModal)}</div>
+                </div>
+                <div class="bg-gradient-to-br from-shopee-600/40 to-yellow-500/30 backdrop-blur rounded-xl p-4 border border-yellow-400/30">
+                    <div class="text-xs text-white/80 mb-1"><i class="fas fa-coins mr-1"></i>Est. Dividen/Tahun</div>
+                    <div class="text-xl font-bold text-yellow-300">${formatRupiah(yearlyDiv)}</div>
+                    <div class="text-xs text-white/80 mt-1">Yield: ${divYield}% p.a.</div>
+                </div>
+            `;
+        }
+
+        function renderStockGrid() {
+            const grid = document.getElementById('stock-grid');
+            const emptyState = document.getElementById('empty-state');
+            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            const sortBy = document.getElementById('sort-select').value;
+
+            let stocks = [];
+
+            if (CURRENT_TAB === 'swing') {
+                stocks = DATA.swing_mode.map(s => ({ ...s, mode: 'SWING' }));
+            } else if (CURRENT_TAB === 'dividend') {
+                stocks = DATA.dividend_mode.map(s => ({ ...s, mode: 'DIVIDEND' }));
+            } else {
+                // Merge both modes
+                const swingMap = new Map(DATA.swing_mode.map(s => [s.ticker, s]));
+                const divMap = new Map(DATA.dividend_mode.map(s => [s.ticker, s]));
+                const allTickers = new Set([...swingMap.keys(), ...divMap.keys()]);
+                stocks = Array.from(allTickers).map(ticker => ({
+                    ticker,
+                    swing: swingMap.get(ticker),
+                    dividend: divMap.get(ticker),
+                    mode: 'BOTH',
+                }));
+            }
+
+            // Filter
+            if (searchTerm) {
+                stocks = stocks.filter(s => s.ticker.toLowerCase().includes(searchTerm));
+            }
+
+            // Sort
+            stocks.sort((a, b) => {
+                if (sortBy === 'score') {
+                    const sa = a.composite_score || a.swing?.composite_score || 0;
+                    const sb = b.composite_score || b.swing?.composite_score || 0;
+                    return sb - sa;
+                }
+                if (sortBy === 'price') {
+                    const pa = a.current_price || a.swing?.current_price || 0;
+                    const pb = b.current_price || b.swing?.current_price || 0;
+                    return pb - pa;
+                }
+                return a.ticker.localeCompare(b.ticker);
+            });
+
+            if (stocks.length === 0) {
+                grid.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                return;
+            }
+            emptyState.classList.add('hidden');
+
+            grid.innerHTML = stocks.map(stock => {
+                if (stock.mode === 'BOTH') {
+                    return renderCombinedCard(stock);
+                }
+                return renderSingleCard(stock);
+            }).join('');
+        }
+
+        function renderSingleCard(stock) {
+            const sigCfg = getSignalConfig(stock.signal);
+            const scoreColor = getScoreColor(stock.composite_score);
+            const barColor = getScoreBarColor(stock.composite_score);
+
+            const isSwing = stock.mode === 'SWING';
+            const accumulation = stock.accumulation;
+            const accBadge = accumulation?.signal === 'STRONG_ACCUMULATION'
+                ? '<span class="heat-strong text-xs px-2 py-0.5 rounded-full font-bold text-yellow-900"><i class="fas fa-whale text-[10px]"></i> BANDAR</span>'
+                : accumulation?.signal === 'MODERATE_ACCUMULATION'
+                    ? '<span class="heat-moderate text-xs px-2 py-0.5 rounded-full font-semibold text-yellow-800"><i class="fas fa-eye text-[10px]"></i> Watch</span>'
+                    : '';
+
+            return `
+                <div class="stock-card bg-white rounded-2xl shadow-md overflow-hidden border border-gray-100"
+                     onclick="openModal('${stock.ticker}', '${stock.mode}')">
+                    <!-- Header -->
+                    <div class="p-5 pb-3">
+                        <div class="flex items-start justify-between mb-3">
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    <h3 class="text-xl font-extrabold text-gray-900">${stock.ticker.replace('.JK', '')}</h3>
+                                    <span class="text-xs text-gray-400">.JK</span>
+                                </div>
+                                <p class="text-xs text-gray-500 mt-0.5">
+                                    ${isSwing ? '<i class="fas fa-bolt text-shopee-500"></i> Swing Mode' : '<i class="fas fa-coins text-yellow-500"></i> Dividend Mode'}
+                                </p>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-lg font-bold text-gray-900">${formatRupiah(stock.current_price)}</div>
+                            </div>
+                        </div>
+
+                        <!-- Signal Badge -->
+                        <div class="flex items-center gap-2 flex-wrap mb-3">
+                            <span class="${sigCfg.color} ${sigCfg.text} text-xs font-bold px-3 py-1.5 rounded-full inline-flex items-center gap-1.5 ${sigCfg.pulse ? 'badge-strong' : ''}">
+                                <i class="fas ${sigCfg.icon}"></i>
+                                ${sigCfg.label}
+                            </span>
+                            ${accBadge}
+                        </div>
+
+                        <!-- Score Bar -->
+                        <div class="mb-3">
+                            <div class="flex items-center justify-between text-xs mb-1">
+                                <span class="text-gray-500 font-medium">Composite Score</span>
+                                <span class="${scoreColor} font-bold px-2 py-0.5 rounded">${stock.composite_score.toFixed(1)}</span>
+                            </div>
+                            <div class="w-full bg-gray-100 rounded-full h-2 overflow-hidden">
+                                <div class="score-bar h-full ${barColor} rounded-full" style="width: ${stock.composite_score}%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Metrics -->
+                    <div class="bg-gray-50 px-5 py-3 grid grid-cols-2 gap-3 text-xs border-t border-gray-100">
+                        ${isSwing ? `
+                            <div>
+                                <div class="text-gray-500">Target Profit</div>
+                                <div class="font-bold text-green-600">${formatRupiah(stock.target_profit)}</div>
+                            </div>
+                            <div>
+                                <div class="text-gray-500">Stop Loss</div>
+                                <div class="font-bold text-red-600">${formatRupiah(stock.stop_loss)}</div>
+                            </div>
+                            <div>
+                                <div class="text-gray-500">RSI</div>
+                                <div class="font-bold">${stock.technical?.rsi?.toFixed(1) || '—'}</div>
+                            </div>
+                            <div>
+                                <div class="text-gray-500">Vol Ratio</div>
+                                <div class="font-bold">${stock.volume_sentiment?.volume_ratio?.toFixed(2) || '—'}x</div>
+                            </div>
+                        ` : `
+                            <div>
+                                <div class="text-gray-500">Forward Yield</div>
+                                <div class="font-bold text-yellow-600">${stock.forward_yield_pct ? stock.forward_yield_pct + '%' : '—'}</div>
+                            </div>
+                            <div>
+                                <div class="text-gray-500">vs MA50</div>
+                                <div class="font-bold ${stock.price_vs_ma50_pct >= 0 ? 'text-green-600' : 'text-red-600'}">
+                                    ${formatPercent(stock.price_vs_ma50_pct)}
+                                </div>
+                            </div>
+                            <div>
+                                <div class="text-gray-500">DER</div>
+                                <div class="font-bold">${stock.fundamental_safety?.details?.der?.toFixed(2) || '—'}</div>
+                            </div>
+                            <div>
+                                <div class="text-gray-500">Fear Index</div>
+                                <div class="font-bold">${stock.fear_panic_detector?.score?.toFixed(0) || '—'}</div>
+                            </div>
+                        `}
+                    </div>
+
+                    <!-- Footer -->
+                    <div class="px-5 py-2.5 bg-white border-t border-gray-100 flex items-center justify-between text-xs">
+                        <span class="text-gray-400">
+                            <i class="fas fa-hand-pointer mr-1"></i> Klik untuk detail
+                        </span>
+                        <span class="text-shopee-600 font-semibold">
+                            Lihat <i class="fas fa-arrow-right ml-1"></i>
+                        </span>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderCombinedCard(stock) {
+            const swingSig = getSignalConfig(stock.swing?.signal);
+            const divSig = getSignalConfig(stock.dividend?.signal);
+            const price = stock.swing?.current_price || stock.dividend?.current_price || 0;
+
+            return `
+                <div class="stock-card bg-white rounded-2xl shadow-md overflow-hidden border border-gray-100"
+                     onclick="openModal('${stock.ticker}', 'BOTH')">
+                    <div class="p-5">
+                        <div class="flex items-start justify-between mb-3">
+                            <div>
+                                <h3 class="text-xl font-extrabold text-gray-900">${stock.ticker.replace('.JK', '')}</h3>
+                                <p class="text-xs text-gray-500 mt-0.5">.JK • Dual Analysis</p>
+                            </div>
+                            <div class="text-lg font-bold text-gray-900">${formatRupiah(price)}</div>
+                        </div>
+
+                        <div class="space-y-2">
+                            <div class="flex items-center justify-between p-2 bg-shopee-50 rounded-lg">
+                                <div class="flex items-center gap-2">
+                                    <i class="fas fa-bolt text-shopee-600"></i>
+                                    <span class="text-xs font-semibold">Swing</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span class="${swingSig.color} ${swingSig.text} text-xs font-bold px-2 py-0.5 rounded-full">
+                                        ${swingSig.label}
+                                    </span>
+                                    <span class="text-xs font-bold text-gray-700">${stock.swing?.composite_score?.toFixed(0) || 0}</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between p-2 bg-yellow-50 rounded-lg">
+                                <div class="flex items-center gap-2">
+                                    <i class="fas fa-coins text-yellow-600"></i>
+                                    <span class="text-xs font-semibold">Dividen</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span class="${divSig.color} ${divSig.text} text-xs font-bold px-2 py-0.5 rounded-full">
+                                        ${divSig.label}
+                                    </span>
+                                    <span class="text-xs font-bold text-gray-700">${stock.dividend?.composite_score?.toFixed(0) || 0}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="px-5 py-2.5 bg-white border-t border-gray-100 text-center">
+                        <span class="text-shopee-600 font-semibold text-xs">Lihat Analisis Lengkap <i class="fas fa-arrow-right ml-1"></i></span>
+                    </div>
+                </div>
+            `;
+        }
+
+        function updateCounts() {
+            if (!DATA) return;
+            const swingBuys = DATA.swing_mode.filter(s => ['BUY', 'STRONG_BUY'].includes(s.signal)).length;
+            const divAcc = DATA.dividend_mode.filter(s => ['ACCUMULATE', 'STRONG_ACCUMULATE', 'SWITCH_TO_THIS_TICKER'].includes(s.signal)).length;
+            document.getElementById('swing-count').textContent = swingBuys;
+            document.getElementById('dividend-count').textContent = divAcc;
+        }
+
+        // ============================================
+        // MODAL
+        // ============================================
+        function openModal(ticker, mode) {
+            const modal = document.getElementById('modal');
+            const content = document.getElementById('modal-content');
+
+            const swing = DATA.swing_mode.find(s => s.ticker === ticker);
+            const div = DATA.dividend_mode.find(s => s.ticker === ticker);
+
+            let activeData = mode === 'SWING' ? swing : mode === 'DIVIDEND' ? div : (swing || div);
+
+            const sigCfg = getSignalConfig(activeData.signal);
+            const price = activeData.current_price;
+
+            content.innerHTML = `
+                <!-- Modal Header -->
+                <div class="bg-gradient-to-br from-coal-dark to-coal-deeper text-white p-6 rounded-t-3xl relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-64 h-64 bg-shopee-600/20 rounded-full -mr-32 -mt-32 blur-3xl"></div>
+                    <button onclick="closeModal()" class="absolute top-4 right-4 w-10 h-10 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center transition">
+                        <i class="fas fa-times"></i>
+                    </button>
+
+                    <div class="relative z-10">
+                        <div class="flex items-start justify-between flex-wrap gap-4">
+                            <div>
+                                <div class="flex items-center gap-3 mb-2">
+                                    <h2 class="text-3xl font-extrabold">${ticker.replace('.JK', '')}</h2>
+                                    <span class="${sigCfg.color} ${sigCfg.text} text-sm font-bold px-3 py-1 rounded-full inline-flex items-center gap-1.5 ${sigCfg.pulse ? 'badge-strong' : ''}">
+                                        <i class="fas ${sigCfg.icon}"></i>
+                                        ${sigCfg.label}
+                                    </span>
+                                </div>
+                                <p class="text-white/70 text-sm">${ticker} • ${mode === 'BOTH' ? 'Dual Analysis' : mode + ' Mode'}</p>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-3xl font-extrabold">${formatRupiah(price)}</div>
+                                <div class="text-sm text-white/70">Last Price</div>
+                            </div>
+                        </div>
+
+                        <!-- Composite Score -->
+                        <div class="mt-5 bg-white/10 backdrop-blur rounded-xl p-4">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-sm text-white/80">Composite Score</span>
+                                <span class="text-2xl font-extrabold">${activeData.composite_score.toFixed(1)}<span class="text-sm text-white/60">/100</span></span>
+                            </div>
+                            <div class="w-full bg-white/20 rounded-full h-3 overflow-hidden">
+                                <div class="score-bar h-full bg-gradient-to-r from-yellow-400 via-shopee-500 to-green-500 rounded-full" style="width: ${activeData.composite_score}%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal Body -->
+                <div class="p-6 space-y-6">
+                    ${mode === 'BOTH' || mode === 'SWING' ? renderSwingSection(swing) : ''}
+                    ${mode === 'BOTH' || mode === 'DIVIDEND' ? renderDividendSection(div) : ''}
+                    ${renderICESection()}
+                    ${renderAccumulationSection(activeData.accumulation)}
+                    ${renderActionSection(activeData)}
+                </div>
+            `;
+
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            document.body.style.overflow = 'hidden';
+
+            // Render charts after DOM update
+            setTimeout(() => {
+                if (mode === 'BOTH' || mode === 'SWING') renderSwingChart(swing);
+                if (mode === 'BOTH' || mode === 'DIVIDEND') renderDividendChart(div);
+            }, 100);
+        }
+
+        function renderSwingSection(swing) {
+            if (!swing) return '';
+            const tech = swing.technical || {};
+            const vol = swing.volume_sentiment || {};
+
+            return `
+                <div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
+                        <i class="fas fa-bolt text-shopee-600"></i>
+                        Swing Trading Analysis
+                    </h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                        <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-4 border border-green-200">
+                            <div class="text-xs text-green-700 font-semibold mb-1">Target Profit</div>
+                            <div class="text-xl font-extrabold text-green-700">${formatRupiah(swing.target_profit)}</div>
+                            <div class="text-xs text-green-600 mt-1">+${((swing.target_profit/price(swing)-1)*100).toFixed(1)}%</div>
+                        </div>
+                        <div class="bg-gradient-to-br from-red-50 to-red-100 rounded-xl p-4 border border-red-200">
+                            <div class="text-xs text-red-700 font-semibold mb-1">Stop Loss</div>
+                            <div class="text-xl font-extrabold text-red-700">${formatRupiah(swing.stop_loss)}</div>
+                            <div class="text-xs text-red-600 mt-1">${((swing.stop_loss/price(swing)-1)*100).toFixed(1)}%</div>
+                        </div>
+                        <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-4 border border-blue-200">
+                            <div class="text-xs text-blue-700 font-semibold mb-1">RSI (14)</div>
+                            <div class="text-xl font-extrabold text-blue-700">${tech.rsi?.toFixed(1) || '—'}</div>
+                            <div class="text-xs text-blue-600 mt-1">${getRSIZone(tech.rsi)}</div>
+                        </div>
+                        <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-4 border border-purple-200">
+                            <div class="text-xs text-purple-700 font-semibold mb-1">Volume Ratio</div>
+                            <div class="text-xl font-extrabold text-purple-700">${vol.volume_ratio?.toFixed(2) || '—'}x</div>
+                            <div class="text-xs text-purple-600 mt-1">vs 20d avg</div>
+                        </div>
+                    </div>
+
+                    <!-- Technical Breakdown -->
+                    <div class="mt-4 bg-gray-50 rounded-xl p-4">
+                        <div class="text-sm font-bold text-gray-700 mb-3">Technical Breakdown</div>
+                        <div class="space-y-2">
+                            ${renderMetricBar('MA10', tech.price_vs_ma10_pct, 'vs MA10')}
+                            ${renderMetricBar('MA20', tech.price_vs_ma20_pct, 'vs MA20')}
+                            <div class="flex items-center justify-between text-sm">
+                                <span class="text-gray-600">MACD Histogram</span>
+                                <span class="font-bold ${tech.macd_histogram >= 0 ? 'text-green-600' : 'text-red-600'}">
+                                    ${tech.macd_histogram?.toFixed(2) || '—'}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Swing Score Breakdown Chart -->
+                    <div class="mt-4 bg-white border border-gray-200 rounded-xl p-4">
+                        <div class="text-sm font-bold text-gray-700 mb-3">Score Breakdown</div>
+                        <canvas id="swing-chart" height="150"></canvas>
+                    </div>
+                </div>
+            `;
+        }
+
+        function price(stock) { return stock?.current_price || 1; }
+
+        function getRSIZone(rsi) {
+            if (!rsi) return '—';
+            if (rsi < 30) return 'Oversold';
+            if (rsi < 40) return 'Near Oversold';
+            if (rsi < 60) return 'Netral';
+            if (rsi < 70) return 'Near Overbought';
+            return 'Overbought';
+        }
+
+        function renderMetricBar(label, value, subtitle) {
+            if (value === null || value === undefined) return '';
+            const color = value >= 0 ? 'bg-green-500' : 'bg-red-500';
+            const textColor = value >= 0 ? 'text-green-600' : 'text-red-600';
+            const absValue = Math.min(Math.abs(value), 10);
+            const width = (absValue / 10) * 100;
+            return `
+                <div>
+                    <div class="flex items-center justify-between text-sm mb-1">
+                        <span class="text-gray-600">${label} <span class="text-xs text-gray-400">${subtitle}</span></span>
+                        <span class="font-bold ${textColor}">${formatPercent(value)}</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderDividendSection(div) {
+            if (!div) return '';
+            const fund = div.fundamental_safety || {};
+            const details = fund.details || {};
+            const fear = div.fear_panic_detector || {};
+
+            return `
+                <div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
+                        <i class="fas fa-coins text-yellow-600"></i>
+                        Dividend Investing Analysis
+                    </h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                        <div class="bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-xl p-4 border border-yellow-200">
+                            <div class="text-xs text-yellow-700 font-semibold mb-1">Forward Yield</div>
+                            <div class="text-xl font-extrabold text-yellow-700">${div.forward_yield_pct ? div.forward_yield_pct + '%' : '—'}</div>
+                            <div class="text-xs text-yellow-600 mt-1">p.a. estimate</div>
+                        </div>
+                        <div class="bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-xl p-4 border border-emerald-200">
+                            <div class="text-xs text-emerald-700 font-semibold mb-1">DER</div>
+                            <div class="text-xl font-extrabold text-emerald-700">${details.der?.toFixed(2) || '—'}</div>
+                            <div class="text-xs text-emerald-600 mt-1">${details.der < 1 ? '✓ Sehat' : '⚠ Tinggi'}</div>
+                        </div>
+                        <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-4 border border-blue-200">
+                            <div class="text-xs text-blue-700 font-semibold mb-1">vs MA50</div>
+                            <div class="text-xl font-extrabold ${div.price_vs_ma50_pct >= 0 ? 'text-blue-700' : 'text-red-600'}">
+                                ${formatPercent(div.price_vs_ma50_pct)}
+                            </div>
+                            <div class="text-xs text-blue-600 mt-1">${div.price_vs_ma50_pct < -8 ? '🔥 Diskon!' : 'Normal'}</div>
+                        </div>
+                        <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-4 border border-purple-200">
+                            <div class="text-xs text-purple-700 font-semibold mb-1">Fear Index</div>
+                            <div class="text-xl font-extrabold text-purple-700">${fear.score?.toFixed(0) || '—'}</div>
+                            <div class="text-xs text-purple-600 mt-1">${fear.panic_detected ? '🚨 PANIC!' : 'Normal'}</div>
+                        </div>
+                    </div>
+
+                    <!-- Fundamental Details -->
+                    <div class="mt-4 bg-gray-50 rounded-xl p-4">
+                        <div class="text-sm font-bold text-gray-700 mb-3">Fundamental Safety Score: <span class="text-shopee-600">${fund.score?.toFixed(1) || '—'}/100</span></div>
+                        <div class="grid grid-cols-2 gap-3 text-sm">
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">EPS Growth</span>
+                                <span class="font-bold ${details.eps_growth_pct >= 0 ? 'text-green-600' : 'text-red-600'}">
+                                    ${details.eps_growth_pct ? formatPercent(details.eps_growth_pct) : '—'}
+                                </span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Dividend Rate</span>
+                                <span class="font-bold">${details.dividend_rate ? formatRupiah(details.dividend_rate) : '—'}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Payout Ratio</span>
+                                <span class="font-bold">${details.payout_ratio_pct ? details.payout_ratio_pct + '%' : '—'}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Free Cash Flow</span>
+                                <span class="font-bold ${details.fcf_positive ? 'text-green-600' : 'text-red-600'}">
+                                    ${details.fcf_positive ? '✓ Positif' : '✗ Negatif'}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dividend Score Chart -->
+                    <div class="mt-4 bg-white border border-gray-200 rounded-xl p-4">
+                        <div class="text-sm font-bold text-gray-700 mb-3">Score Breakdown</div>
+                        <canvas id="dividend-chart" height="150"></canvas>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderICESection() {
+            const ice = DATA.ice_newcastle;
+            if (!ice) return '';
+            const mom = ice.momentum || {};
+            const tb = ice.trend_barrier || {};
+
+            return `
+                <div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
+                        <i class="fas fa-fire text-orange-600"></i>
+                        ICE Newcastle Commodity Analysis
+                    </h3>
+                    <div class="bg-gradient-to-br from-orange-50 to-amber-50 rounded-xl p-5 border border-orange-200">
+                        <div class="flex items-center justify-between mb-4 flex-wrap gap-3">
+                            <div>
+                                <div class="text-xs text-orange-700 font-semibold">Current Price</div>
+                                <div class="text-2xl font-extrabold text-orange-900">$${ice.current_price_usd?.toFixed(2) || '—'}</div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-xs text-orange-700 font-semibold">Status</div>
+                                <div class="text-sm font-bold ${ice.above_floor ? 'text-green-600' : 'text-red-600'}">
+                                    ${ice.above_floor ? '✓ Above Floor $120' : '✗ Below Floor!'}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
+                            <div>
+                                <div class="text-xs text-orange-700">ROC 5D</div>
+                                <div class="font-bold ${mom.roc_5d >= 0 ? 'text-green-600' : 'text-red-600'}">${formatPercent(mom.roc_5d)}</div>
+                            </div>
+                            <div>
+                                <div class="text-xs text-orange-700">ROC 10D</div>
+                                <div class="font-bold ${mom.roc_10d >= 0 ? 'text-green-600' : 'text-red-600'}">${formatPercent(mom.roc_10d)}</div>
+                            </div>
+                            <div>
+                                <div class="text-xs text-orange-700">Trend</div>
+                                <div class="font-bold">${mom.trend || '—'}</div>
+                            </div>
+                            <div>
+                                <div class="text-xs text-orange-700">vs MA200</div>
+                                <div class="font-bold">${tb.position || '—'}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderAccumulationSection(acc) {
+            if (!acc || acc.signal === 'NO_SIGNIFICANT_ACCUMULATION') return '';
+
+            const heatClass = acc.signal === 'STRONG_ACCUMULATION' ? 'heat-strong' : 'heat-moderate';
+            const icon = acc.signal === 'STRONG_ACCUMULATION' ? 'fa-whale' : 'fa-eye';
+
+            return `
+                <div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
+                        <i class="fas fa-${icon} text-yellow-600"></i>
+                        Bandarmology / Accumulation Detection
+                    </h3>
+                    <div class="${heatClass} rounded-xl p-5 border border-yellow-300">
+                        <div class="flex items-center justify-between mb-3">
+                            <div>
+                                <div class="text-xs text-yellow-800 font-semibold">Signal</div>
+                                <div class="text-lg font-extrabold text-yellow-900">${acc.signal.replace(/_/g, ' ')}</div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-xs text-yellow-800 font-semibold">Score</div>
+                                <div class="text-2xl font-extrabold text-yellow-900">${acc.accumulation_score}<span class="text-sm">/100</span></div>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-3 gap-3 text-sm">
+                            <div>
+                                <div class="text-xs text-yellow-800">High Vol Days</div>
+                                <div class="font-bold text-yellow-900">${acc.high_vol_days || 0} / 10</div>
+                            </div>
+                            <div>
+                                <div class="text-xs text-yellow-800">Price Change</div>
+                                <div class="font-bold text-yellow-900">${formatPercent(acc.price_change_pct)}</div>
+                            </div>
+                            <div>
+                                <div class="text-xs text-yellow-800">Pattern</div>
+                                <div class="font-bold text-yellow-900 text-xs">${acc.signals_detail?.join(', ') || '—'}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderActionSection(data) {
+            const sigCfg = getSignalConfig(data.signal);
+            let recommendation = '';
+            let actionSteps = [];
+
+            if (data.mode === 'SWING' || data.signal?.includes('BUY')) {
+                recommendation = 'Eksekusi BUY dengan disiplin pada Stop Loss.';
+                actionSteps = [
+                    `Beli di harga ${formatRupiah(data.current_price)} (atau antri di bid terdekat)`,
+                    `Pasang Stop Loss ketat di ${formatRupiah(data.stop_loss)}`,
+                    `Target Profit di ${formatRupiah(data.target_profit)} (${((data.target_profit/data.current_price-1)*100).toFixed(1)}%)`,
+                    'Monitor harian, trailing stop jika profit > 5%',
+                    'Exit paksa jika ICE Newcastle breakdown < $120/ton'
+                ];
+            } else if (data.mode === 'DIVIDEND') {
+                recommendation = 'Akumulasi bertahap untuk koleksi dividen jangka panjang.';
+                actionSteps = [
+                    `Entry di zona ${formatRupiah(data.current_price)}`,
+                    'Gunakan strategi pyramiding (tambah di harga lebih rendah)',
+                    'Reinvestasikan dividen (DRIP) untuk compound effect',
+                    'Hold minimal 1 tahun penuh untuk capture full dividend',
+                    'Pertimbangkan switch ke PTBA jika forward yield > 12%'
+                ];
+            } else {
+                recommendation = 'Wait and see. Belum ada sinyal kuat untuk entry.';
+                actionSteps = ['Pantau perkembangan ICE Newcastle', 'Tunggu koreksi lebih dalam', 'Monitor volume pattern'];
+            }
+
+            return `
+                <div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
+                        <i class="fas fa-bullseye text-shopee-600"></i>
+                        Action Plan
+                    </h3>
+                    <div class="bg-gradient-to-br from-shopee-50 to-white rounded-xl p-5 border-2 border-shopee-200">
+                        <div class="flex items-start gap-3 mb-4">
+                            <div class="${sigCfg.color} w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0">
+                                <i class="fas ${sigCfg.icon} text-white"></i>
+                            </div>
+                            <div>
+                                <div class="text-xs text-gray-500 font-semibold">REKOMENDASI</div>
+                                <div class="text-base font-bold text-gray-900">${recommendation}</div>
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            ${actionSteps.map((step, i) => `
+                                <div class="flex items-start gap-2 text-sm">
+                                    <span class="bg-shopee-600 text-white w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 text-xs font-bold">${i+1}</span>
+                                    <span class="text-gray-700">${step}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderSwingChart(swing) {
+            const ctx = document.getElementById('swing-chart');
+            if (!ctx || !swing) return;
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['ICE Momentum (40%)', 'Technical (40%)', 'Volume (20%)'],
+                    datasets: [{
+                        label: 'Score',
+                        data: [
+                            swing.ice_momentum?.score || 0,
+                            swing.technical?.score || 0,
+                            swing.volume_sentiment?.score || 0
+                        ],
+                        backgroundColor: ['#F88460', '#EE4D2D', '#D43D1F'],
+                        borderRadius: 8,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, max: 100, grid: { color: '#f3f4f6' } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+        }
+
+        function renderDividendChart(div) {
+            const ctx = document.getElementById('dividend-chart');
+            if (!ctx || !div) return;
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Fundamental (40%)', 'ICE Trend (40%)', 'Fear/Panic (20%)'],
+                    datasets: [{
+                        label: 'Score',
+                        data: [
+                            div.fundamental_safety?.score || 0,
+                            div.ice_trend_barrier?.score || 0,
+                            div.fear_panic_detector?.score || 0
+                        ],
+                        backgroundColor: ['#FBBF24', '#F59E0B', '#D97706'],
+                        borderRadius: 8,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, max: 100, grid: { color: '#f3f4f6' } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            document.body.style.overflow = '';
+        }
+
+        // ============================================
+        // TAB SWITCHING
+        // ============================================
+        function switchTab(tab) {
+            CURRENT_TAB = tab;
+            ['swing', 'dividend', 'all'].forEach(t => {
+                const btn = document.getElementById('tab-' + t);
+                if (t === tab) {
+                    btn.classList.add('tab-active', 'text-shopee-600', 'bg-shopee-50');
+                    btn.classList.remove('text-gray-600');
+                } else {
+                    btn.classList.remove('tab-active', 'text-shopee-600', 'bg-shopee-50');
+                    btn.classList.add('text-gray-600');
+                }
+            });
+            renderStockGrid();
+        }
+
+        // ============================================
+        // EVENT LISTENERS
+        // ============================================
+        document.getElementById('search-input').addEventListener('input', renderStockGrid);
+        document.getElementById('sort-select').addEventListener('change', renderStockGrid);
+        document.getElementById('modal').addEventListener('click', (e) => {
+            if (e.target.id === 'modal') closeModal();
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
+        });
+
+        // ============================================
+        // INIT
+        // ============================================
+        document.addEventListener('DOMContentLoaded', () => {
+            loadData();
+            // Auto-refresh setiap 5 menit
+            setInterval(loadData, 5 * 60 * 1000);
+        });
+    </script>
+</body>
+</html>
