@@ -50,7 +50,6 @@
             position: sticky;
             top: 0;
             z-index: 100;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
 
         .logo {
@@ -85,13 +84,13 @@
 
         .header-nav {
             display: flex;
-            gap: 6px;
+            gap: 4px;
             margin-left: auto;
         }
 
         .nav-link {
-            padding: 8px 14px;
-            font-size: 12px;
+            padding: 6px 10px;
+            font-size: 11px;
             font-weight: 600;
             border-radius: 4px;
             display: flex;
@@ -108,43 +107,10 @@
             padding: 12px;
         }
 
-        .page-title {
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 4px;
-        }
-
-        .page-subtitle {
-            color: var(--muted);
-            font-size: 11px;
-            margin-bottom: 16px;
-        }
-
-        /* PANEL */
-        .panel {
-            background: var(--white);
-            border: 1px solid var(--border);
-            border-radius: 4px;
-            margin-bottom: 12px;
-        }
-
-        .panel-header {
-            padding: 10px 12px;
-            border-bottom: 1px solid var(--border);
-            background: #fafbfc;
-            font-size: 13px;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .panel-body { padding: 12px; }
-
         /* ALERTS */
-        .alert-container { margin-bottom: 12px; }
+        .alert-container { margin-bottom: 10px; }
         .alert-banner {
-            padding: 10px 12px;
+            padding: 8px 12px;
             border-radius: 4px;
             margin-bottom: 6px;
             font-size: 12px;
@@ -160,6 +126,39 @@
         .alert-content { flex: 1; }
         .alert-close { background: none; border: none; cursor: pointer; font-size: 16px; opacity: 0.6; }
 
+        /* MAIN GRID */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 260px;
+            gap: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .main-grid { grid-template-columns: 1fr; }
+            .sidebar { order: -1; }
+        }
+
+        /* PANEL */
+        .panel {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+
+        .panel-header {
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--border);
+            background: #fafbfc;
+            font-size: 13px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .panel-body { padding: 10px 12px; }
+
         /* TAB BAR */
         .tab-bar {
             display: flex;
@@ -168,52 +167,49 @@
         }
 
         .tab-btn {
-            padding: 12px 20px;
+            padding: 10px 16px;
             background: none;
             border: none;
             border-bottom: 3px solid transparent;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 600;
             color: var(--muted);
             cursor: pointer;
-            transition: all 0.2s;
             display: flex;
             align-items: center;
             gap: 6px;
         }
 
-        .tab-btn:hover { color: var(--blue); }
         .tab-btn.active { color: var(--blue); border-bottom-color: var(--blue); }
 
-        /* STOCK CARDS */
+        /* STOCK CARDS - RAPAT */
         .stock-card {
             background: var(--white);
             border: 1px solid var(--border);
             border-radius: 4px;
-            padding: 14px;
-            margin-bottom: 10px;
+            padding: 10px 12px;
+            margin-bottom: 8px;
             cursor: pointer;
-            transition: box-shadow 0.2s;
         }
 
-        .stock-card:active { box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .stock-card:last-child { margin-bottom: 0; }
 
         .stock-card-header {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
         }
 
         .stock-card-ticker {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
 
         .stock-card-logo {
-            width: 36px;
-            height: 36px;
+            width: 32px;
+            height: 32px;
             background: var(--blue);
             border-radius: 4px;
             display: flex;
@@ -221,20 +217,20 @@
             justify-content: center;
             color: white;
             font-weight: 700;
-            font-size: 12px;
+            font-size: 11px;
             flex-shrink: 0;
         }
 
         .stock-card-name {
             font-weight: 700;
-            font-size: 16px;
+            font-size: 15px;
             line-height: 1.2;
         }
 
         .stock-card-company {
-            font-size: 11px;
+            font-size: 10px;
             color: var(--muted);
-            margin-top: 2px;
+            margin-top: 1px;
         }
 
         .stock-card-price {
@@ -242,7 +238,7 @@
         }
 
         .stock-card-price-value {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 700;
             font-variant-numeric: tabular-nums;
         }
@@ -250,13 +246,13 @@
         .signal-badge {
             display: inline-flex;
             align-items: center;
-            gap: 4px;
-            padding: 4px 10px;
+            gap: 3px;
+            padding: 3px 8px;
             border-radius: 3px;
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 700;
             text-transform: uppercase;
-            margin-top: 6px;
+            margin-top: 4px;
         }
 
         .signal-strong-buy { background: var(--green); color: white; }
@@ -264,41 +260,29 @@
         .signal-hold { background: #fff4e5; color: #b8860b; }
         .signal-sell { background: var(--red); color: white; }
         .signal-accumulate { background: #e8f4fd; color: var(--blue); }
-        .signal-wait { background: #f0f2f5; color: var(--muted); }
         .signal-no-data { background: #f0f2f5; color: var(--muted); }
 
         .stock-card-body {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            padding-top: 12px;
+            gap: 6px;
+            padding-top: 8px;
             border-top: 1px solid var(--border);
         }
 
-        .stock-card-item { font-size: 12px; }
-        .stock-card-label { color: var(--muted); font-size: 11px; margin-bottom: 3px; }
-        .stock-card-value { font-weight: 600; font-size: 13px; }
+        .stock-card-item { font-size: 11px; }
+        .stock-card-label { color: var(--muted); font-size: 10px; margin-bottom: 2px; }
+        .stock-card-value { font-weight: 600; font-size: 12px; }
 
         .change-pos { color: var(--green); font-weight: 600; }
         .change-neg { color: var(--red); font-weight: 600; }
 
         /* SIDEBAR WIDGETS */
-        .main-grid {
-            display: grid;
-            grid-template-columns: 1fr 280px;
-            gap: 12px;
-        }
-
-        @media (max-width: 768px) {
-            .main-grid { grid-template-columns: 1fr; }
-            .sidebar { order: -1; }
-        }
-
         .widget {
             background: var(--white);
             border: 1px solid var(--border);
             border-radius: 4px;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
         }
 
         .widget-header {
@@ -309,12 +293,12 @@
             font-weight: 700;
         }
 
-        .widget-body { padding: 12px; }
+        .widget-body { padding: 10px 12px; }
 
         .widget-row {
             display: flex;
             justify-content: space-between;
-            padding: 6px 0;
+            padding: 5px 0;
             font-size: 12px;
             border-bottom: 1px solid #f0f0f0;
         }
@@ -323,9 +307,9 @@
         .widget-value { font-weight: 700; font-variant-numeric: tabular-nums; }
 
         .ice-big-price {
-            font-size: 24px;
+            font-size: 22px;
             font-weight: 700;
-            margin: 6px 0;
+            margin: 4px 0;
         }
 
         .ice-status-badge {
@@ -339,22 +323,20 @@
         .ice-status-badge.bad { background: #fde8e9; color: var(--red); }
         .ice-status-badge.error { background: #fff4e5; color: #b8860b; }
 
-        /* CLEAR CACHE BUTTON */
+        /* CLEAR CACHE */
         .cache-btn {
-            padding: 8px 14px;
+            padding: 4px 10px;
             background: var(--yellow);
             color: white;
             border: none;
-            border-radius: 4px;
-            font-size: 11px;
+            border-radius: 3px;
+            font-size: 10px;
             font-weight: 600;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-            transition: background 0.2s;
+            gap: 4px;
         }
-        .cache-btn:hover { background: #d97706; }
 
         /* MODAL */
         .modal-overlay {
@@ -386,55 +368,54 @@
         .modal-header {
             background: var(--header);
             color: white;
-            padding: 20px;
+            padding: 16px;
             position: relative;
-            padding-right: 50px;
+            padding-right: 46px;
         }
 
         .modal-close {
             position: absolute;
-            top: 14px;
-            right: 14px;
+            top: 12px;
+            right: 12px;
             background: rgba(255,255,255,0.95);
             color: #1a1a1a;
             border: none;
-            width: 32px;
-            height: 32px;
+            width: 28px;
+            height: 28px;
             border-radius: 50%;
             cursor: pointer;
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 700;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
         }
 
-        .modal-title { font-size: 24px; font-weight: 700; }
-        .modal-subtitle { font-size: 12px; opacity: 0.8; margin-top: 2px; }
-        .modal-price-row { display: flex; align-items: center; gap: 10px; margin-top: 14px; flex-wrap: wrap; }
-        .modal-price { font-size: 28px; font-weight: 700; }
+        .modal-title { font-size: 22px; font-weight: 700; }
+        .modal-subtitle { font-size: 11px; opacity: 0.8; margin-top: 2px; }
+        .modal-price-row { display: flex; align-items: center; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
+        .modal-price { font-size: 26px; font-weight: 700; }
 
-        .modal-body { padding: 20px; }
+        .modal-body { padding: 16px; }
 
         .modal-footer-close {
             display: block;
             width: 100%;
-            padding: 14px;
+            padding: 12px;
             background: var(--header);
             color: white;
             border: none;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
             cursor: pointer;
             text-align: center;
         }
 
-        .modal-section { margin-bottom: 20px; }
+        .modal-section { margin-bottom: 16px; }
         .modal-section-title {
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 700;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             padding-bottom: 6px;
             border-bottom: 2px solid var(--blue);
         }
@@ -442,32 +423,32 @@
         .metrics-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 8px;
+            gap: 6px;
         }
 
         .metric-card {
             background: var(--bg);
-            padding: 10px;
+            padding: 8px;
             border-radius: 4px;
             border: 1px solid var(--border);
         }
 
-        .metric-card-label { font-size: 10px; color: var(--muted); text-transform: uppercase; margin-bottom: 3px; }
-        .metric-card-value { font-size: 16px; font-weight: 700; }
-        .metric-card-sub { font-size: 10px; margin-top: 3px; font-weight: 600; }
+        .metric-card-label { font-size: 9px; color: var(--muted); text-transform: uppercase; margin-bottom: 2px; }
+        .metric-card-value { font-size: 15px; font-weight: 700; }
+        .metric-card-sub { font-size: 9px; margin-top: 2px; font-weight: 600; }
 
         .detail-box {
             background: var(--bg);
-            padding: 12px;
+            padding: 10px;
             border-radius: 4px;
             border: 1px solid var(--border);
-            margin-top: 10px;
+            margin-top: 8px;
         }
 
         .detail-row {
             display: flex;
             justify-content: space-between;
-            padding: 7px 0;
+            padding: 6px 0;
             border-bottom: 1px solid var(--border);
             font-size: 12px;
         }
@@ -478,47 +459,47 @@
             border: 1px solid var(--red);
             border-left: 3px solid var(--red);
             border-radius: 4px;
-            padding: 16px;
+            padding: 14px;
             text-align: center;
         }
-        .error-state h3 { color: var(--red); font-size: 14px; margin-bottom: 6px; }
+        .error-state h3 { color: var(--red); font-size: 13px; margin-bottom: 4px; }
 
         /* FOOTER */
         .footer {
             background: var(--header);
             color: #c5c5c5;
-            padding: 16px 12px;
-            margin-top: 20px;
+            padding: 14px 12px;
+            margin-top: 16px;
             font-size: 11px;
             text-align: center;
         }
 
-        .footer-disclaimer { margin-top: 6px; font-size: 10px; opacity: 0.7; }
+        .footer-disclaimer { margin-top: 4px; font-size: 10px; opacity: 0.7; }
 
         /* LOADING */
-        .loading { text-align: center; padding: 40px 20px; color: var(--muted); }
+        .loading { text-align: center; padding: 30px 20px; color: var(--muted); }
         .spinner {
-            width: 32px; height: 32px;
+            width: 28px; height: 28px;
             border: 3px solid var(--border);
             border-top-color: var(--blue);
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
-            margin: 0 auto 12px;
+            margin: 0 auto 10px;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
 
         /* TOAST */
         .toast {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
+            bottom: 16px;
+            right: 16px;
             background: var(--green);
             color: white;
-            padding: 10px 16px;
+            padding: 8px 14px;
             border-radius: 4px;
             display: none;
             z-index: 2000;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 600;
         }
         .toast.show { display: block; }
@@ -538,20 +519,21 @@
     <!-- HEADER -->
     <header class="main-header">
         <div class="logo">
-            <div class="logo-icon">⛏️</div>
+            <div class="logo-icon">⛏️💰</div>
             <div class="logo-text">
                 <h1>Coal Algo-Trader</h1>
-                <p>Recomendations Engine System</p>
+                <p>Dual-Engine System</p>
             </div>
         </div>
         <nav class="header-nav">
             <a href="index.html" class="nav-link active">📊 Dashboard</a>
-            <a href="position.html" class="nav-link"> My Position</a>
+            <a href="position.html" class="nav-link">💼 My Position</a>
         </nav>
     </header>
 
-    <!-- ALERTS -->
+    <!-- MAIN CONTENT -->
     <div class="container">
+        <!-- ALERTS -->
         <div class="alert-container" id="alert-container"></div>
 
         <div class="main-grid">
@@ -563,7 +545,7 @@
                         <button class="tab-btn" onclick="switchTab('dividend')" id="tab-dividend">💰 Dividen</button>
                     </div>
 
-                    <div id="stock-list"></div>
+                    <div id="stock-list" style="padding: 8px;"></div>
                 </div>
             </div>
 
@@ -574,7 +556,7 @@
                     <div class="widget-body">
                         <div class="ice-big-price" id="ice-price">—</div>
                         <div id="ice-status-badge" class="ice-status-badge error">Loading...</div>
-                        <div style="margin-top: 10px;">
+                        <div style="margin-top: 8px;">
                             <div class="widget-row"><span class="widget-label">Floor</span><span class="widget-value">$120</span></div>
                             <div class="widget-row"><span class="widget-label">Trend</span><span class="widget-value" id="ice-trend">—</span></div>
                             <div class="widget-row"><span class="widget-label">ROC 5D</span><span class="widget-value" id="ice-roc5">—</span></div>
@@ -606,7 +588,7 @@
     <!-- FOOTER -->
     <footer class="footer">
         <div><strong>🔥 Coal Algo-Trader v1.0</strong></div>
-        <div class="footer-disclaimer">️ Disclaimer: Informasi bersifat edukatif, bukan ajakan membeli/menjual saham.</div>
+        <div class="footer-disclaimer">⚠️ Disclaimer: Informasi bersifat edukatif, bukan ajakan membeli/menjual saham.</div>
     </footer>
 
     <div class="toast" id="toast"></div>
@@ -636,20 +618,17 @@
             const toast = document.getElementById('toast');
             toast.textContent = msg;
             toast.className = 'toast show';
-            setTimeout(() => toast.className = 'toast', 3000);
+            setTimeout(() => toast.className = 'toast', 2500);
         };
 
-        // CLEAR CACHE
         function clearCache() {
             if (confirm('Clear cache untuk refresh data terbaru?')) {
                 if ('caches' in window) {
-                    caches.keys().then(names => {
-                        names.forEach(name => caches.delete(name));
-                    });
+                    caches.keys().then(names => { names.forEach(name => caches.delete(name)); });
                 }
                 localStorage.clear();
-                showToast('🔄 Cache dibersihkan! Refreshing...');
-                setTimeout(() => location.reload(true), 1000);
+                showToast('🔄 Cache dibersihkan!');
+                setTimeout(() => location.reload(true), 800);
             }
         }
 
@@ -660,7 +639,7 @@
                 DATA = await res.json();
                 renderAll();
             } catch (e) {
-                document.getElementById('stock-list').innerHTML = '<div class="loading"><div class="spinner"></div>⚠️ Gagal memuat data<br><button onclick="loadData()" style="margin-top:10px; padding:8px 16px; background:var(--blue); color:white; border:none; border-radius:4px; cursor:pointer;">🔄 Coba Lagi</button></div>';
+                document.getElementById('stock-list').innerHTML = '<div class="loading"><div class="spinner"></div>️ Gagal memuat data<br><button onclick="loadData()" style="margin-top:8px; padding:6px 14px; background:var(--blue); color:white; border:none; border-radius:4px; cursor:pointer; font-size:12px;">🔄 Coba Lagi</button></div>';
             }
         }
 
@@ -697,7 +676,7 @@
             if (ice.status === 'FAILED') {
                 document.getElementById('ice-price').textContent = 'ERROR';
                 const b = document.getElementById('ice-status-badge');
-                b.textContent = ' Gagal';
+                b.textContent = '✗ Gagal';
                 b.className = 'ice-status-badge error';
                 return;
             }
@@ -705,7 +684,7 @@
             document.getElementById('ice-price').textContent = '$' + ice.current_price_usd.toFixed(2);
             const b = document.getElementById('ice-status-badge');
             if (ice.above_floor) { b.innerHTML = '✓ Above $120'; b.className = 'ice-status-badge ok'; }
-            else { b.innerHTML = ' Below $120'; b.className = 'ice-status-badge bad'; }
+            else { b.innerHTML = '✗ Below $120'; b.className = 'ice-status-badge bad'; }
             document.getElementById('ice-trend').textContent = ice.momentum?.trend || '—';
             const roc5 = ice.momentum?.roc_5d || 0;
             const r = document.getElementById('ice-roc5');
@@ -735,8 +714,43 @@
                 const short = s.ticker.replace('.JK','');
                 const company = s.company_name || '';
                 const isSwing = s.mode === 'SWING';
-                const swing = s;
-                const div = s;
+
+                let bodyHtml = `
+                    <div class="stock-card-item">
+                        <div class="stock-card-label">Skor</div>
+                        <div class="stock-card-value">${(s.composite_score||0).toFixed(0)}</div>
+                    </div>
+                `;
+
+                if (isSwing) {
+                    bodyHtml += `
+                        <div class="stock-card-item">
+                            <div class="stock-card-label">Target Profit</div>
+                            <div class="stock-card-value change-pos">${fmtRp(s.target_profit)}</div>
+                        </div>
+                        <div class="stock-card-item">
+                            <div class="stock-card-label">Stop Loss</div>
+                            <div class="stock-card-value change-neg">${fmtRp(s.stop_loss)}</div>
+                        </div>
+                    `;
+                } else {
+                    if (s.forward_yield_pct) {
+                        bodyHtml += `
+                            <div class="stock-card-item">
+                                <div class="stock-card-label">Yield</div>
+                                <div class="stock-card-value change-pos">${s.forward_yield_pct}%</div>
+                            </div>
+                        `;
+                    }
+                    if (s.price_vs_ma50_pct !== undefined) {
+                        bodyHtml += `
+                            <div class="stock-card-item">
+                                <div class="stock-card-label">vs MA50</div>
+                                <div class="stock-card-value ${s.price_vs_ma50_pct>=0?'change-pos':'change-neg'}">${fmtPct(s.price_vs_ma50_pct)}</div>
+                            </div>
+                        `;
+                    }
+                }
 
                 return `<div class="stock-card" onclick="openModal('${s.ticker}','${s.mode}')">
                     <div class="stock-card-header">
@@ -744,7 +758,7 @@
                             <div class="stock-card-logo">${short.substring(0,2)}</div>
                             <div>
                                 <div class="stock-card-name">${short}</div>
-                                <div class="stock-card-company">${company} • ${isSwing ? '⚡ Swing' : '💰 Dividen'}</div>
+                                <div class="stock-card-company">${company} • ${isSwing ? '⚡ Swing' : ' Dividen'}</div>
                             </div>
                         </div>
                         <div class="stock-card-price">
@@ -753,32 +767,7 @@
                         </div>
                     </div>
                     <div class="stock-card-body">
-                        <div class="stock-card-item">
-                            <div class="stock-card-label">Skor</div>
-                            <div class="stock-card-value">${(s.composite_score||0).toFixed(0)}</div>
-                        </div>
-                        ${isSwing ? `
-                        <div class="stock-card-item">
-                            <div class="stock-card-label">Target Profit</div>
-                            <div class="stock-card-value change-pos">${fmtRp(swing.target_profit)}</div>
-                        </div>
-                        <div class="stock-card-item">
-                            <div class="stock-card-label">Stop Loss</div>
-                            <div class="stock-card-value change-neg">${fmtRp(swing.stop_loss)}</div>
-                        </div>
-                        ` : ''}
-                        ${!isSwing && div.forward_yield_pct ? `
-                        <div class="stock-card-item">
-                            <div class="stock-card-label">Yield</div>
-                            <div class="stock-card-value change-pos">${div.forward_yield_pct}%</div>
-                        </div>
-                        ` : ''}
-                        ${!isSwing && div.price_vs_ma50_pct !== undefined ? `
-                        <div class="stock-card-item">
-                            <div class="stock-card-label">vs MA50</div>
-                            <div class="stock-card-value ${div.price_vs_ma50_pct>=0?'change-pos':'change-neg'}">${fmtPct(div.price_vs_ma50_pct)}</div>
-                        </div>
-                        ` : ''}
+                        ${bodyHtml}
                     </div>
                 </div>`;
             }).join('');
@@ -807,7 +796,6 @@
             if (!hasData) {
                 html = `<div class="modal-section"><div class="modal-section-title">⚠️ Data Tidak Tersedia</div><div class="error-state"><h3>Data Tidak Cukup</h3><p>Tidak ada data valid untuk <strong>${short}</strong> (${company}).</p></div></div>`;
             } else {
-                // Swing
                 if ((mode==='SWING'||mode==='BOTH') && swing) {
                     const tech = swing.technical||{};
                     const vol = swing.volume_sentiment||{};
@@ -824,14 +812,13 @@
                             <div class="metric-card"><div class="metric-card-label">Vol Ratio</div><div class="metric-card-value">${(vol.volume_ratio||0).toFixed(2)}x</div><div class="metric-card-sub">vs 20d avg</div></div>
                         </div>
                         <div class="detail-box">
-                            <div style="font-weight:700; margin-bottom:10px; font-size:13px;">Technical</div>
+                            <div style="font-weight:700; margin-bottom:8px; font-size:12px;">Technical</div>
                             <div class="detail-row"><span>vs MA10</span><span class="${(tech.price_vs_ma10_pct||0)>=0?'change-pos':'change-neg'}">${fmtPct(tech.price_vs_ma10_pct)}</span></div>
                             <div class="detail-row"><span>vs MA20</span><span class="${(tech.price_vs_ma20_pct||0)>=0?'change-pos':'change-neg'}">${fmtPct(tech.price_vs_ma20_pct)}</span></div>
                             <div class="detail-row"><span>MACD</span><span class="${(tech.macd_histogram||0)>=0?'change-pos':'change-neg'}">${(tech.macd_histogram||0).toFixed(2)}</span></div>
                         </div>
                     </div>`;
                 }
-                // Dividend
                 if ((mode==='DIVIDEND'||mode==='BOTH') && div) {
                     const fund = div.fundamental_safety||{};
                     const det = fund.details||{};
@@ -840,12 +827,12 @@
                         <div class="modal-section-title">💰 Dividend Analysis</div>
                         <div class="metrics-grid">
                             <div class="metric-card"><div class="metric-card-label">Forward Yield</div><div class="metric-card-value change-pos">${div.forward_yield_pct?div.forward_yield_pct+'%':'—'}</div></div>
-                            <div class="metric-card"><div class="metric-card-label">DER</div><div class="metric-card-value">${det.der?.toFixed(2)||'—'}</div><div class="metric-card-sub">${det.der<1?'✓ Sehat':' Tinggi'}</div></div>
+                            <div class="metric-card"><div class="metric-card-label">DER</div><div class="metric-card-value">${det.der?.toFixed(2)||'—'}</div><div class="metric-card-sub">${det.der<1?'✓ Sehat':'⚠ Tinggi'}</div></div>
                             <div class="metric-card"><div class="metric-card-label">vs MA50</div><div class="metric-card-value ${div.price_vs_ma50_pct>=0?'change-pos':'change-neg'}">${fmtPct(div.price_vs_ma50_pct)}</div><div class="metric-card-sub">${div.price_vs_ma50_pct<-8?'🔥 Diskon!':'Normal'}</div></div>
                             <div class="metric-card"><div class="metric-card-label">Fear Index</div><div class="metric-card-value">${fear.score?.toFixed(0)||'—'}</div><div class="metric-card-sub">${fear.panic_detected?'🚨 PANIC!':'Normal'}</div></div>
                         </div>
                         <div class="detail-box">
-                            <div style="font-weight:700; margin-bottom:10px; font-size:13px;">Fundamental: <span style="color:var(--blue);">${fund.score?.toFixed(1)||'—'}/100</span></div>
+                            <div style="font-weight:700; margin-bottom:8px; font-size:12px;">Fundamental: <span style="color:var(--blue);">${fund.score?.toFixed(1)||'—'}/100</span></div>
                             <div class="detail-row"><span>EPS Growth</span><span class="${(det.eps_growth_pct||0)>=0?'change-pos':'change-neg'}">${det.eps_growth_pct?fmtPct(det.eps_growth_pct):'—'}</span></div>
                             <div class="detail-row"><span>Div Rate</span><span style="font-weight:600;">${det.dividend_rate?fmtRp(det.dividend_rate):'—'}</span></div>
                             <div class="detail-row"><span>Payout</span><span style="font-weight:600;">${det.payout_ratio_pct?det.payout_ratio_pct+'%':'—'}</span></div>
@@ -853,31 +840,29 @@
                         </div>
                     </div>`;
                 }
-                // ICE
                 const ice = DATA.ice_newcastle;
                 if (ice && ice.status!=='FAILED') {
                     const mom = ice.momentum||{};
                     html += `<div class="modal-section">
                         <div class="modal-section-title">📊 ICE Newcastle</div>
                         <div class="detail-box" style="background:#fff8e1; border-left:3px solid #ffb800;">
-                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px;">
-                                <div><div style="font-size:10px; color:var(--muted); text-transform:uppercase;">Price</div><div style="font-size:24px; font-weight:700;">$${ice.current_price_usd?.toFixed(2)||'—'}</div></div>
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:6px;">
+                                <div><div style="font-size:9px; color:var(--muted); text-transform:uppercase;">Price</div><div style="font-size:22px; font-weight:700;">$${ice.current_price_usd?.toFixed(2)||'—'}</div></div>
                                 <div class="ice-status-badge ${ice.above_floor?'ok':'bad'}">${ice.above_floor?'✓ Above $120':'✗ Below $120'}</div>
                             </div>
-                            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
-                                <div><div style="font-size:10px; color:var(--muted);">ROC 5D</div><div class="${mom.roc_5d>=0?'change-pos':'change-neg'}" style="font-weight:700;">${fmtPct(mom.roc_5d)}</div></div>
-                                <div><div style="font-size:10px; color:var(--muted);">Trend</div><div style="font-weight:700;">${mom.trend||'—'}</div></div>
+                            <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
+                                <div><div style="font-size:9px; color:var(--muted);">ROC 5D</div><div class="${mom.roc_5d>=0?'change-pos':'change-neg'}" style="font-weight:700;">${fmtPct(mom.roc_5d)}</div></div>
+                                <div><div style="font-size:9px; color:var(--muted);">Trend</div><div style="font-weight:700;">${mom.trend||'—'}</div></div>
                             </div>
                         </div>
                     </div>`;
                 }
-                // Action Plan
                 let steps=[], title='';
                 if (active.signal==='NO_DATA') { title='Data tidak tersedia.'; steps=['Tunggu data berhasil diambil','Refresh halaman','Cek log GitHub Actions']; }
                 else if (active.mode==='SWING'||active.signal?.includes('BUY')) { title='Eksekusi BUY dengan disiplin SL.'; steps=[`Beli @ ${fmtRp(active.current_price)}`,`SL @ ${fmtRp(active.stop_loss||0)}`,`TP @ ${fmtRp(active.target_profit||0)}`,'Trailing stop jika profit > 5%','Exit jika ICE < $120']; }
                 else if (active.mode==='DIVIDEND') { title='Akumulasi bertahap untuk dividen.'; steps=[`Entry @ ${fmtRp(active.current_price)}`,'Pyramiding','DRIP dividen','Hold min 1 tahun']; }
                 else { title='Wait and see.'; steps=['Pantau ICE','Tunggu koreksi','Monitor volume']; }
-                html += `<div class="modal-section"><div class="modal-section-title">🎯 Action Plan</div><div style="background:#fff8e1; padding:14px; border-radius:4px; border-left:3px solid #ffb800;"><div style="font-weight:700; margin-bottom:10px; font-size:14px;">${title}</div>${steps.map((s,i)=>`<div style="display:flex; gap:8px; margin-bottom:8px; font-size:12px;"><div style="background:var(--blue); color:white; width:20px; height:20px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:700; flex-shrink:0;">${i+1}</div><div>${s}</div></div>`).join('')}</div></div>`;
+                html += `<div class="modal-section"><div class="modal-section-title">🎯 Action Plan</div><div style="background:#fff8e1; padding:12px; border-radius:4px; border-left:3px solid #ffb800;"><div style="font-weight:700; margin-bottom:8px; font-size:13px;">${title}</div>${steps.map((s,i)=>`<div style="display:flex; gap:6px; margin-bottom:6px; font-size:11px;"><div style="background:var(--blue); color:white; width:18px; height:18px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:700; flex-shrink:0;">${i+1}</div><div>${s}</div></div>`).join('')}</div></div>`;
             }
 
             document.getElementById('modal-body').innerHTML = `
@@ -887,7 +872,7 @@
                     <div class="modal-subtitle">${company} • ${ticker}</div>
                     <div class="modal-price-row">
                         <div class="modal-price">${fmtRp(active.current_price)}</div>
-                        <span class="signal-badge ${sigClass(active.signal)}" style="font-size:12px; padding:4px 10px;">${sigIcon(active.signal)} ${active.signal.replace(/_/g,' ')}</span>
+                        <span class="signal-badge ${sigClass(active.signal)}" style="font-size:11px; padding:3px 8px;">${sigIcon(active.signal)} ${active.signal.replace(/_/g,' ')}</span>
                     </div>
                 </div>
                 <div class="modal-body">${html}</div>
