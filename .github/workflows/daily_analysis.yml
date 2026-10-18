@@ -1,0 +1,37 @@
+name: Coal Algo-Trader Daily Run
+
+on:
+  schedule:
+    # 16:30 WIB = 09:30 UTC (setelah market close BEI)
+    - cron: '30 9 * * 1-5'
+  workflow_dispatch: # Manual trigger
+
+permissions:
+  contents: write
+
+jobs:
+  run-analysis:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install yfinance pandas numpy
+
+      - name: Run Coal Algo-Trader Engine
+        run: python algo_engine.py
+
+      - name: Commit and push results
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add coal_data.json
+          git diff --staged --quiet || git commit -m "📊 Daily analysis: $(date +'%Y-%m-%d %H:%M WIB')"
+          git push
