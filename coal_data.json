@@ -1,7 +1,7 @@
 {
   "metadata": {
     "system": "Coal Algo-Trader v1.0",
-    "generated_at": "2026-11-10T17:10:49.301707",
+    "generated_at": "2026-11-11T17:18:13.971973",
     "ice_floor_filter_usd": 120.0,
     "tickers_analyzed": [
       "ITMG.JK",
@@ -63,16 +63,16 @@
         "score": 70,
         "ma10": NaN,
         "ma20": NaN,
-        "rsi": 49.17,
-        "macd_histogram": 2.18,
+        "rsi": 43.45,
+        "macd_histogram": 15.89,
         "price_vs_ma10_pct": NaN,
         "price_vs_ma20_pct": NaN
       },
       "volume_sentiment": {
         "score": 30,
-        "volume_ratio": 0.84,
-        "avg_volume_20d": 2268580,
-        "last_volume": 1896500
+        "volume_ratio": 1.05,
+        "avg_volume_20d": 2292490,
+        "last_volume": 2398000
       },
       "accumulation": {
         "accumulation_score": 30,
@@ -83,7 +83,7 @@
         "high_vol_days": 0,
         "price_change_pct": NaN
       },
-      "timestamp": "2026-11-10T17:10:51.845976",
+      "timestamp": "2026-11-11T17:18:16.362536",
       "company_name": "Ind Tambang Raya"
     },
     {
@@ -108,15 +108,15 @@
         "ma10": NaN,
         "ma20": NaN,
         "rsi": 32.08,
-        "macd_histogram": 0.02,
+        "macd_histogram": 0.49,
         "price_vs_ma10_pct": NaN,
         "price_vs_ma20_pct": NaN
       },
       "volume_sentiment": {
         "score": 10,
-        "volume_ratio": 0.66,
-        "avg_volume_20d": 2799496645,
-        "last_volume": 1838555800
+        "volume_ratio": 0.63,
+        "avg_volume_20d": 2805378065,
+        "last_volume": 1756763600
       },
       "accumulation": {
         "accumulation_score": 30,
@@ -127,7 +127,7 @@
         "high_vol_days": 0,
         "price_change_pct": NaN
       },
-      "timestamp": "2026-11-10T17:10:53.187618",
+      "timestamp": "2026-11-11T17:18:17.733785",
       "company_name": "Bumi Resources"
     },
     {
@@ -135,7 +135,7 @@
       "mode": "SWING",
       "current_price": NaN,
       "signal": "HOLD",
-      "composite_score": 42.32,
+      "composite_score": 44.32,
       "target_profit": 0,
       "stop_loss": 0,
       "ice_filter_passed": true,
@@ -148,19 +148,19 @@
         "current_price_usd": 135.15
       },
       "technical": {
-        "score": 40,
+        "score": 55,
         "ma10": NaN,
         "ma20": NaN,
-        "rsi": 70.27,
-        "macd_histogram": 13.54,
+        "rsi": 65.62,
+        "macd_histogram": 14.87,
         "price_vs_ma10_pct": NaN,
         "price_vs_ma20_pct": NaN
       },
       "volume_sentiment": {
-        "score": 30,
-        "volume_ratio": 1.11,
-        "avg_volume_20d": 182675,
-        "last_volume": 203000
+        "score": 10,
+        "volume_ratio": 0.36,
+        "avg_volume_20d": 184840,
+        "last_volume": 66000
       },
       "accumulation": {
         "accumulation_score": 30,
@@ -171,7 +171,7 @@
         "high_vol_days": 0,
         "price_change_pct": NaN
       },
-      "timestamp": "2026-11-10T17:10:53.575482",
+      "timestamp": "2026-11-11T17:18:18.107764",
       "company_name": "Mitrabara Adiperdana"
     },
     {
@@ -195,16 +195,16 @@
         "score": 35,
         "ma10": NaN,
         "ma20": NaN,
-        "rsi": 43.64,
-        "macd_histogram": -24.91,
+        "rsi": 38.68,
+        "macd_histogram": -24.81,
         "price_vs_ma10_pct": NaN,
         "price_vs_ma20_pct": NaN
       },
       "volume_sentiment": {
         "score": 10,
-        "volume_ratio": 0.32,
-        "avg_volume_20d": 52535435,
-        "last_volume": 16725200
+        "volume_ratio": 0.44,
+        "avg_volume_20d": 51562500,
+        "last_volume": 22635800
       },
       "accumulation": {
         "accumulation_score": 0,
@@ -213,7 +213,7 @@
         "high_vol_days": 0,
         "price_change_pct": NaN
       },
-      "timestamp": "2026-11-10T17:10:52.204389",
+      "timestamp": "2026-11-11T17:18:16.689445",
       "company_name": "Bukit Asam"
     },
     {
@@ -237,25 +237,27 @@
         "score": 35,
         "ma10": NaN,
         "ma20": NaN,
-        "rsi": 41.86,
-        "macd_histogram": -3.23,
+        "rsi": 37.5,
+        "macd_histogram": -1.79,
         "price_vs_ma10_pct": NaN,
         "price_vs_ma20_pct": NaN
       },
       "volume_sentiment": {
         "score": 10,
-        "volume_ratio": 0.65,
-        "avg_volume_20d": 45405245,
-        "last_volume": 29700600
+        "volume_ratio": 0.43,
+        "avg_volume_20d": 45325760,
+        "last_volume": 19442900
       },
       "accumulation": {
-        "accumulation_score": 0,
+        "accumulation_score": 30,
         "signal": "NO_SIGNIFICANT_ACCUMULATION",
-        "signals_detail": [],
+        "signals_detail": [
+          "OBV_UPTREND"
+        ],
         "high_vol_days": 0,
         "price_change_pct": NaN
       },
-      "timestamp": "2026-11-10T17:10:52.553237",
+      "timestamp": "2026-11-11T17:18:17.054824",
       "company_name": "Adaro Energy Indonesia"
     },
     {
@@ -279,16 +281,16 @@
         "score": 35,
         "ma10": NaN,
         "ma20": NaN,
-        "rsi": 48.69,
-        "macd_histogram": -83.18,
+        "rsi": 46.85,
+        "macd_histogram": -56.11,
         "price_vs_ma10_pct": NaN,
         "price_vs_ma20_pct": NaN
       },
       "volume_sentiment": {
         "score": 10,
-        "volume_ratio": 0.71,
-        "avg_volume_20d": 3651295,
-        "last_volume": 2595500
+        "volume_ratio": 0.47,
+        "avg_volume_20d": 3659990,
+        "last_volume": 1725000
       },
       "accumulation": {
         "accumulation_score": 30,
@@ -299,7 +301,7 @@
         "high_vol_days": 0,
         "price_change_pct": NaN
       },
-      "timestamp": "2026-11-10T17:10:52.882233",
+      "timestamp": "2026-11-11T17:18:17.444605",
       "company_name": "United Tractors"
     }
   ],
@@ -333,7 +335,7 @@
         "score": 0,
         "panic_detected": false,
         "discount_from_ma50_pct": NaN,
-        "volume_spike_ratio": 0.84,
+        "volume_spike_ratio": 1.05,
         "ice_roc_5d_pct": 1.38,
         "opportunity": "FAIR_VALUE"
       },
@@ -350,7 +352,7 @@
       "ma200": NaN,
       "price_vs_ma50_pct": NaN,
       "price_vs_ma200_pct": NaN,
-      "timestamp": "2026-11-10T17:10:51.847825",
+      "timestamp": "2026-11-11T17:18:16.364329",
       "company_name": "Ind Tambang Raya"
     },
     {
@@ -382,14 +384,16 @@
         "score": 0,
         "panic_detected": false,
         "discount_from_ma50_pct": NaN,
-        "volume_spike_ratio": 0.65,
+        "volume_spike_ratio": 0.43,
         "ice_roc_5d_pct": 1.38,
         "opportunity": "FAIR_VALUE"
       },
       "accumulation": {
-        "accumulation_score": 0,
+        "accumulation_score": 30,
         "signal": "NO_SIGNIFICANT_ACCUMULATION",
-        "signals_detail": [],
+        "signals_detail": [
+          "OBV_UPTREND"
+        ],
         "high_vol_days": 0,
         "price_change_pct": NaN
       },
@@ -397,7 +401,7 @@
       "ma200": NaN,
       "price_vs_ma50_pct": NaN,
       "price_vs_ma200_pct": NaN,
-      "timestamp": "2026-11-10T17:10:52.555097",
+      "timestamp": "2026-11-11T17:18:17.056675",
       "company_name": "Adaro Energy Indonesia"
     },
     {
@@ -429,7 +433,7 @@
         "score": 0,
         "panic_detected": false,
         "discount_from_ma50_pct": NaN,
-        "volume_spike_ratio": 0.71,
+        "volume_spike_ratio": 0.47,
         "ice_roc_5d_pct": 1.38,
         "opportunity": "FAIR_VALUE"
       },
@@ -446,7 +450,7 @@
       "ma200": NaN,
       "price_vs_ma50_pct": NaN,
       "price_vs_ma200_pct": NaN,
-      "timestamp": "2026-11-10T17:10:52.884106",
+      "timestamp": "2026-11-11T17:18:17.446478",
       "company_name": "United Tractors"
     },
     {
@@ -478,7 +482,7 @@
         "score": 0,
         "panic_detected": false,
         "discount_from_ma50_pct": NaN,
-        "volume_spike_ratio": 0.32,
+        "volume_spike_ratio": 0.44,
         "ice_roc_5d_pct": 1.38,
         "opportunity": "FAIR_VALUE"
       },
@@ -493,7 +497,7 @@
       "ma200": NaN,
       "price_vs_ma50_pct": NaN,
       "price_vs_ma200_pct": NaN,
-      "timestamp": "2026-11-10T17:10:52.206244",
+      "timestamp": "2026-11-11T17:18:16.691283",
       "company_name": "Bukit Asam"
     },
     {
@@ -525,7 +529,7 @@
         "score": 0,
         "panic_detected": false,
         "discount_from_ma50_pct": NaN,
-        "volume_spike_ratio": 1.11,
+        "volume_spike_ratio": 0.36,
         "ice_roc_5d_pct": 1.38,
         "opportunity": "FAIR_VALUE"
       },
@@ -542,7 +546,7 @@
       "ma200": NaN,
       "price_vs_ma50_pct": NaN,
       "price_vs_ma200_pct": NaN,
-      "timestamp": "2026-11-10T17:10:53.577240",
+      "timestamp": "2026-11-11T17:18:18.109583",
       "company_name": "Mitrabara Adiperdana"
     },
     {
@@ -574,7 +578,7 @@
         "score": 0,
         "panic_detected": false,
         "discount_from_ma50_pct": NaN,
-        "volume_spike_ratio": 0.66,
+        "volume_spike_ratio": 0.63,
         "ice_roc_5d_pct": 1.38,
         "opportunity": "FAIR_VALUE"
       },
@@ -591,7 +595,7 @@
       "ma200": NaN,
       "price_vs_ma50_pct": NaN,
       "price_vs_ma200_pct": NaN,
-      "timestamp": "2026-11-10T17:10:53.189522",
+      "timestamp": "2026-11-11T17:18:17.735599",
       "company_name": "Bumi Resources"
     }
   ],
