@@ -1,4 +1,6 @@
 # 🔥 Coal Algo-Trader v1.0
+mulai workflows manual:
+https://github.com/CoalHunter/Coal-Algo-Trader/actions/workflows/daily_analysis.yml
 
 **Sistem Rekomendasi Saham Batu Bara BEI Berbasis Algoritma Dual-Engine**
 
